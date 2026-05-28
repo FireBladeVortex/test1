@@ -170,37 +170,32 @@
 		label.textContent = isOn ? 'ON' : 'OFF';
 		val.textContent   = isOn ? '1'  : '0';
 	}
+async function submit() {
+    const submitBtn = document.getElementById('submitBtn');
+    const status    = document.getElementById('status');
 
-	async function submit() {
-		const submitBtn = document.getElementById('submitBtn');
-		const status    = document.getElementById('status');
+    submitBtn.disabled = true;
+    status.className   = 'status loading';
+    status.textContent = '전송 중...';
 
-		submitBtn.disabled = true;
-		status.className   = 'status loading';
-		status.textContent = '전송 중...';
+    try {
+        const url = `${APPS_SCRIPT_URL}?value=${isOn ? 1 : 0}`;
+        const res  = await fetch(url);
+        const data = await res.json();
 
-		try {
-			const res = await fetch(APPS_SCRIPT_URL, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ value: isOn ? 1 : 0 })
-			});
-
-			const data = await res.json();
-
-			if (data.status === 'ok') {
-				status.className   = 'status success';
-				status.textContent = `저장 완료 → ${data.filename}`;
-			} else {
-				throw new Error(data.message || '서버 오류');
-			}
-		} catch (e) {
-			status.className   = 'status error';
-			status.textContent = `오류: ${e.message}`;
-		} finally {
-			submitBtn.disabled = false;
-		}
-	}
+        if (data.status === 'ok') {
+            status.className   = 'status success';
+            status.textContent = `저장 완료 → ${data.filename}`;
+        } else {
+            throw new Error(data.message || '서버 오류');
+        }
+    } catch (e) {
+        status.className   = 'status error';
+        status.textContent = `오류: ${e.message}`;
+    } finally {
+        submitBtn.disabled = false;
+    }
+}
 </script>
 </body>
 </html>
