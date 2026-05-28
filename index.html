@@ -25,7 +25,7 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 40px;
+			gap: 36px;
 		}
 
 		.title {
@@ -35,62 +35,49 @@
 			text-transform: uppercase;
 		}
 
-		.toggle-wrap {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 16px;
+		/* 1~9 버튼 그리드 */
+		.num-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			width: 100%;
 		}
 
-		.toggle-btn {
-			width: 80px;
-			height: 80px;
-			border-radius: 50%;
-			border: 2px solid #333;
+		.num-btn {
+			aspect-ratio: 1;
+			border: 2px solid #2a2a2a;
+			border-radius: 10px;
 			background: #111;
+			color: #444;
+			font-family: 'Courier New', monospace;
+			font-size: 22px;
+			font-weight: bold;
 			cursor: pointer;
-			position: relative;
-			transition: all 0.2s ease;
+			transition: all 0.15s ease;
 			outline: none;
 		}
 
-		.toggle-btn::after {
-			content: '';
-			position: absolute;
-			inset: 10px;
-			border-radius: 50%;
-			background: #2a2a2a;
-			transition: all 0.2s ease;
+		.num-btn:hover {
+			border-color: #444;
+			color: #888;
 		}
 
-		.toggle-btn.on {
+		.num-btn.selected {
 			border-color: #4ade80;
-			box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+			color: #4ade80;
+			background: #0d1f14;
+			box-shadow: 0 0 14px rgba(74, 222, 128, 0.25);
 		}
 
-		.toggle-btn.on::after {
-			background: #4ade80;
-			box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
-		}
-
-		.state-label {
-			font-size: 13px;
-			letter-spacing: 0.15em;
-			color: #444;
-			transition: color 0.2s;
-		}
-
-		.state-label.on { color: #4ade80; }
-
-		.value-display {
-			font-size: 48px;
-			color: #222;
+		.selected-display {
+			font-size: 52px;
 			font-weight: bold;
-			transition: color 0.2s;
+			color: #222;
 			line-height: 1;
+			transition: color 0.2s;
 		}
 
-		.value-display.on { color: #4ade80; }
+		.selected-display.active { color: #4ade80; }
 
 		.submit-btn {
 			width: 100%;
@@ -107,16 +94,13 @@
 			text-transform: uppercase;
 		}
 
-		.submit-btn:hover {
+		.submit-btn:hover:not(:disabled) {
 			border-color: #555;
 			color: #aaa;
 			background: #1f1f1f;
 		}
 
-		.submit-btn:disabled {
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
+		.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 		.status {
 			font-size: 11px;
@@ -136,39 +120,46 @@
 <div class="card">
 	<span class="title">Response Form</span>
 
-	<div class="toggle-wrap">
-		<button class="toggle-btn" id="toggleBtn" onclick="toggle()" aria-label="토글 버튼"></button>
-		<span class="state-label" id="stateLabel">OFF</span>
-	</div>
+	<div class="num-grid" id="numGrid"></div>
 
-	<div class="value-display" id="valueDisplay">0</div>
+	<div class="selected-display" id="selectedDisplay">—</div>
 
-	<button class="submit-btn" id="submitBtn" onclick="submit()">송신</button>
+	<button class="submit-btn" id="submitBtn" onclick="submitValue()" disabled>송신</button>
 
 	<span class="status" id="status"></span>
 </div>
 
 <script>
-	// ⚙️ 여기에 Google Apps Script 배포 URL 입력
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxe2TZPSGBpBIYtJvotmFwYp1Q0xxs4kFfhdTdN8Ib9ZujoXIP7DHWW6KlWkGMnB-Eq/exec';
+	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQaL0alGVextdMksFXt2NzradeSDOXGqxQOCZG6b75rM5sIvuuIgnaaThK752pZnDN/exec';
 
-	let isOn = false;
+	let selected = null;
 
-	function toggle() {
-		isOn = !isOn;
-		const btn   = document.getElementById('toggleBtn');
-		const label = document.getElementById('stateLabel');
-		const val   = document.getElementById('valueDisplay');
-
-		btn.classList.toggle('on', isOn);
-		label.classList.toggle('on', isOn);
-		val.classList.toggle('on', isOn);
-
-		label.textContent = isOn ? 'ON' : 'OFF';
-		val.textContent   = isOn ? '1'  : '0';
+	// 1~9 버튼 생성
+	const grid = document.getElementById('numGrid');
+	for (let i = 1; i <= 9; i++) {
+		const btn = document.createElement('button');
+		btn.className   = 'num-btn';
+		btn.textContent = i;
+		btn.onclick     = () => selectNum(i, btn);
+		grid.appendChild(btn);
 	}
 
-	async function submit() {
+	function selectNum(num, btn) {
+		document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('selected'));
+		btn.classList.add('selected');
+		selected = num;
+
+		const display = document.getElementById('selectedDisplay');
+		display.textContent = num;
+		display.classList.add('active');
+
+		document.getElementById('submitBtn').disabled = false;
+		document.getElementById('status').textContent = '';
+	}
+
+	async function submitValue() {
+		if (selected === null) return;
+
 		const submitBtn = document.getElementById('submitBtn');
 		const status    = document.getElementById('status');
 
@@ -177,8 +168,7 @@
 		status.textContent = '전송 중...';
 
 		try {
-			// GET 방식: URL 파라미터로 value 전달
-			const url = APPS_SCRIPT_URL + '?value=' + (isOn ? 1 : 0);
+			const url  = APPS_SCRIPT_URL + '?action=submit&value=' + selected;
 			const res  = await fetch(url);
 			const data = await res.json();
 
