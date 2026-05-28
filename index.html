@@ -35,7 +35,6 @@
 			text-transform: uppercase;
 		}
 
-		/* 토글 버튼 */
 		.toggle-wrap {
 			display: flex;
 			flex-direction: column;
@@ -93,7 +92,6 @@
 
 		.value-display.on { color: #4ade80; }
 
-		/* 전송 버튼 */
 		.submit-btn {
 			width: 100%;
 			padding: 14px;
@@ -120,7 +118,6 @@
 			cursor: not-allowed;
 		}
 
-		/* 상태 메시지 */
 		.status {
 			font-size: 11px;
 			letter-spacing: 0.1em;
@@ -153,7 +150,7 @@
 
 <script>
 	// ⚙️ 여기에 Google Apps Script 배포 URL 입력
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwt7dp7x9qmWTST6ovttFxSF395XB4UtPU8OgwSBr3PM5eZdjEkRGf0CIXHo1wEJlTG/exec';
+	const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 	let isOn = false;
 
@@ -170,32 +167,35 @@
 		label.textContent = isOn ? 'ON' : 'OFF';
 		val.textContent   = isOn ? '1'  : '0';
 	}
-async function submit() {
-    const submitBtn = document.getElementById('submitBtn');
-    const status    = document.getElementById('status');
 
-    submitBtn.disabled = true;
-    status.className   = 'status loading';
-    status.textContent = '전송 중...';
+	async function submit() {
+		const submitBtn = document.getElementById('submitBtn');
+		const status    = document.getElementById('status');
 
-    try {
-        const url = `${APPS_SCRIPT_URL}?value=${isOn ? 1 : 0}`;
-        const res  = await fetch(url);
-        const data = await res.json();
+		submitBtn.disabled = true;
+		status.className   = 'status loading';
+		status.textContent = '전송 중...';
 
-        if (data.status === 'ok') {
-            status.className   = 'status success';
-            status.textContent = `저장 완료 → ${data.filename}`;
-        } else {
-            throw new Error(data.message || '서버 오류');
-        }
-    } catch (e) {
-        status.className   = 'status error';
-        status.textContent = `오류: ${e.message}`;
-    } finally {
-        submitBtn.disabled = false;
-    }
-}
+		try {
+			// GET 방식: URL 파라미터로 value 전달
+			const url = APPS_SCRIPT_URL + '?value=' + (isOn ? 1 : 0);
+			const res  = await fetch(url);
+			const data = await res.json();
+
+			if (data.status === 'ok') {
+				status.className   = 'status success';
+				status.textContent = '저장 완료 → ' + data.filename;
+			} else {
+				status.className   = 'status error';
+				status.textContent = '오류 [' + data.where + ']: ' + data.message;
+			}
+		} catch (e) {
+			status.className   = 'status error';
+			status.textContent = 'fetch 실패: ' + e.message;
+		} finally {
+			submitBtn.disabled = false;
+		}
+	}
 </script>
 </body>
 </html>
