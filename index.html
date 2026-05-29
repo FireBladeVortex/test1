@@ -6,19 +6,21 @@
 	<title>입력 패널</title>
 	<style>
 		:root {
-			--bg:        #0a0a0a;
-			--surface:   #111111;
-			--border:    #222222;
-			--border-hi: #333333;
-			--text:      #cccccc;
-			--muted:     #444444;
-			--dim:       #2a2a2a;
-			--accent:    #4ade80;
-			--accent-bg: #0d1f14;
-			--danger:    #f87171;
-			--info:      #60a5fa;
-			--pad-r:     14px;
-			--gap:       10px;
+			--bg:         #0a0a0a;
+			--surface:    #111111;
+			--border:     #222222;
+			--border-hi:  #444444;
+			--text:       #ffffff;
+			--muted:      #ffffff;
+			--dim:        #2a2a2a;
+			--accent:     #4ade80;
+			--accent-dim: #0d1f14;
+			--yellow:     #facc15;
+			--yellow-dim: #1f1a05;
+			--danger:     #f87171;
+			--danger-dim: #2a0808;
+			--gap:        10px;
+			--btn-h:      44px;
 		}
 
 		* { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,32 +29,34 @@
 			min-height: 100vh;
 			background: var(--bg);
 			font-family: 'Courier New', monospace;
+			color: var(--text);
+			font-size: 20px;
+			font-weight: bold;
 			display: flex;
 			flex-direction: column;
-			align-items: flex-start;
-			padding: 24px;
-			gap: 0;
+			padding: 48px 24px 24px;
+			gap: var(--gap);
 		}
 
-		/* 좌측 상단 admin 링크 */
+		/* ── admin 링크 ─────────────────────────── */
 		.admin-link {
 			position: fixed;
-			top: 12px;
-			left: 12px;
-			padding: 5px 10px;
+			top: 12px; left: 12px;
+			padding: 4px 10px;
 			border: 1px solid var(--border);
 			border-radius: 5px;
 			background: transparent;
-			color: var(--muted);
+			color: #666;
 			font-family: 'Courier New', monospace;
-			font-size: 9px;
+			font-size: 10px;
+			font-weight: normal;
 			letter-spacing: 0.15em;
 			text-decoration: none;
 			text-transform: uppercase;
 			transition: all 0.2s;
 			z-index: 10;
 		}
-		.admin-link:hover { border-color: var(--border-hi); color: #888; }
+		.admin-link:hover { border-color: var(--border-hi); color: #aaa; }
 
 		/* ── 전체 레이아웃 ──────────────────────── */
 		.layout {
@@ -60,16 +64,14 @@
 			flex-direction: row;
 			align-items: flex-start;
 			gap: var(--gap);
-			margin-top: 36px;
-			width: 100%;
 		}
 
-		/* 패드 1~4 + 하단 버튼을 묶는 왼쪽 컬럼 */
 		.left-col {
 			display: flex;
 			flex-direction: column;
 			gap: var(--gap);
 			flex: 1;
+			min-width: 0;
 		}
 
 		.pads-row {
@@ -81,80 +83,99 @@
 
 		/* ── 공통 패드 ──────────────────────────── */
 		.pad {
+			flex: 1;
+			min-width: 0;
 			background: var(--surface);
-			border: 1px solid var(--border);
+			border: 1.5px solid var(--border);
 			border-radius: 10px;
-			padding: var(--pad-r);
+			padding: 12px;
 			display: flex;
 			flex-direction: column;
 			gap: 10px;
+			transition: border-color 0.3s;
+		}
+
+		.pad.error {
+			border-color: var(--danger) !important;
+			box-shadow: 0 0 12px rgba(248,113,113,0.3);
 		}
 
 		.pad-label {
-			font-size: 9px;
+			font-size: 10px;
+			font-weight: bold;
 			letter-spacing: 0.2em;
 			text-transform: uppercase;
-			color: var(--muted);
+			color: #666;
 			text-align: center;
 		}
 
-		/* ── 공통 버튼 ──────────────────────────── */
+		/* ── 공통 선택 버튼 ─────────────────────── */
 		.sel-btn {
 			border: 1.5px solid var(--dim);
 			border-radius: 7px;
 			background: var(--bg);
-			color: var(--muted);
+			color: var(--text);
 			font-family: 'Courier New', monospace;
-			font-size: 13px;
+			font-size: 20px;
 			font-weight: bold;
 			cursor: pointer;
 			transition: all 0.15s;
 			outline: none;
-			padding: 0;
+			width: 100%;
+			height: var(--btn-h);
 		}
-		.sel-btn:hover { border-color: var(--border-hi); color: #888; }
+		.sel-btn:hover { border-color: var(--border-hi); }
 		.sel-btn.on {
 			border-color: var(--accent);
 			color: var(--accent);
-			background: var(--accent-bg);
-			box-shadow: 0 0 10px rgba(74,222,128,0.2);
+			background: var(--accent-dim);
+			box-shadow: 0 0 10px rgba(74,222,128,0.25);
 		}
 
-		.reset-btn {
-			border: 1px solid var(--border);
-			border-radius: 6px;
-			background: transparent;
-			color: var(--muted);
+		/* ── 공통 액션 버튼 (초기화/저장/전체초기화) */
+		.std-btn {
+			height: var(--btn-h);
+			padding: 0 16px;
+			border-radius: 7px;
 			font-family: 'Courier New', monospace;
-			font-size: 9px;
-			letter-spacing: 0.12em;
-			text-transform: uppercase;
+			font-size: 20px;
+			font-weight: bold;
+			color: var(--text);
 			cursor: pointer;
-			padding: 5px 8px;
 			transition: all 0.15s;
-			white-space: nowrap;
+			outline: none;
+			border: 1.5px solid var(--border-hi);
+			background: transparent;
 		}
-		.reset-btn:hover { border-color: var(--border-hi); color: #888; }
+		.std-btn:hover { background: #1a1a1a; border-color: #666; }
 
-		/* ── 패드 1: 가나다 세로 ────────────────── */
-		.pad1 { width: 70px; min-width: 70px; }
+		/* ── 패드 2: 작은 초기화 버튼 (예외) ────── */
+		.sm-clear {
+			height: 26px;
+			padding: 0 8px;
+			border-radius: 5px;
+			font-family: 'Courier New', monospace;
+			font-size: 11px;
+			font-weight: normal;
+			color: #888;
+			cursor: pointer;
+			border: 1px solid var(--border);
+			background: transparent;
+			white-space: nowrap;
+			flex-shrink: 0;
+			transition: all 0.15s;
+		}
+		.sm-clear:hover { border-color: var(--border-hi); color: #bbb; }
 
-		.pad1 .btn-list {
+		/* ── 패드 1 ─────────────────────────────── */
+		.pad1-btns {
 			display: flex;
 			flex-direction: column;
 			gap: 8px;
 			flex: 1;
 		}
 
-		.pad1 .sel-btn {
-			width: 100%;
-			height: 48px;
-			font-size: 15px;
-		}
-
-		/* ── 패드 2: 입력칸 ─────────────────────── */
-		.pad2 { width: 180px; min-width: 180px; }
-
+		/* ── 패드 2 ─────────────────────────────── */
 		.input-group {
 			display: flex;
 			flex-direction: column;
@@ -168,14 +189,12 @@
 			gap: 6px;
 		}
 
-		.input-title {
-			font-size: 9px;
-			letter-spacing: 0.12em;
-			text-transform: uppercase;
-			color: var(--muted);
+		.input-label {
+			font-size: 12px;
+			font-weight: bold;
+			letter-spacing: 0.1em;
+			color: #aaa;
 			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
 		}
 
 		.text-input {
@@ -186,120 +205,105 @@
 			border-radius: 6px;
 			color: var(--text);
 			font-family: 'Courier New', monospace;
-			font-size: 12px;
+			font-size: 14px;
+			font-weight: bold;
 			outline: none;
 			transition: border-color 0.2s;
 		}
 		.text-input:focus { border-color: var(--border-hi); }
-		.text-input::placeholder { color: var(--muted); font-size: 11px; }
+		.text-input::placeholder { color: #444; font-weight: normal; font-size: 12px; }
 
-		/* ── 패드 3, 4 공통: 3x3 그리드 ─────────── */
-		.pad3, .pad4 { flex: 1; min-width: 140px; }
-
+		/* ── 패드 3, 4: 3x3 그리드 ─────────────── */
 		.grid-rows {
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
+			gap: 7px;
 			flex: 1;
 		}
 
 		.grid-row {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
-			gap: 6px;
-		}
-
-		.grid-row .sel-btn {
-			aspect-ratio: 1;
-			width: 100%;
-			font-size: 13px;
+			gap: 7px;
 		}
 
 		.pad-bottom {
 			display: flex;
-			justify-content: center;
-			margin-top: 2px;
+			justify-content: stretch;
 		}
 
-		/* ── 하단 버튼 영역 ─────────────────────── */
+		.pad-bottom .std-btn { width: 100%; }
+
+		/* ── 하단 버튼 행 ───────────────────────── */
 		.bottom-row {
 			display: flex;
-			flex-direction: row;
 			gap: var(--gap);
 		}
 
-		.action-btn {
-			flex: 1;
-			padding: 12px;
-			border-radius: 8px;
-			font-family: 'Courier New', monospace;
-			font-size: 11px;
-			letter-spacing: 0.15em;
-			text-transform: uppercase;
-			cursor: pointer;
-			transition: all 0.2s;
-			outline: none;
-		}
+		.bottom-row .std-btn { flex: 1; }
 
-		.btn-save {
-			border: 1px solid var(--border-hi);
-			background: transparent;
-			color: #777;
-		}
-		.btn-save:hover { border-color: #555; color: #aaa; background: #181818; }
-
-		.btn-reset-all {
-			border: 1px solid var(--border);
-			background: transparent;
-			color: var(--muted);
-		}
-		.btn-reset-all:hover { border-color: var(--danger); color: var(--danger); }
-
-		/* ── 패드 5 ─────────────────────────────── */
+		/* ── 패드 5 + 송신 래퍼 ────────────────── */
 		.pad5-wrap {
 			display: flex;
 			flex-direction: column;
 			gap: var(--gap);
+			/* 패드1~4와 같은 flex 비율 */
+			flex: 1;
+			min-width: 0;
 		}
 
 		.pad5 {
-			width: 110px;
-			min-width: 110px;
 			flex: 1;
-			min-height: 200px;
+			min-height: 80px;
 		}
 
+		/* ── 송신 버튼 ──────────────────────────── */
 		.btn-send {
-			width: 110px;
-			min-width: 110px;
-			padding: 12px;
-			border: 1px solid #2a4a35;
-			border-radius: 8px;
-			background: var(--accent-bg);
-			color: var(--accent);
+			width: 100%;
+			height: var(--btn-h);
+			border-radius: 7px;
 			font-family: 'Courier New', monospace;
-			font-size: 11px;
-			letter-spacing: 0.15em;
-			text-transform: uppercase;
+			font-size: 20px;
+			font-weight: bold;
+			color: var(--accent);
 			cursor: pointer;
-			transition: all 0.2s;
 			outline: none;
+			transition: box-shadow 0.3s, background 0.3s, color 0.3s, border-color 0.3s;
+			border: 1.5px solid var(--accent);
+			background: var(--accent-dim);
+			box-shadow: 0 0 18px rgba(74,222,128,0.45);
 		}
-		.btn-send:hover { border-color: var(--accent); box-shadow: 0 0 12px rgba(74,222,128,0.2); }
-		.btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+		.btn-send.sending {
+			color: var(--yellow);
+			border-color: var(--yellow);
+			background: var(--yellow-dim);
+			box-shadow: 0 0 18px rgba(250,204,21,0.5);
+			cursor: not-allowed;
+		}
+
+		.btn-send:hover:not(.sending):not(:disabled) {
+			box-shadow: 0 0 28px rgba(74,222,128,0.65);
+		}
 
 		/* ── 상태 메시지 ─────────────────────────── */
-		.status {
-			font-size: 10px;
-			letter-spacing: 0.1em;
-			color: var(--muted);
-			min-height: 14px;
-			text-align: left;
-			margin-top: 2px;
+		.status-wrap {
+			display: flex;
+			justify-content: flex-end;
 		}
+
+		.status {
+			font-size: 13px;
+			font-weight: bold;
+			letter-spacing: 0.1em;
+			color: transparent;
+			min-height: 18px;
+			text-align: center;
+			width: 100%;
+		}
+
 		.status.success { color: var(--accent); }
 		.status.error   { color: var(--danger); }
-		.status.loading { color: #888; }
 	</style>
 </head>
 <body>
@@ -308,205 +312,251 @@
 
 <div class="layout">
 
-	<!-- 왼쪽 컬럼: 패드1~4 + 하단버튼 -->
+	<!-- 왼쪽: 패드 1~4 + 하단버튼 -->
 	<div class="left-col">
 		<div class="pads-row">
 
-			<!-- ── 패드 1: 가나다 세로 단일 선택 ── -->
-			<div class="pad pad1">
+			<!-- 패드 1: 가나다 세로 단일선택 -->
+			<div class="pad" id="pad1">
 				<span class="pad-label">P1</span>
-				<div class="btn-list" id="pad1Btns">
-					<button class="sel-btn" onclick="selectPad1(this, '가')">가</button>
-					<button class="sel-btn" onclick="selectPad1(this, '나')">나</button>
-					<button class="sel-btn" onclick="selectPad1(this, '다')">다</button>
+				<div class="pad1-btns">
+					<button class="sel-btn" onclick="selectPad1(this,'가')">가</button>
+					<button class="sel-btn" onclick="selectPad1(this,'나')">나</button>
+					<button class="sel-btn" onclick="selectPad1(this,'다')">다</button>
 				</div>
 			</div>
 
-			<!-- ── 패드 2: 제목 / 이름 입력 ─────── -->
-			<div class="pad pad2">
+			<!-- 패드 2: 제목/이름 입력 -->
+			<div class="pad" id="pad2">
 				<span class="pad-label">P2</span>
-
 				<div class="input-group">
 					<div class="input-header">
-						<span class="input-title">제목</span>
-						<button class="reset-btn" onclick="clearInput('titleInput')">초기화</button>
+						<span class="input-label">제목</span>
+						<button class="sm-clear" onclick="clearInput('titleInput')">초기화</button>
 					</div>
 					<input class="text-input" id="titleInput" type="text" placeholder="제목을 입력하세요">
 				</div>
-
 				<div class="input-group">
 					<div class="input-header">
-						<span class="input-title">이름</span>
-						<button class="reset-btn" onclick="clearInput('nameInput')">초기화</button>
+						<span class="input-label">이름</span>
+						<button class="sm-clear" onclick="clearInput('nameInput')">초기화</button>
 					</div>
 					<input class="text-input" id="nameInput" type="text" placeholder="이름을 입력하세요">
 				</div>
 			</div>
 
-			<!-- ── 패드 3: 1 2 3 × 3행, 행당 최대1 ─ -->
-			<div class="pad pad3">
+			<!-- 패드 3: 1 2 3 × 3행, 행당 최대 1개 -->
+			<div class="pad" id="pad3">
 				<span class="pad-label">P3</span>
 				<div class="grid-rows" id="pad3Rows">
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad3', 0, 0, this)">1</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 0, 1, this)">2</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 0, 2, this)">3</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',0,0,this)">1</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',0,1,this)">2</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',0,2,this)">3</button>
 					</div>
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad3', 1, 0, this)">1</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 1, 1, this)">2</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 1, 2, this)">3</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',1,0,this)">1</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',1,1,this)">2</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',1,2,this)">3</button>
 					</div>
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad3', 2, 0, this)">1</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 2, 1, this)">2</button>
-						<button class="sel-btn" onclick="selectGrid('pad3', 2, 2, this)">3</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',2,0,this)">1</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',2,1,this)">2</button>
+						<button class="sel-btn" onclick="selectGrid('pad3',2,2,this)">3</button>
 					</div>
 				</div>
 				<div class="pad-bottom">
-					<button class="reset-btn" onclick="resetGrid('pad3')">초기화</button>
+					<button class="std-btn" onclick="resetGrid('pad3')">초기화</button>
 				</div>
 			</div>
 
-			<!-- ── 패드 4: a~i × 3행, 행당 최대1 ── -->
-			<div class="pad pad4">
+			<!-- 패드 4: a~i × 3행, 행당 최대 1개 -->
+			<div class="pad" id="pad4">
 				<span class="pad-label">P4</span>
 				<div class="grid-rows" id="pad4Rows">
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad4', 0, 0, this)">a</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 0, 1, this)">b</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 0, 2, this)">c</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',0,0,this)">a</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',0,1,this)">b</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',0,2,this)">c</button>
 					</div>
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad4', 1, 0, this)">d</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 1, 1, this)">e</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 1, 2, this)">f</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',1,0,this)">d</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',1,1,this)">e</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',1,2,this)">f</button>
 					</div>
 					<div class="grid-row">
-						<button class="sel-btn" onclick="selectGrid('pad4', 2, 0, this)">g</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 2, 1, this)">h</button>
-						<button class="sel-btn" onclick="selectGrid('pad4', 2, 2, this)">i</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',2,0,this)">g</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',2,1,this)">h</button>
+						<button class="sel-btn" onclick="selectGrid('pad4',2,2,this)">i</button>
 					</div>
 				</div>
 				<div class="pad-bottom">
-					<button class="reset-btn" onclick="resetGrid('pad4')">초기화</button>
+					<button class="std-btn" onclick="resetGrid('pad4')">초기화</button>
 				</div>
 			</div>
 
 		</div><!-- .pads-row -->
 
-		<!-- 하단 버튼: 저장 + 전체초기화 -->
+		<!-- 하단: 저장 + 전체초기화 -->
 		<div class="bottom-row">
-			<button class="action-btn btn-save" onclick="save()">저장</button>
-			<button class="action-btn btn-reset-all" onclick="resetAll()">전체 초기화</button>
+			<button class="std-btn" onclick="save()">저장</button>
+			<button class="std-btn" onclick="resetAll()">전체 초기화</button>
 		</div>
 
 	</div><!-- .left-col -->
 
-	<!-- ── 패드 5 + 송신 버튼 ──────────────── -->
+	<!-- 패드 5 + 송신 -->
 	<div class="pad5-wrap">
-		<div class="pad pad5">
+		<div class="pad pad5" id="pad5">
 			<span class="pad-label">P5</span>
-			<!-- 빈 공간 -->
 		</div>
 		<button class="btn-send" id="sendBtn" onclick="send()">송신</button>
+		<div class="status" id="status"></div>
 	</div>
 
 </div><!-- .layout -->
 
-<div class="status" id="status"></div>
-
 <script>
 	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQxoDXa7IcBWUFT58kQwEEbCoTBcDFAi1tsdK9byn1jNbHCjtUsgfL2mq8Zhe5lnfR/exec';
 
-	// ── 상태 저장소 ──────────────────────────
 	const state = {
-		pad1: null,           // '가' | '나' | '다' | null
-		pad3: [null, null, null], // 각 행 선택값 (0~2 인덱스) 또는 null
+		pad1: null,
+		pad3: [null, null, null],
 		pad4: [null, null, null],
 	};
 
-	// ── 패드 1: 단일 선택 ────────────────────
+	let sending = false;
+
+	const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+	// ── 패드1: 단일 선택 ─────────────────────
 	function selectPad1(btn, val) {
-		document.querySelectorAll('#pad1Btns .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
 		btn.classList.add('on');
 		state.pad1 = val;
+		clearError('pad1');
 	}
 
-	// ── 패드 3, 4: 행당 최대 1개 선택 ────────
+	// ── 패드3, 4: 행당 최대 1개 ──────────────
 	function selectGrid(padId, row, col, btn) {
 		const rows = document.querySelectorAll('#' + padId + 'Rows .grid-row');
 		rows[row].querySelectorAll('.sel-btn').forEach(b => b.classList.remove('on'));
-
-		// 이미 선택된 버튼을 다시 누르면 해제
 		if (state[padId][row] === col) {
 			state[padId][row] = null;
-			return;
+		} else {
+			btn.classList.add('on');
+			state[padId][row] = col;
 		}
-
-		btn.classList.add('on');
-		state[padId][row] = col;
+		clearError(padId);
 	}
 
-	// ── 패드 3, 4 개별 초기화 ─────────────────
+	// ── 개별 초기화 ───────────────────────────
 	function resetGrid(padId) {
 		document.querySelectorAll('#' + padId + 'Rows .sel-btn').forEach(b => b.classList.remove('on'));
 		state[padId] = [null, null, null];
 	}
 
-	// ── 개별 입력칸 초기화 ────────────────────
 	function clearInput(id) {
 		document.getElementById(id).value = '';
 	}
 
 	// ── 전체 초기화 ───────────────────────────
 	function resetAll() {
-		document.querySelectorAll('#pad1Btns .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
 		state.pad1 = null;
-
 		clearInput('titleInput');
 		clearInput('nameInput');
-
 		resetGrid('pad3');
 		resetGrid('pad4');
-
+		['pad1','pad2','pad3','pad4'].forEach(clearError);
 		setStatus('');
 	}
 
-	// ── 저장 (기능 미구현) ────────────────────
-	function save() {
-		setStatus('저장 기능은 미구현입니다');
+	// ── 저장 (미구현) ─────────────────────────
+	function save() {}
+
+	// ── 유효성 검사 ───────────────────────────
+	function validate() {
+		const errors = [];
+
+		if (!state.pad1) errors.push('pad1');
+
+		const title = document.getElementById('titleInput').value.trim();
+		const name  = document.getElementById('nameInput').value.trim();
+		if (!title && !name) errors.push('pad2');
+
+		const p3Empty = state.pad3.every(v => v === null);
+		if (p3Empty) errors.push('pad3');
+
+		const p4Empty = state.pad4.every(v => v === null);
+		if (p4Empty) errors.push('pad4');
+
+		if (errors.length > 0) {
+			errors.forEach(id => markError(id));
+			setStatus('입력되지 않은 패드가 있습니다', 'error');
+			return false;
+		}
+		return true;
+	}
+
+	function markError(padId) {
+		const el = document.getElementById(padId);
+		el.classList.add('error');
+		setTimeout(() => el.classList.remove('error'), 10000);
+	}
+
+	function clearError(padId) {
+		document.getElementById(padId).classList.remove('error');
 	}
 
 	// ── 송신 ─────────────────────────────────
 	async function send() {
-		const sendBtn = document.getElementById('sendBtn');
-		const payload = {
-			pad1:  state.pad1,
-			title: document.getElementById('titleInput').value,
-			name:  document.getElementById('nameInput').value,
-			pad3:  state.pad3,
-			pad4:  state.pad4,
-		};
+		if (sending) return;
+		if (!validate()) return;
 
-		sendBtn.disabled = true;
-		setStatus('전송 중...', 'loading');
+		sending = true;
+		const btn = document.getElementById('sendBtn');
+		btn.classList.add('sending');
+		setStatus('');
 
+		// 전송 중 애니메이션 (1.5초) + 실제 fetch 병렬 실행
+		const fetchPromise = doFetch();
+		const dots = ['.', '..', '...'];
+		for (const d of dots) {
+			btn.textContent = '전송 중' + d;
+			await sleep(500);
+		}
+
+		const result = await fetchPromise;
+
+		btn.textContent = '송신';
+		btn.classList.remove('sending');
+		sending = false;
+
+		if (result.ok) {
+			setStatus('저장완료', 'success');
+		} else {
+			setStatus('오류: ' + result.message, 'error');
+		}
+	}
+
+	async function doFetch() {
 		try {
-			const params = encodeURIComponent(JSON.stringify(payload));
-			const url    = APPS_SCRIPT_URL + '?action=submit&data=' + params;
-			const res    = await fetch(url);
-			const data   = await res.json();
-
-			if (data.status === 'ok') {
-				setStatus('저장 완료 → ' + data.filename, 'success');
-			} else {
-				setStatus('오류 [' + data.where + ']: ' + data.message, 'error');
-			}
+			const payload = {
+				pad1:  state.pad1,
+				title: document.getElementById('titleInput').value,
+				name:  document.getElementById('nameInput').value,
+				pad3:  state.pad3,
+				pad4:  state.pad4,
+			};
+			const url  = APPS_SCRIPT_URL + '?action=submit&data=' + encodeURIComponent(JSON.stringify(payload));
+			const res  = await fetch(url);
+			const data = await res.json();
+			return data.status === 'ok'
+				? { ok: true }
+				: { ok: false, message: (data.where || '') + ' ' + (data.message || '') };
 		} catch (e) {
-			setStatus('fetch 실패: ' + e.message, 'error');
-		} finally {
-			sendBtn.disabled = false;
+			return { ok: false, message: e.message };
 		}
 	}
 
