@@ -16,6 +16,26 @@
 			font-family: 'Courier New', monospace;
 		}
 
+		/* 좌측 상단 관리자 버튼 */
+		.admin-link {
+			position: fixed;
+			top: 16px;
+			left: 16px;
+			padding: 6px 12px;
+			border: 1px solid #2a2a2a;
+			border-radius: 6px;
+			background: transparent;
+			color: #444;
+			font-family: 'Courier New', monospace;
+			font-size: 10px;
+			letter-spacing: 0.15em;
+			text-decoration: none;
+			text-transform: uppercase;
+			transition: all 0.2s;
+		}
+
+		.admin-link:hover { border-color: #444; color: #888; background: #1a1a1a; }
+
 		.card {
 			background: #1a1a1a;
 			border: 1px solid #2e2e2e;
@@ -35,7 +55,6 @@
 			text-transform: uppercase;
 		}
 
-		/* 1~9 버튼 그리드 */
 		.num-grid {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
@@ -57,10 +76,7 @@
 			outline: none;
 		}
 
-		.num-btn:hover {
-			border-color: #444;
-			color: #888;
-		}
+		.num-btn:hover { border-color: #444; color: #888; }
 
 		.num-btn.selected {
 			border-color: #4ade80;
@@ -94,12 +110,7 @@
 			text-transform: uppercase;
 		}
 
-		.submit-btn:hover:not(:disabled) {
-			border-color: #555;
-			color: #aaa;
-			background: #1f1f1f;
-		}
-
+		.submit-btn:hover:not(:disabled) { border-color: #555; color: #aaa; background: #1f1f1f; }
 		.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 		.status {
@@ -117,6 +128,9 @@
 	</style>
 </head>
 <body>
+
+<a class="admin-link" href="admin.html">admin</a>
+
 <div class="card">
 	<span class="title">Response Form</span>
 
@@ -130,11 +144,10 @@
 </div>
 
 <script>
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzH6y3zKdl4xHPG2ZCa0uXSaeMEJleiXtQatsS0MEjrcrB1ZzCxv9Hja5k5YS8ETNsE/exec';
+	const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 	let selected = null;
 
-	// 1~9 버튼 생성
 	const grid = document.getElementById('numGrid');
 	for (let i = 1; i <= 9; i++) {
 		const btn = document.createElement('button');

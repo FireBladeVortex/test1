@@ -16,6 +16,25 @@
 			font-family: 'Courier New', monospace;
 		}
 
+		.back-link {
+			position: fixed;
+			top: 16px;
+			left: 16px;
+			padding: 6px 12px;
+			border: 1px solid #2a2a2a;
+			border-radius: 6px;
+			background: transparent;
+			color: #444;
+			font-family: 'Courier New', monospace;
+			font-size: 10px;
+			letter-spacing: 0.15em;
+			text-decoration: none;
+			text-transform: uppercase;
+			transition: all 0.2s;
+		}
+
+		.back-link:hover { border-color: #444; color: #888; background: #1a1a1a; }
+
 		.card {
 			background: #1a1a1a;
 			border: 1px solid #2e2e2e;
@@ -33,6 +52,14 @@
 			font-size: 11px;
 			letter-spacing: 0.2em;
 			text-transform: uppercase;
+		}
+
+		.section-label {
+			color: #555;
+			font-size: 10px;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			text-align: center;
 		}
 
 		input[type="password"] {
@@ -77,10 +104,9 @@
 			border: 1px solid #7f1d1d;
 			background: transparent;
 			color: #f87171;
-			display: none;
 		}
 
-		.btn-delete:hover { background: #1f0a0a; border-color: #f87171; }
+		.btn-delete:hover:not(:disabled) { background: #1f0a0a; border-color: #f87171; }
 		.btn-delete:disabled { opacity: 0.4; cursor: not-allowed; }
 
 		.status {
@@ -95,21 +121,16 @@
 		.status.error   { color: #f87171; }
 		.status.loading { color: #888; }
 		.status.info    { color: #60a5fa; }
+		.status.empty   { color: #facc15; }
 
-		/* 진입 전/후 영역 */
-		#loginArea  { width: 100%; display: flex; flex-direction: column; gap: 16px; }
-		#adminArea  { width: 100%; display: none; flex-direction: column; gap: 16px; }
-
-		.section-label {
-			color: #555;
-			font-size: 10px;
-			letter-spacing: 0.15em;
-			text-transform: uppercase;
-			text-align: center;
-		}
+		#loginArea { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+		#adminArea { width: 100%; display: none; flex-direction: column; gap: 16px; }
 	</style>
 </head>
 <body>
+
+<a class="back-link" href="index.html">← 폼</a>
+
 <div class="card">
 	<span class="title">Admin</span>
 
@@ -123,19 +144,17 @@
 
 	<!-- 관리 영역 -->
 	<div id="adminArea">
-		<span class="section-label">잉여 파일 삭제</span>
+		<span class="section-label">delete_ready 파일 삭제</span>
 		<input type="password" id="deletePw" placeholder="삭제 비밀번호" maxlength="20"
 			onkeydown="if(event.key==='Enter') deleteFiles()">
-		<button class="action-btn btn-delete" id="deleteBtn" onclick="deleteFiles()">
-			삭제 실행
-		</button>
+		<button class="action-btn btn-delete" id="deleteBtn" onclick="deleteFiles()">삭제 실행</button>
 	</div>
 
 	<span class="status" id="status"></span>
 </div>
 
 <script>
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzH6y3zKdl4xHPG2ZCa0uXSaeMEJleiXtQatsS0MEjrcrB1ZzCxv9Hja5k5YS8ETNsE/exec';
+	const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 	const LOGIN_PW  = '1234';
 	const DELETE_PW = '2345';
@@ -151,11 +170,10 @@
 			return;
 		}
 
-		document.getElementById('loginArea').style.display  = 'none';
-		document.getElementById('adminArea').style.display  = 'flex';
-		document.getElementById('deleteBtn').style.display  = 'block';
+		document.getElementById('loginArea').style.display = 'none';
+		document.getElementById('adminArea').style.display = 'flex';
 		status.className   = 'status info';
-		status.textContent = '관리자 모드';
+		status.textContent = '관리자 모드 — delete_ready 폴더 대상';
 	}
 
 	async function deleteFiles() {
@@ -172,7 +190,7 @@
 
 		deleteBtn.disabled = true;
 		status.className   = 'status loading';
-		status.textContent = '삭제 중...';
+		status.textContent = '확인 중...';
 
 		try {
 			const url  = APPS_SCRIPT_URL + '?action=delete';
@@ -182,6 +200,9 @@
 			if (data.status === 'ok') {
 				status.className   = 'status success';
 				status.textContent = '삭제 완료 (' + data.deleted + '개 파일)';
+			} else if (data.status === 'empty') {
+				status.className   = 'status empty';
+				status.textContent = '삭제할 것이 없습니다';
 			} else {
 				status.className   = 'status error';
 				status.textContent = '오류 [' + data.where + ']: ' + data.message;
