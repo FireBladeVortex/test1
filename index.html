@@ -1,78 +1,78 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>입력 패널</title>
-	<style>
-		:root {
-			--bg:         #0a0a0a;
-			--surface:    #111111;
-			--border:     #222222;
-			--border-hi:  #444444;
-			--text:       #ffffff;
-			--muted:      #ffffff;
-			--dim:        #2a2a2a;
-			--accent:     #4ade80;
-			--accent-dim: #0d1f14;
-			--yellow:     #facc15;
-			--yellow-dim: #1f1a05;
-			--danger:     #f87171;
-			--danger-dim: #2a0808;
+<!DOCTYPE html> <!-- ⛔ 표준: HTML 문서 선언, 변경 불가 -->
+<html lang="ko"> <!-- ⛔ 표준: html 태그, 변경 불가 -->
+<head> <!-- ⛔ 표준: head 태그, 변경 불가 -->
+	<meta charset="UTF-8"> <!-- ⛔ 표준: meta 태그 / charset 속성, 변경 불가 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ⛔ 표준: 모바일 화면 대응 설정, 변경 불가 -->
+	<title>입력 패널</title> <!-- ⛔ 표준: title 태그, 변경 불가 (안의 텍스트는 자유롭게 변경 가능) -->
+	<style> /* ⛔ 표준: style 태그, 변경 불가 */
+		:root { /* ⛔ 표준: CSS 전역 변수 선언 선택자, 변경 불가 */
+			--bg:         #0a0a0a; /* 🔗 CSS+HTML: var(--bg)로 참조 중, 이름 바꾸면 var() 전부 수정 필요 */
+			--surface:    #111111; /* 🔗 CSS+HTML: var(--surface)로 참조 중 */
+			--border:     #222222; /* 🔗 CSS+HTML: var(--border)로 참조 중 */
+			--border-hi:  #444444; /* 🔗 CSS+HTML: var(--border-hi)로 참조 중 */
+			--text:       #ffffff; /* 🔗 CSS+HTML: var(--text)로 참조 중 */
+			--muted:      #ffffff; /* 🔗 CSS+HTML: var(--muted)로 참조 중 */
+			--dim:        #2a2a2a; /* 🔗 CSS+HTML: var(--dim)으로 참조 중 */
+			--accent:     #4ade80; /* 🔗 CSS+HTML: var(--accent)으로 참조 중 */
+			--accent-dim: #0d1f14; /* 🔗 CSS+HTML: var(--accent-dim)으로 참조 중 */
+			--yellow:     #facc15; /* 🔗 CSS+HTML: var(--yellow)로 참조 중 */
+			--yellow-dim: #1f1a05; /* 🔗 CSS+HTML: var(--yellow-dim)으로 참조 중 */
+			--danger:     #f87171; /* 🔗 CSS+HTML: var(--danger)로 참조 중 */
+			--danger-dim: #2a0808; /* 🔗 CSS+HTML: var(--danger-dim)으로 참조 중 */
 
 			/* [모든 간격] 패드 사이, 패드5↔송신 사이, 저장/초기화 버튼 사이
 			   body { padding }과 값을 맞추면 화면 테두리 여백 = 패드 간격으로 통일됨
 			   다른 값: 4px | 8px | 16px | 2vw | 1.5vh */
-			--gap:   10px;
+			--gap:   10px; /* 🔗 CSS+HTML: var(--gap)으로 참조 중 */
 
 			/* [모든 버튼 높이] 가나다/1~9/abc 선택버튼, 초기화/저장/전체초기화/송신 버튼
 			   패드 크기가 바뀌어도 이 값은 고정 유지됨
 			   다른 값: 32px | 40px | 52px | 60px */
-			--btn-h: 44px;
+			--btn-h: 44px; /* 🔗 CSS+HTML: var(--btn-h)로 참조 중 */
 		}
 
-		* { box-sizing: border-box; margin: 0; padding: 0; }
+		* { box-sizing: border-box; margin: 0; padding: 0; } /* ⛔ 표준: * 전체선택자, box-sizing/margin/padding 모두 CSS 표준 속성 */
 
-		body {
-			min-height: 100vh;
-			background: var(--bg);
-			font-family: 'Courier New', monospace;
-			color: var(--text);
+		body { /* ⛔ 표준: HTML body 태그 선택자, 변경 불가 */
+			min-height: 100vh; /* ⛔ 표준: min-height CSS 표준 속성 */
+			background: var(--bg); /* ⛔ 표준: background CSS 표준 속성 */
+			font-family: 'Courier New', monospace; /* ⛔ 표준: font-family CSS 표준 속성 */
+			color: var(--text); /* ⛔ 표준: color CSS 표준 속성 */
 
 			/* [body 기본 글씨 크기] 패드 라벨(P1~P5) 외 대부분 텍스트에 영향
 			   다른 값: 14px | 16px | 24px */
-			font-size: 20px;
+			font-size: 20px; /* ⛔ 표준: font-size CSS 표준 속성 */
 
-			font-weight: bold;
+			font-weight: bold; /* ⛔ 표준: font-weight CSS 표준 속성 */
 
 			/* [body 자식 요소 배치 방식] flex로 설정해야 내부 정렬 속성이 작동함
 			   다른 값: block(일반 흐름) | grid(격자) */
-			display: flex;
+			display: flex; /* ⛔ 표준: display CSS 표준 속성 */
 
 			/* [body 자식 요소 나열 방향] column = .layout이 세로로 쌓임
 			   다른 값: row(가로로 나열) | column-reverse(세로 역순) */
-			flex-direction: column;
+			flex-direction: column; /* ⛔ 표준: flex-direction CSS 표준 속성 */
 
 			/* [화면 테두리 여백] 순서: 위 | 좌우 | 아래
 			   --gap과 좌우 값을 맞추면 조건1(테두리 여백 = 패드 간격) 충족
 			   위쪽은 admin 링크 공간 확보를 위해 더 크게 설정
 			   다른 값: 12px 12px 12px | 2vh 2vw | 24px */
-			padding: 48px 24px 24px;
+			padding: 48px 24px 24px; /* ⛔ 표준: padding CSS 표준 속성 */
 
-			gap: var(--gap);
+			gap: var(--gap); /* ⛔ 표준: gap CSS 표준 속성 */
 		}
 
 		/* ── admin 링크 ─────────────────────────── */
-		.admin-link {
+		.admin-link { /* 🔗 CSS+HTML: HTML의 class="admin-link"와 연결, 한쪽만 바꾸면 스타일 깨짐 */
 			/* [admin 링크 배치 기준] fixed = 스크롤해도 화면 고정 위치 유지
 			   다른 값: absolute(가장 가까운 부모 기준) | static(일반 흐름) */
-			position: fixed;
+			position: fixed; /* ⛔ 표준: position CSS 표준 속성 */
 
 			/* [admin 링크 위치] 화면 좌측 상단으로부터의 거리
 			   top/left 값을 바꾸면 화면 어느 모서리로든 이동 가능
 			   우측 상단으로 옮기려면: top:12px right:12px (left 제거)
 			   다른 값: top:8px left:8px | top:20px left:20px */
-			top: 12px; left: 12px;
+			top: 12px; left: 12px; /* ⛔ 표준: top / left CSS 표준 속성 */
 
 			/* [admin 링크 내부 여백] 위아래 | 좌우
 			   다른 값: 6px 14px | 8px 16px */
@@ -95,10 +95,12 @@
 			transition: all 0.2s;
 			z-index: 10;
 		}
-		.admin-link:hover { border-color: var(--border-hi); color: #aaa; }
+		.admin-link:hover { /* ⛔ 표준: :hover CSS 표준 가상 클래스, 변경 불가 */
+			border-color: var(--border-hi); color: #aaa;
+		}
 
 		/* ── 전체 레이아웃 ──────────────────────── */
-		.layout {
+		.layout { /* 🔗 CSS+HTML: HTML의 class="layout"과 연결 */
 			/* [layout 자식 요소 배치 방식] flex 사용
 			   다른 값: grid(격자) | block */
 			display: flex;
@@ -110,12 +112,12 @@
 			/* [layout 자식 요소 세로 정렬] flex-start = 위쪽 기준으로 정렬
 			   패드들 높이가 달라도 위쪽에 맞춰 배치됨
 			   다른 값: center(세로 중앙) | stretch(높이를 맞춰 늘림) | flex-end(아래 기준) */
-			align-items: flex-start;
+			align-items: flex-start; /* ⛔ 표준: align-items CSS 표준 속성 */
 
 			gap: var(--gap);
 		}
 
-		.left-col {
+		.left-col { /* 🔗 CSS+HTML: HTML의 class="left-col"과 연결 */
 			/* [left-col 자식 요소 배치 방식] flex 사용 */
 			display: flex;
 
@@ -128,12 +130,12 @@
 			/* [left-col 가로 비율] 1 = pad5-wrap과 동일 너비
 			   2로 바꾸면 left-col이 pad5-wrap의 2배 너비
 			   다른 값: 2 | 3 | 4 */
-			flex: 1;
+			flex: 1; /* ⛔ 표준: flex CSS 표준 속성 */
 
-			min-width: 0;
+			min-width: 0; /* ⛔ 표준: min-width CSS 표준 속성 */
 		}
 
-		.pads-row {
+		.pads-row { /* 🔗 CSS+HTML: HTML의 class="pads-row"와 연결 */
 			/* [pads-row 자식 요소 배치 방식] flex 사용 */
 			display: flex;
 
@@ -150,7 +152,7 @@
 		}
 
 		/* ── 공통 패드 ──────────────────────────── */
-		.pad {
+		.pad { /* 🔗 CSS+HTML: HTML의 class="pad"와 연결 */
 			/* [패드 너비 비율] 1이면 모든 패드 동일 너비
 			   2로 바꾸면 해당 패드가 다른 패드의 2배 너비
 			   다른 값: 2 | 0.5 | 3 */
@@ -166,7 +168,7 @@
 
 			/* [패드 모서리 둥글기]
 			   다른 값: 4px | 6px | 16px | 0px(직각) */
-			border-radius: 10px;
+			border-radius: 10px; /* ⛔ 표준: border-radius CSS 표준 속성 */
 
 			/* [패드 내부 여백] 패드 테두리와 내용물 사이 간격
 			   다른 값: 8px | 16px | 20px | 1vw */
@@ -184,14 +186,16 @@
 			gap: 10px;
 
 			transition: border-color 0.3s;
+			/* transition: all 0.3s; */
 		}
 
-		.pad.error {
+		.pad.error { /* 🔗 JS연결: JS의 classList.add('error') / classList.remove('error')와 연결
+		               error 이름 바꾸면 JS의 'error' 문자열도 같이 수정 필요 */
 			border-color: var(--danger) !important;
 			box-shadow: 0 0 12px rgba(248,113,113,0.3);
 		}
 
-		.pad-label {
+		.pad-label { /* 🔗 CSS+HTML: HTML의 class="pad-label"과 연결 */
 			/* [P1~P5 라벨 글씨 크기]
 			   다른 값: 8px | 12px | 14px */
 			font-size: 10px;
@@ -203,16 +207,17 @@
 
 			/* [라벨 텍스트 가로 정렬] center = 패드 너비 기준으로 가운데
 			   다른 값: left(왼쪽) | right(오른쪽) */
-			text-align: center;
+			text-align: center; /* ⛔ 표준: text-align CSS 표준 속성 */
 		}
 
 		/* ── 공통 선택 버튼 (가나다 / 1~3 / a~i) ── */
-		.sel-btn {
+		.sel-btn { /* 🔗 JS연결: JS의 querySelectorAll('.sel-btn')과 연결
+		             sel-btn 이름 바꾸면 JS의 '.sel-btn' 문자열도 같이 수정 필요 */
 			border: 1.5px solid var(--dim);
 
 			/* [선택 버튼 모서리 둥글기]
 			   다른 값: 4px | 10px | 50%(원형) | 0px */
-			border-radius: 7px;
+			border-radius: 25%;
 
 			background: var(--bg);
 			color: var(--text);
@@ -229,14 +234,17 @@
 
 			/* [선택 버튼 가로 크기] 100% = 부모(grid셀 또는 pad1-btns) 너비를 꽉 채움
 			   다른 값: 80% | 60px | auto */
-			width: 100%;
+			width: var(--btn-h);
 
 			/* [선택 버튼 높이] --btn-h 변수로 제어 (상단 :root 참고)
 			   다른 값: --btn-h를 바꾸거나 직접 40px | 52px */
 			height: var(--btn-h);
 		}
-		.sel-btn:hover { border-color: var(--border-hi); }
-		.sel-btn.on {
+		.sel-btn:hover { /* ⛔ 표준: :hover CSS 표준 가상 클래스 */
+			border-color: var(--border-hi);
+		}
+		.sel-btn.on { /* 🔗 JS연결: JS의 classList.add('on') / classList.remove('on')과 연결
+		               on 이름 바꾸면 JS의 'on' 문자열도 같이 수정 필요 */
 			border-color: var(--accent);
 			color: var(--accent);
 			background: var(--accent-dim);
@@ -244,7 +252,7 @@
 		}
 
 		/* ── 공통 액션 버튼 (초기화 / 저장 / 전체초기화) */
-		.std-btn {
+		.std-btn { /* 🔗 CSS+HTML: HTML의 class="std-btn"과 연결 */
 			/* [액션 버튼 높이] --btn-h 변수로 제어
 			   다른 값: --btn-h를 바꾸거나 직접 36px | 48px */
 			height: var(--btn-h);
@@ -271,10 +279,10 @@
 			border: 1.5px solid var(--border-hi);
 			background: transparent;
 		}
-		.std-btn:hover { background: #1a1a1a; border-color: #666; }
+		.std-btn:hover { background: #1a1a1a; border-color: #666; } /* ⛔ 표준: :hover CSS 표준 가상 클래스 */
 
 		/* ── 패드2 작은 초기화 버튼 (예외, --btn-h 미적용) */
-		.sm-clear {
+		.sm-clear { /* 🔗 CSS+HTML: HTML의 class="sm-clear"와 연결 */
 			/* [패드2 초기화 버튼 높이] 독립 고정값, --btn-h와 무관
 			   다른 값: 22px | 28px | 32px */
 			height: 26px;
@@ -299,14 +307,14 @@
 
 			/* [패드2 초기화 버튼 줄어듦 방지] 0 = 부모가 좁아져도 버튼 크기 유지
 			   다른 값: 1(부모에 맞게 줄어들 수 있음) */
-			flex-shrink: 0;
+			flex-shrink: 0; /* ⛔ 표준: flex-shrink CSS 표준 속성 */
 
 			transition: all 0.15s;
 		}
-		.sm-clear:hover { border-color: var(--border-hi); color: #bbb; }
+		.sm-clear:hover { border-color: var(--border-hi); color: #bbb; } /* ⛔ 표준: :hover CSS 표준 가상 클래스 */
 
 		/* ── 패드1: 가나다 세로 버튼 목록 ─────── */
-		.pad1-btns {
+		.pad1-btns { /* 🔗 CSS+HTML: HTML의 class="pad1-btns"와 연결 */
 			/* [pad1-btns 배치 방식] flex 사용 */
 			display: flex;
 
@@ -325,7 +333,7 @@
 		}
 
 		/* ── 패드2: 입력 그룹 ───────────────────── */
-		.input-group {
+		.input-group { /* 🔗 CSS+HTML: HTML의 class="input-group"과 연결 */
 			/* [input-group 배치 방식] flex 사용 */
 			display: flex;
 
@@ -338,7 +346,7 @@
 			gap: 5px;
 		}
 
-		.input-header {
+		.input-header { /* 🔗 CSS+HTML: HTML의 class="input-header"와 연결 */
 			/* [input-header 배치 방식] flex 사용 */
 			display: flex;
 
@@ -348,14 +356,14 @@
 
 			/* [라벨과 초기화 버튼 가로 배치] space-between = 라벨은 왼쪽, 버튼은 오른쪽 끝
 			   다른 값: flex-start(둘 다 왼쪽) | flex-end(둘 다 오른쪽) | center(가운데) */
-			justify-content: space-between;
+			justify-content: space-between; /* ⛔ 표준: justify-content CSS 표준 속성 */
 
 			/* [라벨과 초기화 버튼 사이 최소 간격]
 			   다른 값: 4px | 8px | 12px */
 			gap: 6px;
 		}
 
-		.input-label {
+		.input-label { /* 🔗 CSS+HTML: HTML의 class="input-label"과 연결 */
 			/* [제목/이름 라벨 글씨 크기]
 			   다른 값: 10px | 14px | 16px */
 			font-size: 12px;
@@ -366,7 +374,7 @@
 			white-space: nowrap;
 		}
 
-		.text-input {
+		.text-input { /* 🔗 CSS+HTML: HTML의 class="text-input"과 연결 */
 			/* [입력칸 가로 크기] 100% = 패드 너비를 꽉 채움
 			   다른 값: 80% | 200px */
 			width: 100%;
@@ -389,11 +397,12 @@
 			outline: none;
 			transition: border-color 0.2s;
 		}
-		.text-input:focus { border-color: var(--border-hi); }
-		.text-input::placeholder { color: #444; font-weight: normal; font-size: 12px; }
+		.text-input:focus { border-color: var(--border-hi); } /* ⛔ 표준: :focus CSS 표준 가상 클래스 */
+		.text-input::placeholder { color: #444; font-weight: normal; font-size: 12px; } /* ⛔ 표준: ::placeholder CSS 표준 가상 요소 */
 
 		/* ── 패드3, 4: 3x3 그리드 ──────────────── */
-		.grid-rows {
+		.grid-rows { /* 🔗 JS연결: JS의 querySelectorAll('#pad3Rows .grid-row')에서 부모로 참조
+		               🔗 CSS+HTML: HTML의 class="grid-rows"와 연결 */
 			/* [grid-rows 배치 방식] flex 사용 */
 			display: flex;
 
@@ -411,21 +420,22 @@
 			flex: 1;
 		}
 
-		.grid-row {
+		.grid-row { /* 🔗 JS연결: JS의 querySelectorAll('.grid-row')와 연결
+		              grid-row 이름 바꾸면 JS의 '.grid-row' 문자열도 같이 수정 필요 */
 			/* [grid-row 배치 방식] grid 사용 (flex와 달리 열 너비를 비율로 지정 가능) */
-			display: grid;
+			display: grid; /* ⛔ 표준: display: grid CSS 표준 */
 
 			/* [한 행 안의 버튼 열 배치] repeat(3, 1fr) = 3개 열을 균등하게 나눔
 			   버튼 개수를 바꾸려면 숫자 변경: repeat(2, 1fr) | repeat(4, 1fr)
 			   불균등하게 나누려면: 2fr 1fr 1fr (첫 버튼이 2배 너비) */
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(3, 1fr); /* ⛔ 표준: grid-template-columns CSS 표준 속성 */
 
 			/* [한 행 안의 버튼 사이 간격]
 			   다른 값: 4px | 10px | 14px */
 			gap: 7px;
 		}
 
-		.pad-bottom {
+		.pad-bottom { /* 🔗 CSS+HTML: HTML의 class="pad-bottom"과 연결 */
 			/* [pad-bottom 배치 방식] flex 사용 */
 			display: flex;
 
@@ -436,7 +446,7 @@
 		.pad-bottom .std-btn { width: 100%; }
 
 		/* ── 하단 버튼 행 (저장 + 전체초기화) ──── */
-		.bottom-row {
+		.bottom-row { /* 🔗 CSS+HTML: HTML의 class="bottom-row"와 연결 */
 			/* [bottom-row 배치 방식] flex 사용 */
 			display: flex;
 
@@ -453,7 +463,7 @@
 		}
 
 		/* ── 패드5 + 송신 버튼 래퍼 ─────────────── */
-		.pad5-wrap {
+		.pad5-wrap { /* 🔗 CSS+HTML: HTML의 class="pad5-wrap"과 연결 */
 			/* [pad5-wrap 배치 방식] flex 사용 */
 			display: flex;
 
@@ -471,7 +481,7 @@
 			min-width: 0;
 		}
 
-		.pad5 {
+		.pad5 { /* 🔗 CSS+HTML: HTML의 class="pad5"와 연결 (id="pad5"는 별도) */
 			/* [패드5 세로 비율] 1 = pad5-wrap 안에서 남은 세로 공간 모두 차지
 			   송신 버튼을 아래로 밀어내는 역할
 			   다른 값: 제거하면 내용(라벨만) 크기로 줄어듦 */
@@ -483,7 +493,7 @@
 		}
 
 		/* ── 송신 버튼 ──────────────────────────── */
-		.btn-send {
+		.btn-send { /* 🔗 CSS+HTML: HTML의 class="btn-send"와 연결 */
 			/* [송신 버튼 가로 크기] 100% = pad5-wrap 너비를 꽉 채움
 			   다른 값: 80% | 200px */
 			width: 100%;
@@ -512,7 +522,8 @@
 			box-shadow: 0 0 18px rgba(74,222,128,0.45);
 		}
 
-		.btn-send.sending {
+		.btn-send.sending { /* 🔗 JS연결: JS의 classList.add('sending') / classList.remove('sending')과 연결
+		                      sending 이름 바꾸면 JS의 'sending' 문자열도 같이 수정 필요 */
 			color: var(--yellow);
 			border-color: var(--yellow);
 			background: var(--yellow-dim);
@@ -520,7 +531,7 @@
 			cursor: not-allowed;
 		}
 
-		.btn-send:hover:not(.sending):not(:disabled) {
+		.btn-send:hover:not(.sending):not(:disabled) { /* ⛔ 표준: :hover / :not() / :disabled 모두 CSS 표준 가상 클래스 */
 			box-shadow: 0 0 28px rgba(74,222,128,0.65);
 		}
 
@@ -534,7 +545,8 @@
 			justify-content: flex-end;
 		}
 
-		.status {
+		.status { /* 🔗 JS연결: JS의 setStatus()에서 id="status" 요소에 className으로 설정
+		            🔗 CSS+HTML: HTML의 class="status"와 연결 */
 			/* [상태 메시지 글씨 크기]
 			   다른 값: 11px | 14px | 16px */
 			font-size: 13px;
@@ -556,24 +568,28 @@
 			width: 100%;
 		}
 
-		.status.success { color: var(--accent); }
-		.status.error   { color: var(--danger); }
+		.status.success { color: var(--accent); } /* 🔗 JS연결: JS의 setStatus('저장완료', 'success')와 연결
+		                                              success 이름 바꾸면 JS의 'success' 문자열도 같이 수정 필요 */
+		.status.error   { color: var(--danger); } /* 🔗 JS연결: JS의 setStatus('...', 'error')와 연결
+		                                              error 이름 바꾸면 JS의 'error' 문자열도 같이 수정 필요 */
 	</style>
 </head>
-<body>
+<body> <!-- ⛔ 표준: body 태그, 변경 불가 -->
 
-<a class="admin-link" href="admin.html">admin</a>
+<a class="admin-link" href="admin.html">admin</a> <!-- 🔗 CSS+HTML: class="admin-link" → CSS .admin-link와 연결 -->
 
-<div class="layout">
+<div class="layout"> <!-- 🔗 CSS+HTML: class="layout" → CSS .layout과 연결 -->
 
 	<!-- 왼쪽: 패드 1~4 + 하단버튼 -->
-	<div class="left-col">
-		<div class="pads-row">
+	<div class="left-col"> <!-- 🔗 CSS+HTML: class="left-col" → CSS .left-col과 연결 -->
+		<div class="pads-row"> <!-- 🔗 CSS+HTML: class="pads-row" → CSS .pads-row와 연결 -->
 
 			<!-- 패드 1: 가나다 세로 단일선택 -->
-			<div class="pad" id="pad1">
-				<span class="pad-label">P1</span>
-				<div class="pad1-btns">
+			<div class="pad" id="pad1"> <!-- 🔗 JS연결: id="pad1" → JS의 getElementById('pad1') / querySelector('#pad1')와 연결 -->
+				<span class="pad-label">P1</span> <!-- 🔗 CSS+HTML: class="pad-label" → CSS .pad-label과 연결 -->
+				<div class="pad1-btns"> <!-- 🔗 CSS+HTML: class="pad1-btns" → CSS .pad1-btns와 연결 -->
+					<!-- ⛔ 표준: button 태그 변경 불가 -->
+					<!-- 🔗 JS연결: onclick="selectPad1(...)" → JS function selectPad1과 연결, 함수명 바꾸면 여기도 수정 -->
 					<button class="sel-btn" onclick="selectPad1(this,'가')">가</button>
 					<button class="sel-btn" onclick="selectPad1(this,'나')">나</button>
 					<button class="sel-btn" onclick="selectPad1(this,'다')">다</button>
@@ -581,29 +597,35 @@
 			</div>
 
 			<!-- 패드 2: 제목/이름 입력 -->
-			<div class="pad" id="pad2">
+			<div class="pad" id="pad2"> <!-- 🔗 JS연결: id="pad2" → JS의 markError('pad2') / clearError('pad2')와 연결 -->
 				<span class="pad-label">P2</span>
-				<div class="input-group">
-					<div class="input-header">
-						<span class="input-label">제목</span>
+				<div class="input-group"> <!-- 🔗 CSS+HTML: class="input-group" → CSS .input-group과 연결 -->
+					<div class="input-header"> <!-- 🔗 CSS+HTML: class="input-header" → CSS .input-header와 연결 -->
+						<span class="input-label">제목</span> <!-- 🔗 CSS+HTML: class="input-label" → CSS .input-label과 연결 -->
+						<!-- 🔗 JS연결: onclick="clearInput('titleInput')" → JS function clearInput + id="titleInput"과 연결 -->
 						<button class="sm-clear" onclick="clearInput('titleInput')">초기화</button>
 					</div>
+					<!-- 🔗 JS연결: id="titleInput" → JS의 getElementById('titleInput')와 연결 -->
 					<input class="text-input" id="titleInput" type="text" placeholder="제목을 입력하세요">
 				</div>
 				<div class="input-group">
 					<div class="input-header">
 						<span class="input-label">이름</span>
+						<!-- 🔗 JS연결: onclick="clearInput('nameInput')" → JS function clearInput + id="nameInput"과 연결 -->
 						<button class="sm-clear" onclick="clearInput('nameInput')">초기화</button>
 					</div>
+					<!-- 🔗 JS연결: id="nameInput" → JS의 getElementById('nameInput')와 연결 -->
 					<input class="text-input" id="nameInput" type="text" placeholder="이름을 입력하세요">
 				</div>
 			</div>
 
 			<!-- 패드 3: 1 2 3 × 3행, 행당 최대 1개 -->
-			<div class="pad" id="pad3">
+			<div class="pad" id="pad3"> <!-- 🔗 JS연결: id="pad3" → JS의 getElementById('pad3') / querySelector('#pad3')와 연결 -->
 				<span class="pad-label">P3</span>
+				<!-- 🔗 JS연결: id="pad3Rows" → JS의 querySelectorAll('#pad3Rows .grid-row')와 연결 -->
 				<div class="grid-rows" id="pad3Rows">
-					<div class="grid-row">
+					<div class="grid-row"> <!-- 🔗 JS연결: class="grid-row" → JS의 querySelectorAll('.grid-row')와 연결 -->
+						<!-- 🔗 JS연결: onclick="selectGrid('pad3',...)" → JS function selectGrid와 연결 -->
 						<button class="sel-btn" onclick="selectGrid('pad3',0,0,this)">1</button>
 						<button class="sel-btn" onclick="selectGrid('pad3',0,1,this)">2</button>
 						<button class="sel-btn" onclick="selectGrid('pad3',0,2,this)">3</button>
@@ -619,16 +641,19 @@
 						<button class="sel-btn" onclick="selectGrid('pad3',2,2,this)">3</button>
 					</div>
 				</div>
-				<div class="pad-bottom">
+				<div class="pad-bottom"> <!-- 🔗 CSS+HTML: class="pad-bottom" → CSS .pad-bottom과 연결 -->
+					<!-- 🔗 JS연결: onclick="resetGrid('pad3')" → JS function resetGrid와 연결 -->
 					<button class="std-btn" onclick="resetGrid('pad3')">초기화</button>
 				</div>
 			</div>
 
 			<!-- 패드 4: a~i × 3행, 행당 최대 1개 -->
-			<div class="pad" id="pad4">
+			<div class="pad" id="pad4"> <!-- 🔗 JS연결: id="pad4" → JS의 getElementById('pad4') / querySelector('#pad4')와 연결 -->
 				<span class="pad-label">P4</span>
+				<!-- 🔗 JS연결: id="pad4Rows" → JS의 querySelectorAll('#pad4Rows .grid-row')와 연결 -->
 				<div class="grid-rows" id="pad4Rows">
 					<div class="grid-row">
+						<!-- 🔗 JS연결: onclick="selectGrid('pad4',...)" → JS function selectGrid와 연결 -->
 						<button class="sel-btn" onclick="selectGrid('pad4',0,0,this)">a</button>
 						<button class="sel-btn" onclick="selectGrid('pad4',0,1,this)">b</button>
 						<button class="sel-btn" onclick="selectGrid('pad4',0,2,this)">c</button>
@@ -645,6 +670,7 @@
 					</div>
 				</div>
 				<div class="pad-bottom">
+					<!-- 🔗 JS연결: onclick="resetGrid('pad4')" → JS function resetGrid와 연결 -->
 					<button class="std-btn" onclick="resetGrid('pad4')">초기화</button>
 				</div>
 			</div>
@@ -652,102 +678,118 @@
 		</div><!-- .pads-row -->
 
 		<!-- 하단: 저장 + 전체초기화 -->
-		<div class="bottom-row">
+		<div class="bottom-row"> <!-- 🔗 CSS+HTML: class="bottom-row" → CSS .bottom-row와 연결 -->
+			<!-- 🔗 JS연결: onclick="save()" → JS function save와 연결 -->
 			<button class="std-btn" onclick="save()">저장</button>
+			<!-- 🔗 JS연결: onclick="resetAll()" → JS function resetAll과 연결 -->
 			<button class="std-btn" onclick="resetAll()">전체 초기화</button>
 		</div>
 
 	</div><!-- .left-col -->
 
 	<!-- 패드 5 + 송신 -->
-	<div class="pad5-wrap">
-		<div class="pad pad5" id="pad5">
+	<div class="pad5-wrap"> <!-- 🔗 CSS+HTML: class="pad5-wrap" → CSS .pad5-wrap과 연결 -->
+		<!-- 🔗 JS연결: id="pad5" → JS의 (필요시) getElementById('pad5')와 연결 가능 -->
+		<div class="pad pad5" id="pad5"> <!-- 🔗 CSS+HTML: class="pad5" → CSS .pad5와 연결 -->
 			<span class="pad-label">P5</span>
 		</div>
+		<!-- 🔗 JS연결: id="sendBtn" → JS의 getElementById('sendBtn')와 연결 -->
+		<!-- 🔗 JS연결: onclick="send()" → JS function send와 연결 -->
 		<button class="btn-send" id="sendBtn" onclick="send()">송신</button>
+		<!-- 🔗 JS연결: id="status" → JS의 getElementById('status')와 연결 -->
 		<div class="status" id="status"></div>
 	</div>
 
 </div><!-- .layout -->
 
-<script>
+<script> <!-- ⛔ 표준: script 태그, 변경 불가 -->
+	// 🔗 JS연결: APPS_SCRIPT_URL → doFetch()에서 사용, Apps Script 배포 URL 입력 필요
 	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQxoDXa7IcBWUFT58kQwEEbCoTBcDFAi1tsdK9byn1jNbHCjtUsgfL2mq8Zhe5lnfR/exec';
 
+	// 🔗 JS연결: state → selectPad1 / selectGrid / resetGrid / resetAll / validate / doFetch 전체에서 사용
+	//            키 이름 pad1, pad3, pad4는 HTML id값과 일치해야 markError/clearError가 정상 작동
 	const state = {
 		pad1: null,
 		pad3: [null, null, null],
 		pad4: [null, null, null],
 	};
 
+	// 🔗 JS연결: sending → send() 내부에서 중복 클릭 방지용, send()와 짝을 이룸
 	let sending = false;
 
 	const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 	// ── 패드1: 단일 선택 ─────────────────────
+	// 🔗 HTML연결: HTML의 onclick="selectPad1(...)"에서 호출, 함수명 바꾸면 HTML도 수정
 	function selectPad1(btn, val) {
-		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on')); // 🔗 연결: '#pad1'→id / '.sel-btn'→class / 'on'→CSS .sel-btn.on
 		btn.classList.add('on');
 		state.pad1 = val;
-		clearError('pad1');
+		clearError('pad1'); // 🔗 연결: 'pad1' → HTML id="pad1"과 연결
 	}
 
 	// ── 패드3, 4: 행당 최대 1개 ──────────────
+	// 🔗 HTML연결: HTML의 onclick="selectGrid(...)"에서 호출, 함수명 바꾸면 HTML도 수정
 	function selectGrid(padId, row, col, btn) {
-		const rows = document.querySelectorAll('#' + padId + 'Rows .grid-row');
-		rows[row].querySelectorAll('.sel-btn').forEach(b => b.classList.remove('on'));
+		const rows = document.querySelectorAll('#' + padId + 'Rows .grid-row'); // 🔗 연결: padId+'Rows'→id / '.grid-row'→class
+		rows[row].querySelectorAll('.sel-btn').forEach(b => b.classList.remove('on')); // 🔗 연결: '.sel-btn'→class / 'on'→CSS
 		if (state[padId][row] === col) {
 			state[padId][row] = null;
 		} else {
-			btn.classList.add('on');
+			btn.classList.add('on'); // 🔗 연결: 'on' → CSS .sel-btn.on과 연결
 			state[padId][row] = col;
 		}
-		clearError(padId);
+		clearError(padId); // 🔗 연결: padId → HTML id="pad3" / id="pad4"와 연결
 	}
 
 	// ── 개별 초기화 ───────────────────────────
+	// 🔗 HTML연결: HTML의 onclick="resetGrid(...)"에서 호출, 함수명 바꾸면 HTML도 수정
 	function resetGrid(padId) {
-		document.querySelectorAll('#' + padId + 'Rows .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#' + padId + 'Rows .sel-btn').forEach(b => b.classList.remove('on')); // 🔗 연결: padId+'Rows'→id / '.sel-btn'→class / 'on'→CSS
 		state[padId] = [null, null, null];
 	}
 
+	// 🔗 HTML연결: HTML의 onclick="clearInput(...)"에서 호출, 함수명 바꾸면 HTML도 수정
 	function clearInput(id) {
-		document.getElementById(id).value = '';
+		document.getElementById(id).value = ''; // 🔗 연결: id → HTML id="titleInput" / id="nameInput"과 연결
 	}
 
 	// ── 전체 초기화 ───────────────────────────
+	// 🔗 HTML연결: HTML의 onclick="resetAll()"에서 호출, 함수명 바꾸면 HTML도 수정
 	function resetAll() {
-		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on')); // 🔗 연결: '#pad1'→id / '.sel-btn'→class / 'on'→CSS
 		state.pad1 = null;
-		clearInput('titleInput');
-		clearInput('nameInput');
-		resetGrid('pad3');
-		resetGrid('pad4');
-		['pad1','pad2','pad3','pad4'].forEach(clearError);
+		clearInput('titleInput'); // 🔗 연결: 'titleInput' → HTML id="titleInput"과 연결
+		clearInput('nameInput');  // 🔗 연결: 'nameInput'  → HTML id="nameInput"과 연결
+		resetGrid('pad3'); // 🔗 연결: 'pad3' → HTML id="pad3"과 연결
+		resetGrid('pad4'); // 🔗 연결: 'pad4' → HTML id="pad4"과 연결
+		['pad1','pad2','pad3','pad4'].forEach(clearError); // 🔗 연결: 문자열들 → HTML id값과 연결
 		setStatus('');
 	}
 
 	// ── 저장 (미구현) ─────────────────────────
+	// 🔗 HTML연결: HTML의 onclick="save()"에서 호출, 함수명 바꾸면 HTML도 수정
 	function save() {}
 
 	// ── 유효성 검사 ───────────────────────────
 	function validate() {
 		const errors = [];
 
-		if (!state.pad1) errors.push('pad1');
+		if (!state.pad1) errors.push('pad1'); // 🔗 연결: 'pad1' → HTML id="pad1" / markError와 연결
 
-		const title = document.getElementById('titleInput').value.trim();
-		const name  = document.getElementById('nameInput').value.trim();
-		if (!title && !name) errors.push('pad2');
+		const title = document.getElementById('titleInput').value.trim(); // 🔗 연결: 'titleInput' → HTML id="titleInput"
+		const name  = document.getElementById('nameInput').value.trim();  // 🔗 연결: 'nameInput'  → HTML id="nameInput"
+		if (!title && !name) errors.push('pad2'); // 🔗 연결: 'pad2' → HTML id="pad2" / markError와 연결
 
 		const p3Empty = state.pad3.every(v => v === null);
-		if (p3Empty) errors.push('pad3');
+		if (p3Empty) errors.push('pad3'); // 🔗 연결: 'pad3' → HTML id="pad3" / markError와 연결
 
 		const p4Empty = state.pad4.every(v => v === null);
-		if (p4Empty) errors.push('pad4');
+		if (p4Empty) errors.push('pad4'); // 🔗 연결: 'pad4' → HTML id="pad4" / markError와 연결
 
 		if (errors.length > 0) {
 			errors.forEach(id => markError(id));
-			setStatus('입력되지 않은 패드가 있습니다', 'error');
+			setStatus('입력되지 않은 패드가 있습니다', 'error'); // 🔗 연결: 'error' → CSS .status.error와 연결
 			return false;
 		}
 		return true;
@@ -755,22 +797,23 @@
 
 	function markError(padId) {
 		const el = document.getElementById(padId);
-		el.classList.add('error');
+		el.classList.add('error'); // 🔗 연결: 'error' → CSS .pad.error와 연결
 		setTimeout(() => el.classList.remove('error'), 10000);
 	}
 
 	function clearError(padId) {
-		document.getElementById(padId).classList.remove('error');
+		document.getElementById(padId).classList.remove('error'); // 🔗 연결: 'error' → CSS .pad.error와 연결
 	}
 
 	// ── 송신 ─────────────────────────────────
+	// 🔗 HTML연결: HTML의 onclick="send()"에서 호출, 함수명 바꾸면 HTML도 수정
 	async function send() {
 		if (sending) return;
 		if (!validate()) return;
 
 		sending = true;
-		const btn = document.getElementById('sendBtn');
-		btn.classList.add('sending');
+		const btn = document.getElementById('sendBtn'); // 🔗 연결: 'sendBtn' → HTML id="sendBtn"과 연결
+		btn.classList.add('sending'); // 🔗 연결: 'sending' → CSS .btn-send.sending과 연결
 		setStatus('');
 
 		const fetchPromise = doFetch();
@@ -783,13 +826,13 @@
 		const result = await fetchPromise;
 
 		btn.textContent = '송신';
-		btn.classList.remove('sending');
+		btn.classList.remove('sending'); // 🔗 연결: 'sending' → CSS .btn-send.sending과 연결
 		sending = false;
 
 		if (result.ok) {
-			setStatus('저장완료', 'success');
+			setStatus('저장완료', 'success'); // 🔗 연결: 'success' → CSS .status.success와 연결
 		} else {
-			setStatus('오류: ' + result.message, 'error');
+			setStatus('오류: ' + result.message, 'error'); // 🔗 연결: 'error' → CSS .status.error와 연결
 		}
 	}
 
@@ -797,8 +840,8 @@
 		try {
 			const payload = {
 				pad1:  state.pad1,
-				title: document.getElementById('titleInput').value,
-				name:  document.getElementById('nameInput').value,
+				title: document.getElementById('titleInput').value, // 🔗 연결: 'titleInput' → HTML id="titleInput"
+				name:  document.getElementById('nameInput').value,  // 🔗 연결: 'nameInput'  → HTML id="nameInput"
 				pad3:  state.pad3,
 				pad4:  state.pad4,
 			};
@@ -813,11 +856,13 @@
 		}
 	}
 
+	// 🔗 JS연결: setStatus → send() / validate() / resetAll()에서 호출
+	//            type 값 'success'/'error' → CSS .status.success / .status.error와 연결
 	function setStatus(msg, type) {
-		const el = document.getElementById('status');
+		const el = document.getElementById('status'); // 🔗 연결: 'status' → HTML id="status"와 연결
 		el.textContent = msg;
-		el.className   = 'status' + (type ? ' ' + type : '');
+		el.className   = 'status' + (type ? ' ' + type : ''); // 🔗 연결: 'status' → CSS .status / type → CSS .status.success 또는 .status.error
 	}
 </script>
-</body>
-</html>
+</body> <!-- ⛔ 표준: body 닫는 태그, 변경 불가 -->
+</html> <!-- ⛔ 표준: html 닫는 태그, 변경 불가 -->
