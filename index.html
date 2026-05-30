@@ -44,7 +44,13 @@
 			font-size: 20px;
 
 			font-weight: bold;
+
+			/* [body 자식 요소 배치 방식] flex로 설정해야 내부 정렬 속성이 작동함
+			   다른 값: block(일반 흐름) | grid(격자) */
 			display: flex;
+
+			/* [body 자식 요소 나열 방향] column = .layout이 세로로 쌓임
+			   다른 값: row(가로로 나열) | column-reverse(세로 역순) */
 			flex-direction: column;
 
 			/* [화면 테두리 여백] 순서: 위 | 좌우 | 아래
@@ -58,8 +64,13 @@
 
 		/* ── admin 링크 ─────────────────────────── */
 		.admin-link {
+			/* [admin 링크 배치 기준] fixed = 스크롤해도 화면 고정 위치 유지
+			   다른 값: absolute(가장 가까운 부모 기준) | static(일반 흐름) */
 			position: fixed;
-			/* [admin 링크 위치] 화면 좌측 상단 기준 거리
+
+			/* [admin 링크 위치] 화면 좌측 상단으로부터의 거리
+			   top/left 값을 바꾸면 화면 어느 모서리로든 이동 가능
+			   우측 상단으로 옮기려면: top:12px right:12px (left 제거)
 			   다른 값: top:8px left:8px | top:20px left:20px */
 			top: 12px; left: 12px;
 
@@ -88,24 +99,53 @@
 
 		/* ── 전체 레이아웃 ──────────────────────── */
 		.layout {
+			/* [layout 자식 요소 배치 방식] flex 사용
+			   다른 값: grid(격자) | block */
 			display: flex;
+
+			/* [layout 자식 요소 나열 방향] row = left-col과 pad5-wrap이 가로로 나열
+			   다른 값: column(세로로 쌓기) | row-reverse(가로 역순) */
 			flex-direction: row;
+
+			/* [layout 자식 요소 세로 정렬] flex-start = 위쪽 기준으로 정렬
+			   패드들 높이가 달라도 위쪽에 맞춰 배치됨
+			   다른 값: center(세로 중앙) | stretch(높이를 맞춰 늘림) | flex-end(아래 기준) */
 			align-items: flex-start;
-			gap: var(--gap); /* [패드1~4 덩어리와 패드5 사이 간격] --gap 공유 */
+
+			gap: var(--gap);
 		}
 
 		.left-col {
+			/* [left-col 자식 요소 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [left-col 자식 요소 나열 방향] column = pads-row와 bottom-row가 세로로 쌓임
+			   다른 값: row(가로로 나열) */
 			flex-direction: column;
-			gap: var(--gap); /* [pads-row와 bottom-row 사이 간격] --gap 공유 */
+
+			gap: var(--gap);
+
+			/* [left-col 가로 비율] 1 = pad5-wrap과 동일 너비
+			   2로 바꾸면 left-col이 pad5-wrap의 2배 너비
+			   다른 값: 2 | 3 | 4 */
 			flex: 1;
+
 			min-width: 0;
 		}
 
 		.pads-row {
+			/* [pads-row 자식 요소 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [pads-row 자식 요소 나열 방향] row = 패드1~4가 가로로 나열
+			   다른 값: column(세로로 쌓기) */
 			flex-direction: row;
-			gap: var(--gap); /* [패드1~4 사이 간격] --gap 공유 */
+
+			gap: var(--gap);
+
+			/* [pads-row 자식 요소 세로 정렬] stretch = 패드들 높이를 모두 동일하게 늘림
+			   가장 높은 패드를 기준으로 나머지가 늘어남
+			   다른 값: flex-start(위 기준, 높이 제각각) | center(세로 중앙 정렬) */
 			align-items: stretch;
 		}
 
@@ -132,7 +172,11 @@
 			   다른 값: 8px | 16px | 20px | 1vw */
 			padding: 12px;
 
+			/* [패드 내부 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [패드 내부 나열 방향] column = 라벨/버튼/입력칸이 세로로 쌓임
+			   다른 값: row(가로로 나열) */
 			flex-direction: column;
 
 			/* [패드 내부 요소 간격] 패드 안의 버튼/입력칸 사이 간격
@@ -156,6 +200,9 @@
 			letter-spacing: 0.2em;
 			text-transform: uppercase;
 			color: #666;
+
+			/* [라벨 텍스트 가로 정렬] center = 패드 너비 기준으로 가운데
+			   다른 값: left(왼쪽) | right(오른쪽) */
 			text-align: center;
 		}
 
@@ -179,6 +226,9 @@
 			cursor: pointer;
 			transition: all 0.15s;
 			outline: none;
+
+			/* [선택 버튼 가로 크기] 100% = 부모(grid셀 또는 pad1-btns) 너비를 꽉 채움
+			   다른 값: 80% | 60px | auto */
 			width: 100%;
 
 			/* [선택 버튼 높이] --btn-h 변수로 제어 (상단 :root 참고)
@@ -246,26 +296,41 @@
 			border: 1px solid var(--border);
 			background: transparent;
 			white-space: nowrap;
+
+			/* [패드2 초기화 버튼 줄어듦 방지] 0 = 부모가 좁아져도 버튼 크기 유지
+			   다른 값: 1(부모에 맞게 줄어들 수 있음) */
 			flex-shrink: 0;
+
 			transition: all 0.15s;
 		}
 		.sm-clear:hover { border-color: var(--border-hi); color: #bbb; }
 
 		/* ── 패드1: 가나다 세로 버튼 목록 ─────── */
 		.pad1-btns {
+			/* [pad1-btns 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [가나다 버튼 나열 방향] column = 가나다 버튼이 세로로 쌓임
+			   다른 값: row(가로로 나열) */
 			flex-direction: column;
 
 			/* [가나다 버튼 사이 간격]
 			   다른 값: 4px | 10px | 14px */
 			gap: 8px;
 
+			/* [pad1-btns 세로 비율] 1 = 패드 안의 남은 세로 공간을 모두 차지
+			   버튼들이 패드 높이에 맞게 균등하게 늘어남
+			   다른 값: 제거하면 내용 크기만큼만 차지 */
 			flex: 1;
 		}
 
 		/* ── 패드2: 입력 그룹 ───────────────────── */
 		.input-group {
+			/* [input-group 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [라벨+버튼 행과 입력칸 나열 방향] column = 위에 라벨, 아래에 입력칸
+			   다른 값: row(라벨과 입력칸을 가로로 배치) */
 			flex-direction: column;
 
 			/* [라벨과 입력칸 사이 간격]
@@ -274,11 +339,18 @@
 		}
 
 		.input-header {
+			/* [input-header 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [라벨과 초기화 버튼 세로 정렬] center = 높이가 달라도 세로 중앙으로 맞춤
+			   다른 값: flex-start(위 기준) | flex-end(아래 기준) */
 			align-items: center;
+
+			/* [라벨과 초기화 버튼 가로 배치] space-between = 라벨은 왼쪽, 버튼은 오른쪽 끝
+			   다른 값: flex-start(둘 다 왼쪽) | flex-end(둘 다 오른쪽) | center(가운데) */
 			justify-content: space-between;
 
-			/* [라벨과 초기화 버튼 사이 간격]
+			/* [라벨과 초기화 버튼 사이 최소 간격]
 			   다른 값: 4px | 8px | 12px */
 			gap: 6px;
 		}
@@ -295,6 +367,8 @@
 		}
 
 		.text-input {
+			/* [입력칸 가로 크기] 100% = 패드 너비를 꽉 채움
+			   다른 값: 80% | 200px */
 			width: 100%;
 
 			/* [입력칸 내부 여백] 위아래 | 좌우
@@ -320,21 +394,30 @@
 
 		/* ── 패드3, 4: 3x3 그리드 ──────────────── */
 		.grid-rows {
+			/* [grid-rows 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [행 나열 방향] column = 1행/2행/3행이 세로로 쌓임
+			   다른 값: row(행들이 가로로 나열) */
 			flex-direction: column;
 
 			/* [행과 행 사이 간격] (1행:123 ↔ 2행:123 ↔ 3행:123)
 			   다른 값: 4px | 10px | 14px */
 			gap: 7px;
 
+			/* [grid-rows 세로 비율] 1 = 패드 안의 남은 세로 공간 모두 차지
+			   초기화 버튼 위 남은 공간을 행들이 채움
+			   다른 값: 제거하면 내용 크기만큼만 차지 */
 			flex: 1;
 		}
 
 		.grid-row {
+			/* [grid-row 배치 방식] grid 사용 (flex와 달리 열 너비를 비율로 지정 가능) */
 			display: grid;
 
-			/* [한 행 안의 버튼 열 비율] repeat(3, 1fr) = 3등분
-			   버튼 개수를 바꾸려면 숫자 변경: repeat(2, 1fr) | repeat(4, 1fr) */
+			/* [한 행 안의 버튼 열 배치] repeat(3, 1fr) = 3개 열을 균등하게 나눔
+			   버튼 개수를 바꾸려면 숫자 변경: repeat(2, 1fr) | repeat(4, 1fr)
+			   불균등하게 나누려면: 2fr 1fr 1fr (첫 버튼이 2배 너비) */
 			grid-template-columns: repeat(3, 1fr);
 
 			/* [한 행 안의 버튼 사이 간격]
@@ -343,29 +426,45 @@
 		}
 
 		.pad-bottom {
+			/* [pad-bottom 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [초기화 버튼 가로 정렬] stretch = 버튼이 패드 너비를 꽉 채움
+			   다른 값: center(버튼 원래 크기로 가운데) | flex-start(왼쪽) | flex-end(오른쪽) */
 			justify-content: stretch;
 		}
 		.pad-bottom .std-btn { width: 100%; }
 
 		/* ── 하단 버튼 행 (저장 + 전체초기화) ──── */
 		.bottom-row {
+			/* [bottom-row 배치 방식] flex 사용 */
 			display: flex;
 
 			/* [저장 버튼과 전체초기화 버튼 사이 간격] --gap 공유
 			   다른 값: 4px | 16px | 20px */
 			gap: var(--gap);
 		}
-		.bottom-row .std-btn { flex: 1; }
+
+		.bottom-row .std-btn {
+			/* [하단 버튼 너비 비율] 1 = 저장/전체초기화 버튼이 동일 너비로 나눔
+			   2로 바꾸면 해당 버튼이 다른 버튼의 2배 너비
+			   다른 값: 2 | 0.5 */
+			flex: 1;
+		}
 
 		/* ── 패드5 + 송신 버튼 래퍼 ─────────────── */
 		.pad5-wrap {
+			/* [pad5-wrap 배치 방식] flex 사용 */
 			display: flex;
-			flex-direction: column;
-			gap: var(--gap); /* [패드5와 송신 버튼 사이 간격] --gap 공유 */
 
-			/* [패드5 너비 비율] 1이면 패드1~4와 동일 너비
-			   2로 바꾸면 다른 패드의 2배
+			/* [pad5-wrap 자식 요소 나열 방향] column = 패드5 위, 송신 버튼 아래
+			   다른 값: row(가로로 나열) */
+			flex-direction: column;
+
+			gap: var(--gap);
+
+			/* [pad5-wrap 가로 비율] 1 = left-col과 동일 너비
+			   2로 바꾸면 pad5-wrap이 left-col의 2배 너비
 			   다른 값: 2 | 0.5 */
 			flex: 1;
 
@@ -373,6 +472,9 @@
 		}
 
 		.pad5 {
+			/* [패드5 세로 비율] 1 = pad5-wrap 안에서 남은 세로 공간 모두 차지
+			   송신 버튼을 아래로 밀어내는 역할
+			   다른 값: 제거하면 내용(라벨만) 크기로 줄어듦 */
 			flex: 1;
 
 			/* [패드5 최소 세로 높이] 내용이 없어도 유지되는 최소 높이
@@ -382,6 +484,8 @@
 
 		/* ── 송신 버튼 ──────────────────────────── */
 		.btn-send {
+			/* [송신 버튼 가로 크기] 100% = pad5-wrap 너비를 꽉 채움
+			   다른 값: 80% | 200px */
 			width: 100%;
 
 			/* [송신 버튼 높이] --btn-h 변수로 제어
@@ -422,7 +526,11 @@
 
 		/* ── 상태 메시지 ─────────────────────────── */
 		.status-wrap {
+			/* [status-wrap 배치 방식] flex 사용 */
 			display: flex;
+
+			/* [상태 메시지 가로 정렬] flex-end = 오른쪽 끝으로 정렬
+			   다른 값: flex-start(왼쪽) | center(가운데) */
 			justify-content: flex-end;
 		}
 
@@ -439,7 +547,12 @@
 			   다른 값: 14px | 20px | 24px */
 			min-height: 18px;
 
+			/* [상태 메시지 텍스트 가로 정렬]
+			   다른 값: left(왼쪽) | right(오른쪽) */
 			text-align: center;
+
+			/* [상태 메시지 가로 크기] 100% = pad5-wrap 너비를 꽉 채움
+			   다른 값: auto(텍스트 길이만큼) | 80% */
 			width: 100%;
 		}
 
