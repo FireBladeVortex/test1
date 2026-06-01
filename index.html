@@ -452,6 +452,64 @@
 			/* [패드5 최소 세로 높이] 내용이 없어도 유지되는 최소 높이
 			   다른 값: 40px | 120px | 200px */
 			min-height: 80px;
+			overflow: hidden;
+		}
+
+		/* ── 패드5 목록 ──────────────────────────── */
+		.p5-list { /* 🔗 JS연결: id="pad5List"와 연결, renderList()에서 동적으로 채워짐 */
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			flex: 1;
+			overflow-y: auto;
+		}
+
+		/* [목록 항목] 클릭 가능한 임시 저장 항목 */
+		.p5-item { /* 🔗 JS연결: loadItem()에서 동적 생성 */
+			padding: 7px 10px;
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			cursor: pointer;
+			font-size: 12px;
+			font-weight: bold;
+			color: #aaa;
+			background: var(--bg);
+			transition: all 0.15s;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.p5-item:hover { border-color: var(--border-hi); color: var(--text); }
+
+		/* [수정 중 항목 강조] 노란색 테두리 */
+		.p5-item.active { /* 🔗 JS연결: classList.add('active')와 연결 */
+			border-color: var(--yellow);
+			color: var(--yellow);
+			background: var(--yellow-dim);
+		}
+
+		/* [저장 상태 메시지] 저장 실패 시 표시 */
+		.save-status { /* 🔗 JS연결: id="saveStatus" / setSaveStatus()와 연결 */
+			font-size: 11px;
+			font-weight: bold;
+			letter-spacing: 0.08em;
+			color: transparent;
+			min-height: 16px;
+			text-align: center;
+			width: 100%;
+		}
+		.save-status.error { color: var(--danger); } /* 🔗 JS연결: setSaveStatus('...','error')와 연결 */
+
+		/* [저장 버튼 에러 상태] 중복 저장 시도 시 */
+		.std-btn.btn-error { /* 🔗 JS연결: classList.add('btn-error')와 연결 */
+			border-color: var(--danger);
+			color: var(--danger);
+		}
+
+		/* [수정 버튼 상태] 목록 항목 편집 중 */
+		.std-btn.btn-edit { /* 🔗 JS연결: classList.add('btn-edit')와 연결 */
+			border-color: var(--yellow);
+			color: var(--yellow);
 		}
 
 		/* ── 송신 버튼 ──────────────────────────── */
@@ -632,18 +690,21 @@
 		<!-- 하단: 저장 + 전체초기화 -->
 		<div class="bottom-row"> <!-- 🔗 CSS+HTML: class="bottom-row" → CSS .bottom-row와 연결 -->
 			<!-- 🔗 JS연결: onclick="save()" → JS function save와 연결 -->
-			<button class="std-btn" onclick="save()">저장</button>
+			<button class="std-btn" id="saveBtn" onclick="save()">저장</button>
 			<!-- 🔗 JS연결: onclick="resetAll()" → JS function resetAll과 연결 -->
 			<button class="std-btn" onclick="resetAll()">전체 초기화</button>
 		</div>
 
+		<div class="save-status" id="saveStatus"></div>
 	</div><!-- .left-col -->
 
 	<!-- 패드 5 + 송신 -->
 	<div class="pad5-wrap"> <!-- 🔗 CSS+HTML: class="pad5-wrap" → CSS .pad5-wrap과 연결 -->
 		<!-- 🔗 JS연결: id="pad5" → JS의 (필요시) getElementById('pad5')와 연결 가능 -->
 		<div class="pad pad5" id="pad5"> <!-- 🔗 CSS+HTML: class="pad5" → CSS .pad5와 연결 -->
-			<span class="pad-label">P5</span>
+			<span class="pad-label">P5 <span id="p5Count" style="font-size:10px;color:#555;">(0/10)</span></span>
+			<!-- 🔗 JS연결: id="pad5List" → JS의 renderList()에서 동적으로 항목 생성 -->
+			<div class="p5-list" id="pad5List"></div>
 		</div>
 		<!-- 🔗 JS연결: id="sendBtn" → JS의 getElementById('sendBtn')와 연결 -->
 		<!-- 🔗 JS연결: onclick="send()" → JS function send와 연결 -->
@@ -656,7 +717,7 @@
 
 <script> <!-- ⛔ 표준: script 태그, 변경 불가 -->
 	// 🔗 JS연결: APPS_SCRIPT_URL → doFetch()에서 사용, Apps Script 배포 URL 입력 필요
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2z_w1gWeL6dGupAcq1GADBOsPRhYnC_UWrTudJsjhmc-KI2zjbYME9P9LZ3NvnAHD/exec';
+	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQxoDXa7IcBWUFT58kQwEEbCoTBcDFAi1tsdK9byn1jNbHCjtUsgfL2mq8Zhe5lnfR/exec';
 
 	// 🔗 JS연결: state → selectPad1 / selectGrid / resetGrid / resetAll / validate / doFetch 전체에서 사용
 	//            키 이름 pad1, pad3, pad4는 HTML id값과 일치해야 markError/clearError가 정상 작동
@@ -709,7 +770,7 @@
 	// ── 전체 초기화 ───────────────────────────
 	// 🔗 HTML연결: HTML의 onclick="resetAll()"에서 호출, 함수명 바꾸면 HTML도 수정
 	function resetAll() {
-		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on')); // 🔗 연결: '#pad1'→id / '.sel-btn'→class / 'on'→CSS
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
 		state.pad1 = null;
 		clearInput('titleInput'); // 🔗 연결: 'titleInput' → HTML id="titleInput"과 연결
 		clearInput('nameInput');  // 🔗 연결: 'nameInput'  → HTML id="nameInput"과 연결
@@ -717,11 +778,168 @@
 		resetGrid('pad4'); // 🔗 연결: 'pad4' → HTML id="pad4"과 연결
 		['pad1','pad2','pad3','pad4'].forEach(clearError); // 🔗 연결: 문자열들 → HTML id값과 연결
 		setStatus('');
+		// 수정 모드 해제
+		if (editingIdx !== null) {
+			editingIdx = null;
+			setSaveMode('저장');
+			renderList();
+		}
+		setSaveStatus('');
 	}
 
-	// ── 저장 (미구현) ─────────────────────────
+	// ── 임시 저장 목록 ──────────────────────
+	// savedList: 휘발성 임시 저장 배열 (새로고침 시 초기화), 최대 10개
+	const savedList = [];   // 🔗 JS연결: renderList / save / loadItem / editItem에서 공유
+	const MAX_LIST   = 10;  // [목록 최대 개수] 변경 시 P5 카운터 표시도 자동 반영
+	let   editingIdx = null; // 현재 수정 중인 인덱스 (null = 저장 모드)
+
+	// 현재 패드 입력값 스냅샷을 반환한다
+	function snapshot() {
+		return {
+			pad1:  state.pad1,
+			title: document.getElementById('titleInput').value.trim(),
+			name:  document.getElementById('nameInput').value.trim(),
+			pad3:  [...state.pad3],
+			pad4:  [...state.pad4],
+		};
+	}
+
+	// 두 스냅샷이 완전히 동일한지 비교한다
+	function isSame(a, b) {
+		return a.pad1  === b.pad1
+			&& a.title === b.title
+			&& a.name  === b.name
+			&& JSON.stringify(a.pad3) === JSON.stringify(b.pad3)
+			&& JSON.stringify(a.pad4) === JSON.stringify(b.pad4);
+	}
+
+	// pad5 목록을 다시 그린다
+	function renderList() {
+		const list  = document.getElementById('pad5List');
+		const count = document.getElementById('p5Count');
+		list.innerHTML = '';
+		count.textContent = '(' + savedList.length + '/' + MAX_LIST + ')';
+
+		savedList.forEach(function(item, idx) {
+			const el = document.createElement('div');
+			el.className   = 'p5-item' + (idx === editingIdx ? ' active' : '');
+			el.textContent = '[' + (idx + 1) + '번 ' + item.pad1 + '-' + item.title + '-' + item.name + ']';
+			el.onclick     = function() { loadItem(idx); };
+			list.appendChild(el);
+		});
+	}
+
+	// 목록의 항목을 패드 1~4에 불러온다 (수정 모드 진입)
+	function loadItem(idx) {
+		// 같은 항목 재클릭 시 수정 모드 해제
+		if (editingIdx === idx) {
+			editingIdx = null;
+			setSaveMode('저장');
+			renderList();
+			return;
+		}
+
+		const item = savedList[idx];
+		editingIdx = idx;
+
+		// pad1 복원
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => b.classList.remove('on'));
+		document.querySelectorAll('#pad1 .sel-btn').forEach(b => {
+			if (b.textContent === item.pad1) b.classList.add('on');
+		});
+		state.pad1 = item.pad1;
+
+		// pad2 복원
+		document.getElementById('titleInput').value = item.title;
+		document.getElementById('nameInput').value  = item.name;
+
+		// pad3 복원
+		resetGrid('pad3');
+		item.pad3.forEach(function(col, row) {
+			if (col === null) return;
+			const rows = document.querySelectorAll('#pad3Rows .grid-row');
+			const btn  = rows[row].querySelectorAll('.sel-btn')[col];
+			btn.classList.add('on');
+			state.pad3[row] = col;
+		});
+
+		// pad4 복원
+		resetGrid('pad4');
+		item.pad4.forEach(function(col, row) {
+			if (col === null) return;
+			const rows = document.querySelectorAll('#pad4Rows .grid-row');
+			const btn  = rows[row].querySelectorAll('.sel-btn')[col];
+			btn.classList.add('on');
+			state.pad4[row] = col;
+		});
+
+		setSaveMode('수정');
+		setSaveStatus('');
+		renderList();
+	}
+
+	// 저장 버튼 텍스트와 스타일을 변경한다
+	function setSaveMode(mode) {
+		const btn = document.getElementById('saveBtn');
+		btn.textContent = mode;
+		btn.classList.remove('btn-edit', 'btn-error');
+		if (mode === '수정') btn.classList.add('btn-edit');
+	}
+
+	// 저장 상태 메시지를 표시한다
+	function setSaveStatus(msg, type) {
+		const el   = document.getElementById('saveStatus');
+		el.textContent = msg;
+		el.className   = 'save-status' + (type ? ' ' + type : '');
+	}
+
+	// ── 저장 / 수정 ──────────────────────────
 	// 🔗 HTML연결: HTML의 onclick="save()"에서 호출, 함수명 바꾸면 HTML도 수정
-	function save() {}
+	function save() {
+		if (!validate()) return;
+
+		const snap = snapshot();
+		const btn  = document.getElementById('saveBtn');
+
+		// ── 수정 모드 ─────────────────────────
+		if (editingIdx !== null) {
+			// 다른 항목과 중복 검사 (현재 편집 중인 항목 제외)
+			const dup = savedList.some(function(item, idx) {
+				return idx !== editingIdx && isSame(item, snap);
+			});
+			if (dup) {
+				btn.classList.add('btn-error');
+				setSaveStatus('저장 실패 = 같은 내용이 이미 있습니다', 'error');
+				return;
+			}
+			savedList[editingIdx] = snap;
+			editingIdx = null;
+			setSaveMode('저장');
+			setSaveStatus('');
+			renderList();
+			return;
+		}
+
+		// ── 저장 모드 ─────────────────────────
+		if (savedList.length >= MAX_LIST) {
+			btn.classList.add('btn-error');
+			setSaveStatus('저장 실패 = 목록이 가득 찼습니다 (최대 ' + MAX_LIST + '개)', 'error');
+			return;
+		}
+
+		// 중복 검사
+		const dup = savedList.some(function(item) { return isSame(item, snap); });
+		if (dup) {
+			btn.classList.add('btn-error');
+			setSaveStatus('저장 실패 = 같은 내용이 이미 있습니다', 'error');
+			return;
+		}
+
+		savedList.push(snap);
+		btn.classList.remove('btn-error');
+		setSaveStatus('');
+		renderList();
+	}
 
 	// ── 유효성 검사 ───────────────────────────
 	function validate() {
