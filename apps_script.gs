@@ -85,9 +85,13 @@ function handleSubmit(e) {
 }
 
 // ── 2. 통합 (1분마다 트리거로 자동 실행) ──────────────────────────────────
-// submissions/ 의 미처리 파일을 카테고리별로 분류해 total_value 파일에 누적하고
-// add_data_last_time.json 을 카테고리별 최신 파일명으로 갱신한다
-// 모든 쓰기를 commitMultipleFiles() 로 묶어 commit 1개만 생성한다
+// 진행 순서:
+//   1) submissions/ 파일을 카테고리별로 total_value에 누적 (통합)
+//   2) add_data_last_time.json 갱신 (최신화 기록)
+//   3) 새 데이터가 추가된 카테고리만 title→name 순 정렬 시도
+//   4) 정렬을 시도한 카테고리만 중복(title+name+pad3+pad4 4개 모두 동일) 제거
+//   5) submissions/ 내 .json 파일 전체 삭제
+//   모든 파일 변경을 commitMultipleFiles()로 묶어 commit 1개만 생성한다
 function mergeFiles() {
 	// submissions/ 폴더가 없으면 (정기 삭제 후) 즉시 종료
 	var files;
@@ -107,7 +111,7 @@ function mergeFiles() {
 	// add_data_last_time.json 읽기 (없으면 모든 카테고리 빈 문자열로 초기화)
 	var lastTimes = { 'a': '', 'b': '', 'c': '' };
 	try {
-		var ltRaw = githubGet(FILE_LAST_TIME);
+		var ltRaw    = githubGet(FILE_LAST_TIME);
 		var ltParsed = JSON.parse(ltRaw);
 		if (ltParsed.a !== undefined) lastTimes.a = ltParsed.a;
 		if (ltParsed.b !== undefined) lastTimes.b = ltParsed.b;
@@ -115,7 +119,6 @@ function mergeFiles() {
 	} catch (e) {}
 
 	// 전체 카테고리 중 가장 오래된 lastTime 기준으로 파일 필터링
-	// (어느 카테고리든 미처리 데이터가 있을 수 있는 파일을 포함)
 	var minLastTime = Object.keys(lastTimes).reduce(function(min, k) {
 		var t = lastTimes[k] || '';
 		return (!min || t < min) ? t : min;
@@ -129,7 +132,6 @@ function mergeFiles() {
 	}
 
 	// 파일 내용 읽기 + 카테고리별로 그룹 분류
-	// 각 카테고리마다 해당 카테고리의 lastTime 보다 최신인 파일 항목만 포함
 	var groups       = {};
 	var newestPerKey = { 'a': lastTimes['a'], 'b': lastTimes['b'], 'c': lastTimes['c'] };
 
@@ -146,14 +148,12 @@ function mergeFiles() {
 					Logger.log('[merge-2] 알 수 없는 pad1: ' + obj.pad1);
 					continue;
 				}
-				// 해당 카테고리의 lastTime 보다 최신인 파일 항목만 처리
 				if (targets[i].name <= (lastTimes[key] || '')) continue;
 
 				if (!groups[key]) groups[key] = [];
 				groups[key].push(obj);
 			}
 
-			// 각 카테고리별로 처리된 가장 최신 파일명 추적
 			var fileKey;
 			for (fileKey in newestPerKey) {
 				if (targets[i].name > newestPerKey[fileKey]) {
@@ -165,16 +165,19 @@ function mergeFiles() {
 		}
 	}
 
-	// 변경할 파일 목록 수집 → commitMultipleFiles() 에 한 번에 전달
+	// 변경할 파일 목록 수집
 	var changedFiles = [];
-	var keys = Object.keys(groups);
+	// 새 데이터가 추가된 카테고리 목록 (정렬/중복제거 대상)
+	var updatedKeys  = Object.keys(groups);
 
-	for (var g = 0; g < keys.length; g++) {
-		var key      = keys[g];
+	// ── 단계 1~2: 통합 + 최신화 기록 준비 ──────────────────────────────────
+	// 카테고리별로 기존 파일에 신규 레코드를 앞에 추가해 changedFiles에 쌓는다
+	for (var g = 0; g < updatedKeys.length; g++) {
+		var key      = updatedKeys[g];
 		var records  = groups[key];
 		var filePath = DIR_BASE_DATA + '/total_value_' + key + '.json';
 
-		// timestamp 제외 (add_data_last_time.json 에서 카테고리별 갱신 시간 관리)
+		// 신규 레코드 블록 (timestamp 제외)
 		var newBlocks = records.map(function(o) {
 			return '{\n'
 				+ '    "title": ' + JSON.stringify(o.title) + ',\n'
@@ -189,12 +192,14 @@ function mergeFiles() {
 
 		changedFiles.push({
 			path:    filePath,
-			content: newBlocks + (existing ? '\n' + existing : '')
+			// 신규 데이터를 앞에 붙여 누적; 이후 단계에서 정렬/중복제거로 덮어씀
+			content: newBlocks + (existing ? '\n' + existing : ''),
+			// 정렬/중복제거 단계에서 해당 인덱스를 찾기 위한 식별자
+			key:     key
 		});
 	}
 
 	// add_data_last_time.json 갱신 내용 추가
-	// 갱신된 카테고리의 최신 파일명을 기록
 	var updatedLastTimes = {
 		a: newestPerKey['a'] || lastTimes['a'],
 		b: newestPerKey['b'] || lastTimes['b'],
@@ -205,26 +210,112 @@ function mergeFiles() {
 		content: JSON.stringify(updatedLastTimes, null, 2)
 	});
 
-	// Trees API 로 모든 파일을 commit 1개로 저장
+	// ── 단계 3~4: 새 데이터가 추가된 카테고리만 정렬 + 중복제거 ────────────
+	// 목적: total_value 파일을 title→name 오름차순으로 유지하고
+	//       4개 필드(title, name, pad3, pad4)가 모두 동일한 중복 항목을 제거한다
+	for (var h = 0; h < changedFiles.length; h++) {
+		var cf = changedFiles[h];
+		// key 필드가 없는 항목(add_data_last_time.json 등)은 건너뜀
+		if (!cf.key) continue;
+
+		// 원시 텍스트를 JSON 객체 배열로 파싱
+		// total_value 파일은 JSON 배열이 아닌 객체를 줄바꿈으로 연결한 형식이므로
+		// 각 객체를 분리해서 파싱한 뒤 배열로 다룬다
+		var rawContent = cf.content;
+		var items      = parseNdjsonLike(rawContent);
+
+		if (items.length === 0) continue;
+
+		// 정렬: title 오름차순 → title 동일 시 name 오름차순 (한글/영문 모두 localeCompare 적용)
+		items.sort(function(a, b) {
+			var titleCmp = String(a.title || '').localeCompare(String(b.title || ''), 'ko');
+			if (titleCmp !== 0) return titleCmp;
+			return String(a.name || '').localeCompare(String(b.name || ''), 'ko');
+		});
+
+		// 중복제거: title + name + pad3 + pad4 4개가 모두 동일한 항목 중 첫 번째만 유지
+		var seen   = {};
+		var unique = [];
+		for (var u = 0; u < items.length; u++) {
+			// 4개 필드를 직렬화해 고유 키 생성
+			var dedupKey = JSON.stringify(items[u].title)
+				+ '|' + JSON.stringify(items[u].name)
+				+ '|' + JSON.stringify(items[u].pad3)
+				+ '|' + JSON.stringify(items[u].pad4);
+			if (!seen[dedupKey]) {
+				seen[dedupKey] = true;
+				unique.push(items[u]);
+			}
+		}
+
+		// 정렬/중복제거 결과를 기존 형식(줄바꿈 연결 객체)으로 재직렬화해 덮어씀
+		cf.content = unique.map(function(o) {
+			return '{\n'
+				+ '    "title": ' + JSON.stringify(o.title) + ',\n'
+				+ '    "name": '  + JSON.stringify(o.name)  + ',\n'
+				+ '    "pad3": '  + JSON.stringify(o.pad3)  + ',\n'
+				+ '    "pad4": '  + JSON.stringify(o.pad4)  + '\n'
+				+ '}';
+		}).join('\n');
+	}
+
+	// ── 단계 5: submissions/ 내 .json 파일 전체 삭제 준비 ──────────────────
+	// 목적: 처리 완료된 submissions 파일을 같은 commit에서 일괄 삭제해
+	//       다음 트리거 실행 시 중복 처리를 방지한다
+	// deleteEntries는 Trees API에서 sha=null로 전달해 삭제를 표현한다
+	var deleteEntries = files
+		.filter(function(f) { return f.name.slice(-5) === '.json'; })
+		.map(function(f) {
+			return { path: f.path, mode: '100644', type: 'blob', sha: null };
+		});
+
+	// key 필드 제거 후 Trees API 형식으로 정리
+	var treeFiles = changedFiles.map(function(cf) {
+		return { path: cf.path, content: cf.content };
+	});
+
+	// Trees API로 모든 변경(통합+최신화+정렬+중복제거+submissions 삭제)을 commit 1개로 저장
 	try {
-		var totalCount = targets.reduce(function(sum, f) {
-			return sum + Object.keys(groups).reduce(function(s, k) {
-				return s + (groups[k] ? groups[k].length : 0);
-			}, 0);
-		}, 0);
-		commitMultipleFiles(changedFiles, 'merge: ' + targets.length + '개 파일 처리');
+		commitMultipleFilesWithDeletes(treeFiles, deleteEntries,
+			'merge: ' + targets.length + '개 파일 처리 / 정렬+중복제거+submissions 삭제');
 		Logger.log('[merge] 완료: ' + targets.length + '개 파일 처리');
 	} catch (err) {
-		Logger.log('[merge-3] commitMultipleFiles 실패: ' + err.message);
+		Logger.log('[merge-3] commitMultipleFilesWithDeletes 실패: ' + err.message);
 	}
+}
+
+// ── 헬퍼: total_value 파일의 원시 텍스트를 객체 배열로 파싱 ─────────────────
+// total_value 파일은 JSON 배열([ ])이 아닌
+// { ... }\n{ ... } 형태로 객체가 줄바꿈으로 이어진 형식이다
+// 중괄호 깊이를 추적해 각 최상위 객체 경계를 찾아 JSON.parse로 변환한다
+function parseNdjsonLike(text) {
+	var result = [];
+	var depth  = 0;
+	var start  = -1;
+
+	for (var i = 0; i < text.length; i++) {
+		var ch = text[i];
+		if (ch === '{') {
+			if (depth === 0) start = i;
+			depth++;
+		} else if (ch === '}') {
+			depth--;
+			if (depth === 0 && start !== -1) {
+				try {
+					result.push(JSON.parse(text.slice(start, i + 1)));
+				} catch (e) {
+					Logger.log('[parseNdjsonLike] 파싱 실패: ' + e.message);
+				}
+				start = -1;
+			}
+		}
+	}
+	return result;
 }
 
 /* submissions 삭제하는 기능 시작 부분 + 일시 잠금 */
 
 // ── 3. 정기 삭제 (1일마다 트리거로 자동 실행) ─────────────────────────────
-// submissions/ 파일이 임계값 초과이고
-// add_data_last_time 이 최신화된 상태라면
-// submissions/ 폴더를 1개의 commit 으로 일괄 삭제한다
 /*
 function dailyCleanup() {
 	var files;
@@ -253,21 +344,18 @@ function dailyCleanup() {
 		if (ltParsed.b !== undefined) lastTimes.b = ltParsed.b;
 		if (ltParsed.c !== undefined) lastTimes.c = ltParsed.c;
 	} catch (e) {
-		Logger.log('[cleanup-2] add_data_last_time 읽기 실패 — 스킵');
+		Logger.log('[cleanup-2] add_data_last_time.json 읽기 실패 — 스킵');
 		return;
 	}
 
-	// 가장 오래된 카테고리 lastTime 조회
 	var minLastTime = Object.keys(lastTimes).reduce(function(min, k) {
 		var t = lastTimes[k] || '';
 		return (!min || t < min) ? t : min;
 	}, '');
 
-	// submissions/ 에서 가장 최신 파일명 확인
 	var filenames = files.map(function(f) { return f.name; }).sort();
 	var newestInSubmissions = filenames[filenames.length - 1];
 
-	// 모든 카테고리 기준으로 가장 최신 파일까지 통합됐는지 확인
 	if (newestInSubmissions > minLastTime) {
 		Logger.log('[cleanup] 미통합 파일 존재 (' + newestInSubmissions + ') — 스킵');
 		return;
@@ -281,8 +369,6 @@ function dailyCleanup() {
 	}
 }
 
-// ── Git Trees API: 폴더 일괄 삭제 ────────────────────────────────────────
-// 지정 폴더를 제외한 새 트리를 만들고 commit 1개로 삭제를 기록한다
 function deleteDirectoryByTree(dir, commitMessage) {
 	var branchRes  = UrlFetchApp.fetch(
 		'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/branches/' + GITHUB_BRANCH,
@@ -365,11 +451,55 @@ function commitMultipleFiles(files, commitMessage) {
 	}
 }
 
+// ── Git Trees API: 파일 저장 + 삭제(sha=null)를 commit 1개로 처리 ──────────
+// files:   [{path, content}, ...] — 생성/덮어쓰기 대상
+// deletes: [{path, mode, type, sha:null}, ...] — 삭제 대상 (sha=null이 삭제를 의미)
+// base_tree를 사용하므로 지정하지 않은 파일은 그대로 유지된다
+function commitMultipleFilesWithDeletes(files, deletes, commitMessage) {
+	var branchRes  = UrlFetchApp.fetch(
+		'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/branches/' + GITHUB_BRANCH,
+		reqOpt('get', null)
+	);
+	var branchData = JSON.parse(branchRes.getContentText());
+	var commitSha  = branchData.commit.sha;
+	var treeSha    = branchData.commit.commit.tree.sha;
+
+	// 저장 항목: content로 blob 생성
+	var treeEntries = files.map(function(f) {
+		return { path: f.path, mode: '100644', type: 'blob', content: f.content };
+	});
+
+	// 삭제 항목: sha=null을 전달하면 GitHub Trees API가 해당 경로를 트리에서 제거한다
+	for (var d = 0; d < deletes.length; d++) {
+		treeEntries.push(deletes[d]);
+	}
+
+	var newTreeRes = UrlFetchApp.fetch(
+		'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/git/trees',
+		reqOpt('post', { base_tree: treeSha, tree: treeEntries })
+	);
+	var newTreeSha = JSON.parse(newTreeRes.getContentText()).sha;
+
+	var newCommitRes = UrlFetchApp.fetch(
+		'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/git/commits',
+		reqOpt('post', { message: commitMessage, tree: newTreeSha, parents: [commitSha] })
+	);
+	var newCommitSha = JSON.parse(newCommitRes.getContentText()).sha;
+
+	var updateRes  = UrlFetchApp.fetch(
+		'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/git/refs/heads/' + GITHUB_BRANCH,
+		reqOpt('patch', { sha: newCommitSha })
+	);
+	var updateCode = updateRes.getResponseCode();
+	if (updateCode !== 200) {
+		throw new Error('[commitMultipleFilesWithDeletes] ref 업데이트 실패 HTTP ' + updateCode);
+	}
+}
+
 // ── GitHub API 헬퍼 ───────────────────────────
 
 // 지정 경로에 파일을 생성하거나 덮어쓴다
 function githubPut(path, content, message, sha) {
-	// UTF_8 명시로 한글 깨짐 방지
 	var encoded = Utilities.base64Encode(content, Utilities.Charset.UTF_8);
 	var payload = { message: message, content: encoded, branch: GITHUB_BRANCH };
 	if (sha) payload.sha = sha;
@@ -387,7 +517,6 @@ function githubGet(path) {
 	if (code !== 200) throw new Error('HTTP ' + code);
 	var data    = JSON.parse(res.getContentText());
 	var decoded = Utilities.base64Decode(data.content.replace(/\n/g, ''));
-	// UTF_8 명시로 한글 깨짐 방지
 	return Utilities.newBlob(decoded).getDataAsString('UTF-8');
 }
 
