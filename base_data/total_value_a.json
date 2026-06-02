@@ -1,161 +1,114 @@
 {
-    "title": "gwe",
-    "name": "qrwrqwr",
-    "pad3": [1,null,null],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-02T15:23:50.894Z"
-}
-{
-    "title": "gwe",
-    "name": "qrwrqwr",
-    "pad3": [1,null,0],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-02T15:23:50.894Z"
-}
-{
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [1,null,null],
-    "pad4": [null,null,0],
-    "timestamp": "2026-06-02T13:44:20.441Z"
-}
-{
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [1,null,null],
-    "pad4": [null,null,0],
-    "timestamp": "2026-06-02T13:44:34.930Z"
-}
-{
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [1,null,null],
-    "pad4": [null,null,0],
-    "timestamp": "2026-06-02T13:44:51.405Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [1,0,0],
-    "timestamp": "2026-06-02T12:57:31.044Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [1,0,2],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [1,0,1],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [1,0,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [1,2,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [null,null,1],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [2,null,1],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [2,0,1],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [2,0,2],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:57:53.171Z"
-}
-{
     "title": "ㄴㅁ",
     "name": "ㅁㄴㅇ",
     "pad3": [1,null,null],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-01T01:25:45.034Z"
+    "pad4": [null,null,1]
 }
 {
     "title": "ㅁㄴㅇ",
     "name": "ㅁㄴㅇ",
     "pad3": [0,1,null],
-    "pad4": [null,1,null],
-    "timestamp": "2026-06-01T01:05:19.646Z"
+    "pad4": [null,1,null]
+}
+{
+    "title": "ㅁㄴㅇ",
+    "name": "ㅁㄴㅇ",
+    "pad3": [1,null,null],
+    "pad4": [null,null,0]
+}
+{
+    "title": "ㅁㄴㅇ",
+    "name": "ㅁㄴㅇ",
+    "pad3": [1,1,1],
+    "pad4": [1,1,1]
+}
+{
+    "title": "ㅁㄴㅇ",
+    "name": "ㅁㄴㅇ",
+    "pad3": [1,1,1],
+    "pad4": [1,1,null]
 }
 {
     "title": "ㅁㄴㅇ",
     "name": "ㅎㅎㅈㄷ",
     "pad3": [1,0,1],
-    "pad4": [2,1,2],
-    "timestamp": "2026-06-01T00:32:22.539Z"
+    "pad4": [2,1,2]
 }
 {
     "title": "ㅎㅎㅎㅈㄷㅎ",
     "name": "ㅂㅈㅂㅈㄷ",
     "pad3": [1,1,0],
-    "pad4": [null,0,null],
-    "timestamp": "2026-06-01T00:31:29.860Z"
+    "pad4": [null,0,null]
 }
 {
     "title": "ㅎㅎㅎㅈㄷㅎ",
     "name": "ㅂㅈㅂㅈㄷ",
     "pad3": [1,1,0],
-    "pad4": [2,0,null],
-    "timestamp": "2026-06-01T00:31:35.847Z"
-}
-{
-    "title": "ㅁㄴㅇ",
-    "name": "ㅎㅎㅈㄷ",
-    "pad3": [1,0,1],
-    "pad4": [2,1,2],
-    "timestamp": "2026-06-01T00:31:56.313Z"
+    "pad4": [2,0,null]
 }
 {
     "title": "as",
     "name": "asdqㅂㅈㄷㄷ",
     "pad3": [1,1,1],
-    "pad4": [1,null,null],
-    "timestamp": "2026-05-31T17:45:54.440Z"
+    "pad4": [1,null,null]
 }
 {
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [1,1,1],
-    "pad4": [1,1,1],
-    "timestamp": "2026-05-30T23:08:40.227Z"
+    "title": "gwe",
+    "name": "qrwrqwr",
+    "pad3": [1,null,null],
+    "pad4": [null,null,1]
 }
 {
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [1,1,1],
-    "pad4": [1,1,null],
-    "timestamp": "2026-05-30T23:42:30.272Z"
+    "title": "gwe",
+    "name": "qrwrqwr",
+    "pad3": [1,null,0],
+    "pad4": [null,null,1]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [null,null,1],
+    "pad4": [1,0,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [null,null,1],
+    "pad4": [1,0,2]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [null,null,1],
+    "pad4": [1,0,1]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [null,null,1],
+    "pad4": [1,2,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [null,null,1],
+    "pad4": [0,2,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [2,null,1],
+    "pad4": [0,2,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [2,0,1],
+    "pad4": [0,2,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [2,0,2],
+    "pad4": [0,2,0]
 }

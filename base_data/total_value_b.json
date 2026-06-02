@@ -1,77 +1,66 @@
 {
-    "title": "gwe",
-    "name": "qrwrqwr",
-    "pad3": [1,null,0],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-02T15:23:50.894Z"
-}
-{
-    "title": "gwe",
-    "name": "qrwrqwr",
-    "pad3": [1,null,0],
-    "pad4": [2,null,1],
-    "timestamp": "2026-06-02T15:23:50.894Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [2,0,2],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:58:16.298Z"
-}
-{
-    "title": "wdq",
-    "name": "wqe",
-    "pad3": [2,0,0],
-    "pad4": [0,2,0],
-    "timestamp": "2026-06-02T12:58:16.298Z"
+    "title": "ㅁㄴㅇ",
+    "name": "ㅁㄴㅇ",
+    "pad3": [0,1,null],
+    "pad4": [null,1,null]
 }
 {
     "title": "ㄶㅎㅎㅈㄷ",
     "name": "ㅂㅈㅂㄷ",
     "pad3": [1,null,null],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-01T01:25:45.034Z"
+    "pad4": [null,null,1]
 }
 {
     "title": "ㄶㅎㅎㅈㄷ",
     "name": "ㅂㅈㅂㄷ",
     "pad3": [1,null,1],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-01T01:25:45.034Z"
+    "pad4": [null,null,1]
 }
 {
     "title": "ㄶㅎㅎㅈㄷ",
     "name": "ㅂㅈㅂㄷ",
     "pad3": [1,null,0],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-01T01:25:45.034Z"
+    "pad4": [null,null,1]
 }
 {
     "title": "ㄶㅎㅎㅈㄷ",
     "name": "ㅂㅈㅂㄷ",
     "pad3": [1,2,0],
-    "pad4": [null,null,1],
-    "timestamp": "2026-06-01T01:25:45.034Z"
-}
-{
-    "title": "ㅁㄴㅇ",
-    "name": "ㅁㄴㅇ",
-    "pad3": [0,1,null],
-    "pad4": [null,1,null],
-    "timestamp": "2026-06-01T01:05:19.646Z"
+    "pad4": [null,null,1]
 }
 {
     "title": "as",
     "name": "asdqㅂㅈㄷㄷ",
     "pad3": [1,1,1],
-    "pad4": [1,null,null],
-    "timestamp": "2026-05-31T17:46:03.287Z"
+    "pad4": [1,null,null]
 }
 {
     "title": "asㅁㄷㅂㅈ",
     "name": "asdqㅂㅈㄷㄷ",
     "pad3": [0,0,1],
-    "pad4": [1,null,null],
-    "timestamp": "2026-05-31T17:46:13.431Z"
+    "pad4": [1,null,null]
+}
+{
+    "title": "gwe",
+    "name": "qrwrqwr",
+    "pad3": [1,null,0],
+    "pad4": [null,null,1]
+}
+{
+    "title": "gwe",
+    "name": "qrwrqwr",
+    "pad3": [1,null,0],
+    "pad4": [2,null,1]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [2,0,2],
+    "pad4": [0,2,0]
+}
+{
+    "title": "wdq",
+    "name": "wqe",
+    "pad3": [2,0,0],
+    "pad4": [0,2,0]
 }
