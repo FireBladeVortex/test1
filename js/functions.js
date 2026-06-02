@@ -1,5 +1,5 @@
 	// 🔗 JS연결: APPS_SCRIPT_URL → doFetch()에서 사용, Apps Script 배포 URL 입력 필요
-	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ-D2MksgHr7vbLaWl72EXIKVwNR5A--QwmHMBmJf_1fGSoXgiL4FIJYOa9w_iPRXr/exec';
+	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz29gMmeYMxf1N7KexFl5DxqBmupnhWkGIWPeZNBlaX6cp09BsB_nUnSHtKYu13hHIF/exec';
 
 	// 🔗 JS연결: state → selectPad1 / selectGrid / resetGrid / resetAll / validate / doFetch 전체에서 사용
 	//            키 이름 pad1, pad3, pad4는 HTML id값과 일치해야 markError/clearError가 정상 작동
