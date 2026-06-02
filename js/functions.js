@@ -1,4 +1,3 @@
-<!-- ⛔ 표준: script 태그, 변경 불가 -->
 	// 🔗 JS연결: APPS_SCRIPT_URL → doFetch()에서 사용, Apps Script 배포 URL 입력 필요
 	const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ-D2MksgHr7vbLaWl72EXIKVwNR5A--QwmHMBmJf_1fGSoXgiL4FIJYOa9w_iPRXr/exec';
 
