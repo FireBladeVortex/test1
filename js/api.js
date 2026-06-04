@@ -98,12 +98,28 @@ function playSlot(index) {
 		player.loadVideoById({
 			videoId: ytId(currentVideo.video),
 			startSeconds: currentVideo.start,
-			endSeconds: currentVideo.end
+			// endSeconds: currentVideo.end
+			...(currentVideo.end > 0 && { endSeconds: currentVideo.end })
 		})
 	}
 
 	updateInfo()
 
+loopTimer = setInterval(() => {
+    if (!player || !currentVideo) return
+    const t = player.getCurrentTime()
+    if (currentVideo.end > 0 && t >= currentVideo.end) {
+        player.seekTo(currentVideo.start, true)
+    }
+    // 진행 바 업데이트
+    if (currentVideo.end > 0) {
+        const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
+        document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+    }
+}, 250)
+
+
+	/*
 	// 구간 감시: 1000ms(1초)마다 현재 시간 확인 후 초과 시 시작점으로 복귀
 	loopTimer = setInterval(() => {
 		if (!player || !currentVideo) return
@@ -114,7 +130,7 @@ function playSlot(index) {
 		// 진행 바 업데이트
 		const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
 		document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
-	}, 1000)
+	}, 1000) */
 }
 
 // ── 플레이어 상태 변경 처리 ──
