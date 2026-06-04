@@ -164,9 +164,17 @@ function onPlayerStateChange(e) {
 function updateInfo() {
 	if (!currentVideo) return
 	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
+	const end = currentVideo.end > 0 ? currentVideo.end : (player ? player.getDuration() : 0)
 	document.getElementById('now-info').textContent =
-		`${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
+		`${fmt(currentVideo.start)} → ${fmt(end)}`
 }
-
+/*
+function updateInfo() {
+	if (!currentVideo) return
+	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
+	document.getElementById('now-info').textContent =
+		`${fmt(currentVideo.start)} → ${fmt(end)}`
+}
+*/
 // ── 초기화 ──
 buildGrid()
