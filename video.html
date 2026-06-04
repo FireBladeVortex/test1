@@ -2,8 +2,7 @@
 <html lang="ko">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>YT Loop Player</title>
+	<title>유튜브 구간 반복 재생</title>
 	<style>
 		/* ── 기본 리셋 및 레이아웃 설정 ── */
 		* {
@@ -13,7 +12,7 @@
 		}
 
 		:root {
-			--bg:        #0d0f14;
+			--bg:        #526fba;
 			--panel:     #13161e;
 			--border:    #1f2433;
 			--accent:    #c8a96e;
@@ -23,6 +22,9 @@
 			--btn-bg:    #181c27;
 			--btn-hover: #1e2438;
 			--radius:    6px;
+			--thumb-w:   160px;
+			--thumb-h:   90px;
+			--gap:       3px;
 		}
 
 		html, body {
@@ -39,10 +41,14 @@
 			display: flex;
 			width: 100vw;
 			height: 100vh;
+			overflow: hidden;
 		}
 
 		/* ────────────────────────────────
-		   왼쪽 패널: 버튼 3×5 그리드
+		   왼쪽 패널: 썸네일 flex-wrap 나열
+		   - 15개 제한 없이 VIDEOS 전체 표시
+		   - 썸네일은 160×90 고정, gap 3px
+		   - 내부 콘텐츠가 넘칠 경우 패널 내부에서만 숨김 처리
 		──────────────────────────────── */
 		#sidebar {
 			/* 화면 절반 고정, 내부 버튼은 비율로 채움 */
@@ -53,7 +59,9 @@
 			display: flex;
 			flex-direction: column;
 			padding: 16px;
-			gap: 12px;
+			gap: 10px;
+			/* 패널 자체는 넘치지 않도록 */
+			overflow: hidden;
 		}
 
 		#sidebar h1 {
@@ -66,19 +74,31 @@
 			flex-shrink: 0;
 		}
 
-		/* 버튼 그리드: 3열 5행, 남은 높이 모두 사용 */
+		/* ── 썸네일 나열 컨테이너 ──
+		   목적: 고정 크기(160×90) 버튼을 wrap하여 공간이 허용하는 만큼 채움
+		   로직: flex-wrap으로 줄바꿈, align-content: flex-start로 위에서부터 채움
+		         overflow hidden으로 뷰포트를 벗어나는 항목은 잘라냄(스크롤 없음) */
 		#grid {
 			flex: 1;
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			grid-template-rows: repeat(5, 1fr);
-			gap: 8px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--gap);
+			align-content: flex-start;
+			/* 넘치는 썸네일은 잘라내어 스크롤바가 생기지 않도록 */
+			overflow: hidden;
 			min-height: 0;           /* flex 자식이 넘치지 않도록 */
 		}
 
-		/* ── 개별 버튼 ── */
+		/* ── 개별 버튼 ──
+		   목적: 썸네일을 160×90 고정 크기로 표시
+		   로직: width/height를 CSS 변수로 고정, flex shrink/grow 금지 */
 		.slot-btn {
 			position: relative;
+			width: var(--thumb-w);
+			height: var(--thumb-h);
+			/* flex 아이템이 크기를 변경하지 않도록 고정 
+			flex-shrink: 0;
+			flex-grow: 0;*/
 			background: var(--btn-bg);
 			border: 1px solid var(--border);
 			border-radius: var(--radius);
@@ -90,27 +110,17 @@
 			justify-content: center;
 		}
 
+		/* 마우스 올린 썸네일 강조 */
 		.slot-btn:hover {
 			border-color: var(--accent);
 			background: var(--btn-hover);
-			transform: scale(1.02);
+			transform: scale(1);
 		}
 
 		/* 활성(현재 재생 중) 버튼 강조 */
 		.slot-btn.active {
 			border-color: var(--accent);
 			box-shadow: 0 0 0 2px var(--accent), inset 0 0 20px rgba(200,169,110,0.08);
-		}
-
-		/* 비어있는 슬롯 */
-		.slot-btn.empty {
-			cursor: default;
-			opacity: 0.3;
-		}
-
-		.slot-btn.empty:hover {
-			border-color: var(--border);
-			transform: none;
 		}
 
 		/* 썸네일 이미지 */
@@ -134,14 +144,6 @@
 			pointer-events: none;
 		}
 
-		/* 썸네일 없을 때 숫자 표시 */
-		.slot-num {
-			font-size: clamp(12px, 2vw, 20px);
-			font-weight: bold;
-			color: var(--text-muted);
-			letter-spacing: 0.1em;
-		}
-
 		/* ────────────────────────────────
 		   오른쪽 패널: 플레이어 중앙 배치
 		──────────────────────────────── */
@@ -160,7 +162,7 @@
 		#player-wrap {
 			position: relative;
 			width: min(640px, 100%);          /* 최대 640px, 공간 부족하면 축소 */
-			aspect-ratio: 640 / 390;          /* 640×390 비율 고정 */
+			aspect-ratio: 16 / 9;          /* 640×390 비율 고정 */
 		}
 
 		#player-wrap iframe,
@@ -202,7 +204,6 @@
 </head>
 <body>
 
-<script src="js/list.js"></script>
 
 <div id="app">
 
@@ -224,155 +225,8 @@
 
 </div>
 
-
-<script>
-// ── YouTube IFrame Player API 비동기 로드 ──
-const tag = document.createElement('script')
-tag.src = "https://www.youtube.com/iframe_api"
-document.head.appendChild(tag)
-
-// ── YouTube URL → ID 추출 ──
-// be/와 ? 사이의 문자열만 반환, 이미 ID면 그대로 반환
-const ytId = v => (v.includes('/') ? v.split('/').pop().split('?')[0] : v)
-
-// ── 전역 상태 ──
-let player       = null   // YT.Player 인스턴스
-let loopTimer    = null   // 구간 감시 인터벌
-let activeSlot   = -1     // 현재 선택된 슬롯 인덱스
-let currentVideo = null   // 현재 재생 중인 VIDEOS 항목
-
-// ── 15개 슬롯 버튼 생성 ──
-// 목적: VIDEOS 배열 기반으로 버튼 렌더링 (썸네일 or 번호)
-function buildGrid() {
-	const grid = document.getElementById('grid')
-	grid.innerHTML = ''
-
-	for (let i = 0; i < 15; i++) {
-		const btn = document.createElement('button')
-		btn.className = 'slot-btn'
-		btn.dataset.index = i
-
-		const entry = VIDEOS[i]
-
-		if (entry) {
-			// 썸네일 로드 시도: YouTube 표준 썸네일 URL
-			const img = document.createElement('img')
-			img.src = `https://img.youtube.com/vi/${ytId(entry.video)}/mqdefault.jpg`
-			img.alt = `슬롯 ${i + 1}`
-
-			// 썸네일 로드 실패 시 숫자로 폴백
-			img.onerror = () => {
-				img.remove()
-				const num = document.createElement('span')
-				num.className = 'slot-num'
-				num.textContent = i + 1
-				btn.appendChild(num)
-			}
-
-			btn.appendChild(img)
-
-			// 슬롯 번호 오버레이 (썸네일 위)
-			const lbl = document.createElement('span')
-			lbl.className = 'slot-label'
-			lbl.textContent = i + 1
-			btn.appendChild(lbl)
-
-			// 클릭 이벤트: 해당 슬롯 영상 재생
-			btn.addEventListener('click', () => playSlot(i))
-		} else {
-			// 미등록 슬롯: 비활성 처리
-			btn.classList.add('empty')
-			const num = document.createElement('span')
-			num.className = 'slot-num'
-			num.textContent = i + 1
-			btn.appendChild(num)
-		}
-
-		grid.appendChild(btn)
-	}
-}
-
-// ── IFrame Player API 준비 완료 콜백 ──
-// 목적: API 로드 후 플레이어 인스턴스 생성
-function onYouTubeIframeAPIReady() {
-	player = new YT.Player('ytplayer', {
-		width: '100%',
-		height: '100%',
-		videoId: '',
-		playerVars: {
-			autoplay: 0,
-			rel: 0,
-			modestbranding: 1,
-		},
-		events: {
-			onStateChange: onPlayerStateChange
-		}
-	})
-}
-
-// ── 슬롯 재생 로직 ──
-// 목적: 선택한 슬롯의 영상을 start~end 구간으로 반복 설정
-function playSlot(index) {
-	if (!player || !VIDEOS[index]) return
-
-	// 이전 감시 타이머 정리
-	clearInterval(loopTimer)
-
-	// 활성 버튼 시각 업데이트
-	document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'))
-	document.querySelector(`.slot-btn[data-index="${index}"]`).classList.add('active')
-
-	activeSlot   = index
-	currentVideo = VIDEOS[index]
-
-	// 같은 영상이면 seek만, 다른 영상이면 로드
-	const currentId = player.getVideoData ? player.getVideoData().video_id : ''
-	if (currentId === ytId(currentVideo.video)) {
-		player.seekTo(currentVideo.start, true)
-		player.playVideo()
-	} else {
-		player.loadVideoById({
-			videoId: ytId(currentVideo.video),
-			startSeconds: currentVideo.start,
-			endSeconds: currentVideo.end
-		})
-	}
-
-	updateInfo()
-
-	// 구간 감시: 500ms마다 현재 시간 확인 후 초과 시 시작점으로 복귀
-	loopTimer = setInterval(() => {
-		if (!player || !currentVideo) return
-		const t = player.getCurrentTime()
-		if (t >= currentVideo.end) {
-			player.seekTo(currentVideo.start, true)
-		}
-		// 진행 바 업데이트
-		const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
-		document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
-	}, 500)
-}
-
-// ── 플레이어 상태 변경 처리 ──
-// 목적: 영상이 종료(state=0)되면 자동으로 시작점으로 되감기
-function onPlayerStateChange(e) {
-	if (e.data === YT.PlayerState.ENDED && currentVideo) {
-		player.seekTo(currentVideo.start, true)
-		player.playVideo()
-	}
-}
-
-// ── 상태 텍스트 업데이트 ──
-function updateInfo() {
-	if (!currentVideo) return
-	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
-	document.getElementById('now-info').textContent =
-		`Slot ${activeSlot + 1}  ·  ${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
-}
-
-// ── 초기화 ──
-buildGrid()
-</script>
+<script src="js/list.js"></script>
+<script src="js/api.js"></script>
 
 </body>
 </html>
