@@ -48,7 +48,7 @@ const VIDEOS = [
 		end: 0
 	},
 	{
-		video: "https://youtu.be/7_XPAV88jB8?si=PNcSirw2MLN4_XB7",
+		video: "https://youtu.be/_7NIkJwT9Wg?si=KqNIVWdRpIB10dly",
 		start: 0,
 		end: 0
 	},
