@@ -52,7 +52,7 @@ function buildGrid() {
 
 			// 클릭 이벤트: 해당 슬롯 영상 재생
 			// btn.addEventListener('click', () => playSlot(i))
-			btn.addEventListener('click', () => { if (activeSlot === i) return playSlot(i) }) // 재생 중인 슬롯 클릭 무시 
+			btn.addEventListener('click', () => { if (activeSlot !== i) return playSlot(i) }) // 재생 중인 슬롯 클릭 무시 
 		grid.appendChild(btn)
 	}
 }
