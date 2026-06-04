@@ -51,7 +51,10 @@ function buildGrid() {
 			btn.appendChild(lbl)
 
 			// 클릭 이벤트: 해당 슬롯 영상 재생
-			btn.addEventListener('click', () => playSlot(i))
+			// btn.addEventListener('click', () => playSlot(i))
+			btn.addEventListener('click', () => {
+				if (activeSlot === i) return playSlot(i) // 재생 중인 슬롯 클릭 무시
+})
 		grid.appendChild(btn)
 	}
 }
@@ -83,7 +86,11 @@ function playSlot(index) {
 	clearInterval(loopTimer)
 
 	// 활성 버튼 시각 업데이트
-	document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'))
+	// document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'))
+	// document.querySelector(`.slot-btn[data-index="${index}"]`).classList.add('active')
+	// 활성 버튼 시각 업데이트
+	document.querySelectorAll('.slot-btn').forEach(b => {b.classList.remove('active', 'dimmed')
+		if (parseInt(b.dataset.index) !== index) b.classList.add('dimmed')})
 	document.querySelector(`.slot-btn[data-index="${index}"]`).classList.add('active')
 
 	activeSlot   = index
@@ -105,18 +112,18 @@ function playSlot(index) {
 
 	updateInfo()
 
-loopTimer = setInterval(() => {
-    if (!player || !currentVideo) return
-    const t = player.getCurrentTime()
-    if (currentVideo.end > 0 && t >= currentVideo.end) {
-        player.seekTo(currentVideo.start, true)
-    }
-    // 진행 바 업데이트
-    if (currentVideo.end > 0) {
-        const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
-        document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
-    }
-}, 250)
+	loopTimer = setInterval(() => {
+		if (!player || !currentVideo) return
+			const t = player.getCurrentTime()
+		if (currentVideo.end > 0 && t >= currentVideo.end) {
+			player.seekTo(currentVideo.start, true)
+		}
+		// 진행 바 업데이트
+		if (currentVideo.end > 0) {
+			const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
+			document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+		}
+	}, 250)
 
 
 	/*
