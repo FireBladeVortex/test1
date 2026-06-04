@@ -156,7 +156,7 @@ loopTimer = setInterval(() => {
 // 목적: 영상이 종료(state=0)되면 자동으로 시작점으로 되감기
 function onPlayerStateChange(e) {
 	if (e.data === YT.PlayerState.PLAYING) {
-		updateInfo()
+		updateInfo(player.getCurrentTime())
 	}
 	if (e.data === YT.PlayerState.ENDED && currentVideo) {
 		player.seekTo(currentVideo.start, true)
