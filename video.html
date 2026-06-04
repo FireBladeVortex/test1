@@ -213,16 +213,41 @@
 <script>
 const VIDEOS = [
 	{
-		video: "dQw4w9WgXcQ",
-		start: 0,
-		end: 30
-	},
-	{
-		video: "dQw4w9WgXcQ",
-		start: 43,
-		end: 73
+		video: "h3l1SyPMpoE",
+		start: 150,
+		end: "end"
 	},
 	/* ── 여기에 추가 입력 ──
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
+	{
+		video: "영상ID",
+		start: 시작초,
+		end: 종료초
+	},
 	{
 		video: "영상ID",
 		start: 시작초,
@@ -360,7 +385,7 @@ function playSlot(index) {
 		player.loadVideoById({
 			videoId: currentVideo.video,
 			startSeconds: currentVideo.start,
-			endSeconds: currentVideo.end
+			...(currentVideo.end !== "end" && { endSeconds: currentVideo.end })
 		})
 	}
 
@@ -370,7 +395,7 @@ function playSlot(index) {
 	loopTimer = setInterval(() => {
 		if (!player || !currentVideo) return
 		const t = player.getCurrentTime()
-		if (t >= currentVideo.end) {
+		if (currentVideo.end !== "end" && t >= currentVideo.end) {
 			player.seekTo(currentVideo.start, true)
 		}
 		// 진행 바 업데이트
