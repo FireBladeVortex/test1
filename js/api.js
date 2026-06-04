@@ -51,8 +51,8 @@ function buildGrid() {
 			btn.appendChild(lbl)
 
 			// 클릭 이벤트: 해당 슬롯 영상 재생
-			btn.addEventListener('click', () => playSlot(i))
-			// btn.addEventListener('click', () => { if (activeSlot !== 1) return playSlot(i) }) // 재생 중인 슬롯 클릭 무시 
+			// btn.addEventListener('click', () => playSlot(i))
+			btn.addEventListener('click', () => { if (activeSlot !== 1) return playSlot(i) }) // 재생 중인 슬롯 클릭 무시 
 		grid.appendChild(btn)
 	}
 }
@@ -156,7 +156,7 @@ loopTimer = setInterval(() => {
 // 목적: 영상이 종료(state=0)되면 자동으로 시작점으로 되감기
 function onPlayerStateChange(e) {
 	if (e.data === YT.PlayerState.PLAYING) {
-		updateInfo(player.getCurrentTime())
+		updateInfo()
 	}
 	if (e.data === YT.PlayerState.ENDED && currentVideo) {
 		player.seekTo(currentVideo.start, true)
@@ -185,6 +185,7 @@ function updateInfo(t = 0) {
 		document.getElementById('now-info').textContent = `${startStr} → ${cur} → ${endStr}`
 	}
 }
+
 /*
 function updateInfo() {
 	if (!currentVideo) return
