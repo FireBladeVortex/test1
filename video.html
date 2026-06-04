@@ -213,45 +213,80 @@
 <script>
 const VIDEOS = [
 	{
-		video: "h3l1SyPMpoE",
-		start: 150,
+		video: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
+		start: 110,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/mW0jfEH6HW0?si=qnWfX0KNB0DIBsrL", /* 감규리 - 내꺼 하는 법 */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/1dbXrB7hg7o?si=uQLfRYSg_V5D_zF3", /* 마레 플로스 - Fly Me To The Moon */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/FkLVSBZb4sw?si=U9tTAzCw_GRDKeA0", /* 마레 플로스 - Englishman in New York */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/UOwS1ombcWY?si=WsuWMGD6SQwqWPDZ", /* 마레 플로스 - Over the Rainbow */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/tJjY_6eH0S4?si=dhitMcPtUjTJFGvE", /* 마레 플로스 - Englishman in New York */
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/PAzl7hXOAS8?si=MrSVud5AzlGxvYdi",
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/7_XPAV88jB8?si=PNcSirw2MLN4_XB7",
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/jVilOvw1oHU?si=zUsurujKacsDXMv2",
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/bCBVxqCUAeY?si=DGAM3Qm5HK-3USSS",
+		start: 0,
+		end: "end"
+	},
+	{
+		video: "https://youtu.be/7_XPAV88jB8?si=LMblgI7USOEPQfu2",
+		start: 0,
 		end: "end"
 	},
 	/* ── 여기에 추가 입력 ──
 	{
 		video: "영상ID",
-		start: 시작초,
-		end: 종료초
+		start: 0,
+		end: "end"
 	},
 	{
 		video: "영상ID",
-		start: 시작초,
-		end: 종료초
+		start: 0,
+		end: "end"
 	},
 	{
 		video: "영상ID",
-		start: 시작초,
-		end: 종료초
-	},
-	{
-		video: "영상ID",
-		start: 시작초,
-		end: 종료초
-	},
-	{
-		video: "영상ID",
-		start: 시작초,
-		end: 종료초
-	},
-	{
-		video: "영상ID",
-		start: 시작초,
-		end: 종료초
-	},
-	{
-		video: "영상ID",
-		start: 시작초,
-		end: 종료초
+		start: 0,
+		end: "end"
 	},
 	*/
 ]
@@ -308,7 +343,7 @@ function buildGrid() {
 		if (entry) {
 			// 썸네일 로드 시도: YouTube 표준 썸네일 URL
 			const img = document.createElement('img')
-			img.src = `https://img.youtube.com/vi/${entry.video}/mqdefault.jpg`
+			img.src = "https://img.youtube.com/vi/${parseVideoId(entry.video)}/mqdefault.jpg"
 			img.alt = `슬롯 ${i + 1}`
 
 			// 썸네일 로드 실패 시 숫자로 폴백
@@ -374,7 +409,7 @@ function playSlot(index) {
 	document.querySelector(`.slot-btn[data-index="${index}"]`).classList.add('active')
 
 	activeSlot   = index
-	currentVideo = VIDEOS[index]
+	currentVideo = { ...VIDEOS[index], video: parseVideoId(VIDEOS[index].video) }
 
 	// 같은 영상이면 seek만, 다른 영상이면 로드
 	const currentId = player.getVideoData ? player.getVideoData().video_id : ''
@@ -420,6 +455,13 @@ function updateInfo() {
 	document.getElementById('now-info').textContent =
 		`Slot ${activeSlot + 1}  ·  ${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
 }
+
+// 목적: URL 전체 또는 ID만 입력해도 영상 ID만 추출
+function parseVideoId(v) {
+	const m = v.match(/(?:youtu\.be\/|v=)([^?&]+)/)
+	return m ? m[1] : v
+}
+
 
 // ── 초기화 ──
 buildGrid()
