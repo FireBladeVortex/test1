@@ -343,7 +343,7 @@ function buildGrid() {
 		if (entry) {
 			// 썸네일 로드 시도: YouTube 표준 썸네일 URL
 			const img = document.createElement('img')
-			img.src = "https://img.youtube.com/vi/${parseVideoId(entry.video)}/mqdefault.jpg"
+			img.src = 'https://img.youtube.com/vi/${parseVideoId(entry.video)}/mqdefault.jpg'
 			img.alt = `슬롯 ${i + 1}`
 
 			// 썸네일 로드 실패 시 숫자로 폴백
