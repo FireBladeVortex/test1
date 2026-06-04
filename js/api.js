@@ -51,11 +51,8 @@ function buildGrid() {
 			btn.appendChild(lbl)
 
 			// 클릭 이벤트: 해당 슬롯 영상 재생
-			// btn.addEventListener('click', () => playSlot(i))
-			btn.addEventListener('click', () => {
-				if (activeSlot === i) return
-					playSlot(i) // 재생 중인 슬롯 클릭 무시
-})
+			btn.addEventListener('click', () => playSlot(i))
+			// btn.addEventListener('click', () => { if (activeSlot !== 1) return playSlot(i) }) // 재생 중인 슬롯 클릭 무시 
 		grid.appendChild(btn)
 	}
 }
@@ -113,6 +110,19 @@ function playSlot(index) {
 
 	updateInfo()
 
+loopTimer = setInterval(() => {
+	if (!player || !currentVideo) return
+	const t = player.getCurrentTime()
+	const end = currentVideo.end > 0 ? currentVideo.end : player.getDuration()
+	if (currentVideo.end > 0 && t >= currentVideo.end) {
+		player.seekTo(currentVideo.start, true)
+	}
+	// 진행 바 업데이트
+	const ratio = (t - currentVideo.start) / (end - currentVideo.start)
+	document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+}, 250)
+
+/*
 	loopTimer = setInterval(() => {
 		if (!player || !currentVideo) return
 			const t = player.getCurrentTime()
@@ -125,7 +135,7 @@ function playSlot(index) {
 			document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		}
 	}, 250)
-
+*/
 
 	/*
 	// 구간 감시: 1000ms(1초)마다 현재 시간 확인 후 초과 시 시작점으로 복귀
@@ -155,7 +165,7 @@ function updateInfo() {
 	if (!currentVideo) return
 	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
 	document.getElementById('now-info').textContent =
-		`Slot ${activeSlot + 1}  ·  ${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
+		`${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
 }
 
 // ── 초기화 ──
