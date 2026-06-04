@@ -433,8 +433,9 @@ function playSlot(index) {
 		if (currentVideo.end !== "end" && t >= currentVideo.end) {
 			player.seekTo(currentVideo.start, true)
 		}
-		// 진행 바 업데이트
-		const ratio = (t - currentVideo.start) / (currentVideo.end - currentVideo.start)
+		// 진행 바 업데이트 ("end"이면 전체 영상 길이 기준)
+		const duration = currentVideo.end !== "end" ? currentVideo.end : (player.getDuration() || 1)
+		const ratio = (t - currentVideo.start) / (duration - currentVideo.start)
 		document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 	}, 500)
 }
@@ -452,8 +453,9 @@ function onPlayerStateChange(e) {
 function updateInfo() {
 	if (!currentVideo) return
 	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
+	const endLabel = currentVideo.end === "end" ? "END" : fmt(currentVideo.end)
 	document.getElementById('now-info').textContent =
-		`Slot ${activeSlot + 1}  ·  ${fmt(currentVideo.start)} → ${fmt(currentVideo.end)}`
+		`Slot ${activeSlot + 1}  ·  ${fmt(currentVideo.start)} → ${endLabel}`
 }
 
 // 목적: URL 전체 또는 ID만 입력해도 영상 ID만 추출
