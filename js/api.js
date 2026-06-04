@@ -120,6 +120,7 @@ loopTimer = setInterval(() => {
 	// 진행 바 업데이트
 	const ratio = (t - currentVideo.start) / (end - currentVideo.start)
 	document.getElementById('loop-fill').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+	updateInfo(t)
 }, 250)
 
 /*
@@ -171,6 +172,20 @@ function onPlayerStateChange(e) {
 }
 */
 // ── 상태 텍스트 업데이트 ──
+function updateInfo(t = 0) {
+	if (!currentVideo) return
+	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
+	const end = currentVideo.end > 0 ? currentVideo.end : (player ? player.getDuration() : 0)
+	const cur = fmt(t)
+	const endStr = fmt(end)
+	if (currentVideo.start === 0) {
+		document.getElementById('now-info').textContent = `${cur} → ${endStr}`
+	} else {
+		const startStr = fmt(currentVideo.start)
+		document.getElementById('now-info').textContent = `${startStr} → ${cur} → ${endStr}`
+	}
+}
+/*
 function updateInfo() {
 	if (!currentVideo) return
 	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
@@ -178,7 +193,7 @@ function updateInfo() {
 	document.getElementById('now-info').textContent =
 		`${fmt(currentVideo.start)} → ${fmt(end)}`
 }
-/*
+
 function updateInfo() {
 	if (!currentVideo) return
 	const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
