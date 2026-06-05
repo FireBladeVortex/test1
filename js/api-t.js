@@ -9,10 +9,9 @@ const id_find = id => id.includes('/') ? id.split('/').pop().split('?').shift():
 
 // 반복 구간 찾기
 const time_convert = time => {
-    if (typeof time === 'number')
-        return time
     if (typeof time === 'string')
         return time.includes(':') ? time.split(':').reduce((acc, cur) => acc * 60 + +cur, 0):+time
+	return 0
 }
 // 변수 준비
 let player = null
