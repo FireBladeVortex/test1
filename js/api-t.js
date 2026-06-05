@@ -72,30 +72,11 @@ function total_list() {
 			}}
 		})
 
-		document.querySelectorAll('#overlay_big, #overlay_small_1, #overlay_small_2').forEach(overlay =>
-			overlay.addEventListener('click', () => {
-				const State = player.getPlayerState()
-				if (video_click === -1) {
-					return
-				}
-				if (State === YT.PlayerState.PLAYING) {
-					player.pauseVideo()
-				}
-				else if (State === YT.PlayerState.PAUSED) {
-					player.playVideo()
-				}
-			}
-		))
 	}
 }
-/*
-			*/
-
 		// 화면 절반 오른쪽도 같은 기능
 		// 첫 클릭 아무것도 안함
 		// 재생 시작 후 클릭 일시정지, 이어서 재생
-
-		/*
 		document.getElementById('overlay_big').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_1').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_2').addEventListener('click', overlay_click)
@@ -110,7 +91,7 @@ function overlay_click() {
 		player.playVideo()
 	}
 }
-*/
+
 
 // iframe 준비
 function onYouTubeIframeAPIReady() {
