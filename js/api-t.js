@@ -5,7 +5,16 @@ const tag = document.createElement('script')
 	document.head.appendChild(tag)
 
 // youtube id 코드 찾기
-const id_find = id => id.includes('/') ? id.split('/').pop().split('?').shift():id
+// const id_find = id => id.includes('/') ? id.split('/').pop().split('?').shift():id
+
+const id_find = id => {
+	try {
+		const url = new URL(id)
+		return url.searchParams.get('v') ?? url.pathname.split('/').pop()
+	} catch {
+		return id
+	}
+}
 
 // 반복 구간 찾기
 const time_convert = time => {
@@ -37,7 +46,7 @@ function total_list() {
 
 
 
-		
+
 	// 영상 목록 순서대로 불러오기
 	for (let i = 0; i < video_list.length; i++) {
 		const ready = video_list[i]
