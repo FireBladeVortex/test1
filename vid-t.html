@@ -49,12 +49,10 @@
 		}
 
 		#list {
-			display: flex; /* 왼쪽부터 순서대로 */ /* 없어도 되나 실험 */
-			flex: 1; /* 이 안에 있는 모든 것을 같은 비율로 유지 */ /* 없어도 되나 실험 */
+			display: flex;
 			flex-wrap: wrap; /* 줄바꿈 효과 */
 			gap: var(--gap); /* 간격 */
 			overflow: hidden; /* 스크롤바 방지 */
-			min-height: 0; /* 없어도 되나 실험 */
 		}
 
 		.btn {
@@ -64,7 +62,6 @@
 			position: relative; /* 없어도 되나 실험 */
 			width: var(--img-w);
 			height: var(--img-h);
-			flex: 0 0; /* 없어도 되나 실험 */
 			background: var(--box);
 			overflow: hidden; /* 스크롤 바 방지 */
 			cursor: pointer;
@@ -87,7 +84,6 @@
 			width: var(--img-w); /* 100% */
 			height: var(--img-h); /* 100% */
 			object-fit: cover; /* 이미지 비율 유지 + 가득 채움 */
-			display: block; /* 이미지 가운데 정렬 */
 		}
 
 		.btn-text { /* 1234 표시하는걸 재생 중 .▶⏸ ⏸ ⏹ 재생 대기 중 기능으로 변경 */
@@ -167,5 +163,4 @@
 <script src="js/list-t.js"></script>
 <script src="js/api-t.js"></script>
 
-</body>
 </html>
