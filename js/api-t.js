@@ -18,32 +18,38 @@ const time_convert = time => {
 let player = null
 let video_click = -1 // 재생 전 초기 상태
 
-// 영상 미리보기 불러오기
+// 왼쪽 영상 미리보기 불러오기
 function total_list() {
 	const list = document.getElementById('list')
-	// list.innerHTML = ''
 
+	// 영상 목록 순서대로 불러오기
 	for (let i = 0; i < video_list.length; i++) {
 		const ready = video_list[i]
 		const btn = document.createElement('button')
 		btn.className = 'btn'
 		btn.dataset.index = i
 
-		// 미리보기 등록
+		// 미리보기 이미지 등록
 		const img = document.createElement('img')
 		img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/mqdefault.jpg`
 
+		// 마우스 올라갔을때 강조 효과
 		btn.addEventListener('mouseenter', () => {
 			if (btn.classList.contains('blur'))
 				btn.style.filter = 'brightness(100%)'
 				btn.style.opacity = '100%'
 		})
+
+		// 마우스 나갔을때 강조효과 종료
 		btn.addEventListener('mouseleave', () => {
 			if (btn.classList.contains('blur'))
 				btn.style.filter = ''
 				btn.style.opacity = ''
 		})
+
+		//미리보기 불러와
 		btn.appendChild(img)
+		list.appendChild(btn)
 
 		// 첫 클릭 = 재생
 		// 이후 클릭 = 일시 정지, 이어서 재생 반복
@@ -62,18 +68,21 @@ function total_list() {
 		// 화면 절반 오른쪽도 같은 기능
 		// 첫 클릭 아무것도 안함
 		// 재생 시작 후 클릭 일시정지, 이어서 재생
-		document.getElementById('overlay').addEventListener('click', () => {
-			if (video_click === -1) return
-			if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-				player.pauseVideo()
-			}
-			else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
-				player.playVideo()
-			}
-		})
+		document.getElementById('overlay_big').addEventListener('click', overlay_click)
+		document.getElementById('overlay_small').addEventListener('click', overlay_click)
 
-		//미리보기 불러와
-		list.appendChild(btn)
+	}
+}
+
+// 오른쪽 투명 오버레이 재생 조작
+function overlay_click() {
+	if (video_click === -1)
+		return
+	if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+		player.pauseVideo()
+	}
+	else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
+		player.playVideo()
 	}
 }
 
@@ -103,7 +112,7 @@ function loop(index) {
 	// 에러 발생시 즉시 종료
 	// if (!player || !video_list[index]) return
 
-	// 타이머 초기화
+	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
 
 	// 버튼 상태 관리
@@ -153,15 +162,13 @@ function onPlayerStateChange(event) {
 function update(time = 0) {
 	// if (!video_play) return
 	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
-	// const end = time_convert(video_play.end) > 0 ? time_convert(video_play.end) : (player ? player.getDuration() : 0)
-	const end = time_convert(video_play.end) > 0 ? time_convert(video_play.end):player.getDuration()
 	const cur = fmt(time)
-	const end_time = time_convert(video_play.end) > 0 ? video_play.end:fmt(player.getDuration())
+	const end = time_convert(video_play.end) > 0 ? video_play.end:fmt(player.getDuration())
 	if (time_convert(video_play.start) === 0) {
-		document.getElementById('play-msg').textContent = `${cur} → ${end_time}`
+		document.getElementById('play-msg').textContent = `${cur} → ${end}`
 	} else {
-		const start_time = video_play.start
-		document.getElementById('play-msg').textContent = `${start_time} → ${cur} → ${end_time}`
+		const start = video_play.start
+		document.getElementById('play-msg').textContent = `${start} → ${cur} → ${end}`
 	}
 }
 

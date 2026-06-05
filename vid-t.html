@@ -16,7 +16,6 @@
 			--text: #ffffff; /* 글자 색 */
 			--img-w: 160px; /* 이미지 가로 길이 */
 			--img-h: 90px; /* 이미지 세로 길이 */
-			--gap: 5px; /* 이미지 간격 */
 		}
 
 		body {
@@ -32,7 +31,6 @@
 			width: 100vw;
 			height: 100vh;
 			overflow: hidden;
-			position: relative;
 		}
 
 		#left {
@@ -40,7 +38,7 @@
 			align-items: center; /* 중앙 정렬 */
 			flex: 0 0 50%; /* 화면 절반으로 고정 */
 			background: var(--box);
-			padding: var(--gap);
+			padding: 10px;
 		}
 
 		#left h1 {
@@ -49,7 +47,7 @@
 			font-size: 14px;
 			color: var(--highlight);
 			text-align: center;
-			border-bottom: var(--gap) solid var(--emp);
+			border-bottom: 3px solid var(--emp);
 			padding-bottom: 10px;
 		}
 
@@ -59,9 +57,9 @@
 			justify-content: center;
 			display: flex;
 			flex-wrap: wrap; /* 줄바꿈 효과 */
-			gap: var(--gap); /* 간격 */
+			gap: 5px; /* 간격 */
 			overflow: hidden; /* 스크롤바 방지 */
-			padding: var(--gap);
+			padding: 5px;
 		}
 
 		.btn {
@@ -78,11 +76,11 @@
 		}
 
 		.btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
-			outline: var(--gap) solid var(--highlight);
+			outline: 2px solid var(--highlight);
 		}
 
 		.btn.active { /* 활성화 상태 강조 // 클릭 후 */
-			outline: var(--gap) solid var(--highlight);
+			outline: 2px solid var(--highlight);
 		}
 
 		.btn.blur { /* 나머지 비활성 표시로 어둡게 */
@@ -105,22 +103,30 @@
 			pointer-events: none; /* 실험 */
 		}
 
-		#overlay {
+		#overlay_big {
 			position: absolute;
-			top: 0;
-			left: 50%;
-			width: 50%;
+			width: 100%;
 			height: 100%;
 			z-index: 10;
 			cursor: pointer;
-}
+		}
+
+		#overlay_small {
+			position: absolute;
+			width: 100%;
+			height: 50%;
+			z-index: 10;
+			cursor: pointer;
+		}
+
 		#right { /* 오른쪽 */
+			position: relative;
 			flex: 1; /* 일정하게 정렬 */
-			display: flex; /* */
+			display: flex; /* 정렬 */
 			flex-direction: column; /* 가로 + 실험 */
 			align-items: center; /* 가운데 */
 			justify-content: center; /* 가운데 */
-			gap: var(--gap);
+			gap: 3px;
 		}
 
 		#player { /* 재생 공간 */
@@ -128,9 +134,8 @@
 			width: min(640px, 100%); /* 최대 640px, 공간 부족하면 축소 */
 			aspect-ratio: 16 / 9; /* 640×390 비율 고정 */
 			margin-bottom: 14px;
-
-	border: 3px solid var(--emp);
-	outline: 5px solid #000000;
+			border: 3px solid var(--emp);
+			outline: 5px solid #000000;
 		}
 
 		#player iframe, #you_player { /* 유튜브가 들어갈 공간 */
@@ -172,8 +177,9 @@
 		</div>
 
 		<div id="right">
-			<div id="overlay"></div>
+			<div id="overlay_big"></div>
 			<div id="player">
+				<div id="overlay_small"></div>
 				<div id="you_player"></div>
 			</div>
 			<div id="play-bar">
