@@ -37,14 +37,12 @@ function total_list() {
 		btn.addEventListener('mouseenter', () => {
 			if (btn.classList.contains('blur'))
 				btn.style.filter = 'brightness(100%)'
-				btn.style.opacity = '100%'
 		})
 
 		// 마우스 나갔을때 강조효과 종료
 		btn.addEventListener('mouseleave', () => {
 			if (btn.classList.contains('blur'))
 				btn.style.filter = ''
-				btn.style.opacity = ''
 		})
 
 		//미리보기 불러와
@@ -78,6 +76,8 @@ function total_list() {
 function overlay_click() {
 	if (video_click === -1)
 		return
+	document.getElementById('overlay_big').style.cursor = 'pointer'
+	document.getElementById('overlay_small').style.cursor = 'pointer'
 	if (player.getPlayerState() === YT.PlayerState.PLAYING) {
 		player.pauseVideo()
 	}
@@ -136,6 +136,8 @@ function loop(index) {
 		...(time_convert(video_play.end) > 0 && {endSeconds: time_convert(video_play.end)})
 	})
 
+	document.getElementById('overlay_big').style.cursor = 'pointer'
+	document.getElementById('overlay_small').style.cursor = 'pointer'
 	update()
 
 	play_bar_ctrl = setInterval(() => {
