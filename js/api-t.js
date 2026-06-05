@@ -42,9 +42,6 @@ let player = null
 let video_click = -1 // 재생 전 초기 상태
 let play_bar_ctrl = null
 let video_play = null
-let overlay_ready = false
-let start_sec = 0
-let end_sec = 0
 
 // 왼쪽 영상 미리보기 불러오기
 function total_list() {
@@ -81,7 +78,9 @@ function total_list() {
 	}
 }
 
+
 // 오른쪽 투명 오버레이 재생 조작
+let overlay_ready = false
 // 광고 스킵 자리 제외
 function overlay_click() {
 	if (video_click === -1)
@@ -114,6 +113,11 @@ function onYouTubeIframeAPIReady() {
 		}
 	})
 }
+
+// 시간 관리
+let start_sec = 0
+let end_sec = 0
+let last_sec = 0
 
 // 재생 준비
 function loop(index) {
@@ -171,12 +175,20 @@ function loop(index) {
 
 	update()
 
+	// 결정된 시간 값 관리
+	if (end_sec === 0) {
+		setTimeout(() => { last_sec = player.getDuration() }, 300)
+	}
+	else {
+		last_sec = end_sec
+	}
+
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() => {
 		if (!player || !video_play) return
 		if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
 		const cur = player.getCurrentTime()
-		const end = end_sec > 0 ? end_sec : player.getDuration()
+		const end = last_sec > 0 ? end_sec : player.getDuration()
 		if (end_sec > 0 && cur >= end_sec) {
 			player.seekTo(start_sec, true)
 		}

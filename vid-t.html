@@ -34,6 +34,7 @@
 		}
 
 		#left {
+			display: flex;
 			flex-direction: column; /* 가로 정렬 */
 			align-items: center; /* 중앙 정렬 */
 			flex: 0 0 50%; /* 화면 절반으로 고정 */
@@ -58,7 +59,8 @@
 			display: flex;
 			flex-wrap: wrap; /* 줄바꿈 효과 */
 			gap: 5px; /* 간격 */
-			overflow: hidden; /* 스크롤바 방지 */
+			overflow-y: auto;    /* 세로 스크롤 바 허용 */
+			overflow-x: hidden;  /* 가로 스크롤 바 차단 */
 			padding: 5px;
 		}
 
