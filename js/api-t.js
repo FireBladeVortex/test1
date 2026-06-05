@@ -118,7 +118,7 @@ function loop(index) {
 
 function onPlayerStateChange(event) {
 	if (event.data === YT.PlayerState.ENDED && video_play) {
-		player.seekTo(video_play.start, true)
+		player.seekTo(time_convert(video_play.start), true)
 		player.playVideo()
 	}
 }
