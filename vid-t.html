@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<title>유튜브 구간 반복 재생</title>
 	<style>
-		/* { margin: 0; padding: 0; box-sizing: border-box; } */
+		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		:root {
 			/* 색상 */
@@ -27,14 +27,17 @@
 			color: var(--highlight);
 		}
 
-		#box { /* 화면을 절반으로 */
+		#box { /* 좌우 배열 결정 */
 			display: flex;
 			width: 100vw;
 			height: 100vh;
 			overflow: hidden;
+			position: relative;
 		}
 
 		#left {
+			flex-direction: column; /* 가로 정렬 */
+			align-items: center; /* 중앙 정렬 */
 			flex: 0 0 50%; /* 화면 절반으로 고정 */
 			background: var(--box);
 			padding: var(--gap);
@@ -42,7 +45,7 @@
 
 		#left h1 {
 			width: 90%;
-			margin:auto;
+			margin: 0 auto;
 			font-size: 14px;
 			color: var(--highlight);
 			text-align: center;
@@ -51,24 +54,26 @@
 		}
 
 		#list {
+			margin-top: 9px;
+			width: 100%;
+			justify-content: center;
 			display: flex;
 			flex-wrap: wrap; /* 줄바꿈 효과 */
 			gap: var(--gap); /* 간격 */
 			overflow: hidden; /* 스크롤바 방지 */
 			padding: var(--gap);
-			width: fit-content;
 		}
 
 		.btn {
-			display: flex; /* 없어도 되나 실험 */
-			align-items: center; /* 없어도 되나 실험 */
-			justify-content: center; /* 없어도 되나 실험 */
-			position: relative; /* 없어도 되나 실험 */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
 			width: var(--img-w);
 			height: var(--img-h);
 			background: var(--box);
 			overflow: hidden; /* 스크롤 바 방지 */
-			cursor: pointer;
+			cursor: pointer; /* 커서 변경 */
 			border: none;
 		}
 
@@ -76,13 +81,13 @@
 			outline: var(--gap) solid var(--highlight);
 		}
 
-		.btn:active { /* 활성화 상태 강조 // 클릭 후 */
-			background: var(--highlight);
+		.btn.active { /* 활성화 상태 강조 // 클릭 후 */
+			outline: var(--gap) solid var(--highlight);
 		}
 
-		.btn.blur { /* 흐리거나 어둡게 */
-			opacity: 50%; /* 실험 */
-			filter: brightness(50%); /* 어둡게 */
+		.btn.blur { /* 나머지 비활성 표시로 어둡게 */
+			opacity: 50%; /* 투명하게 */
+			filter: brightness(25%); /* 어둡게 */
 		}
 
 		.btn img { /* 없어도 되나 실험 */
@@ -100,6 +105,15 @@
 			pointer-events: none; /* 실험 */
 		}
 
+		#overlay {
+			position: absolute;
+			top: 0;
+			left: 50%;
+			width: 50%;
+			height: 100%;
+			z-index: 10;
+			cursor: pointer;
+}
 		#right { /* 오른쪽 */
 			flex: 1; /* 일정하게 정렬 */
 			display: flex; /* */
@@ -113,6 +127,10 @@
 			position: relative;
 			width: min(640px, 100%); /* 최대 640px, 공간 부족하면 축소 */
 			aspect-ratio: 16 / 9; /* 640×390 비율 고정 */
+			margin-bottom: 14px;
+
+	border: 3px solid var(--emp);
+	outline: 5px solid #000000;
 		}
 
 		#player iframe, #you_player { /* 유튜브가 들어갈 공간 */
@@ -126,17 +144,17 @@
 			height: 5px;
 			background: #000000;
 			border-radius: var(--img-h);
-			overflow: hidden;
+			overflow: hidden;	
 		}
 
 		#play-now { /* 재생 막대 진행도 */
 			height: 100%;
 			width: 0%;
-			background: var(--highlight);
+			background: var(--emp);
 			border-radius: var(--img-h);
 			overflow: hidden;
 		}
-		
+
 		#play-msg { /* 메세지 + 시간 표시 */
 			font-size: 14px;
 			color: var(--highlight);
@@ -154,6 +172,7 @@
 		</div>
 
 		<div id="right">
+			<div id="overlay"></div>
 			<div id="player">
 				<div id="you_player"></div>
 			</div>
