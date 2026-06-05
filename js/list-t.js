@@ -9,8 +9,8 @@
 const video_list = [
 	{
 		id: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
-		start: 110,
-		end: 163
+		start: '1:50',
+		end: '2:43'
 	},
 	{
 		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
