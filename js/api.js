@@ -79,7 +79,7 @@ function onYouTubeIframeAPIReady() {
 		playerVars: {
 			autoplay: 0,
 			rel: 0,
-			modestbranding: 1,
+			controls: 0,
 		},
 		events: {
 			onStateChange: onPlayerStateChange
