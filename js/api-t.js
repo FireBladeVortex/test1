@@ -60,7 +60,7 @@ function total_list() {
 		// 미리보기 이미지 등록
 		const img = document.createElement('img')
 		img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/mqdefault.jpg`
-
+/*
 		// 마우스 올라갔을때 강조 효과
 		btn.addEventListener('mouseenter', () => {
 			if (btn.classList.contains('blur'))
@@ -71,7 +71,7 @@ function total_list() {
 		btn.addEventListener('mouseleave', () => {
 				btn.style.filter = ''
 		})
-
+*/
 		// 미리보기 불러와
 		btn.appendChild(img)
 		list.appendChild(btn)
