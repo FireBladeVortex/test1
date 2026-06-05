@@ -52,9 +52,13 @@ function total_list() {
 		// 첫 클릭 = 재생
 		// 이후 클릭 = 일시 정지, 이어서 재생 반복
 		btn.addEventListener('click', () => {
+			/*
 			document.getElementById('overlay_big').style.cursor = 'pointer'
 			document.getElementById('overlay_small_1').style.cursor = 'pointer'
 			document.getElementById('overlay_small_2').style.cursor = 'pointer'
+			*/
+			document.querySelectorAll('#overlay_big, #overlay_small_1, #overlay_small_2').forEach(overlay =>
+				overlay.style.cursor = 'pointer')
 			const State = player.getPlayerState()
 			if (video_click === i) {
 				if (State === YT.PlayerState.PLAYING) {
