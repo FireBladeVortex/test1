@@ -11,8 +11,9 @@ const id_find = id => id.includes('/') ? id.split('/').pop().split('?').shift():
 const time_convert = time => {
     if (typeof time === 'string')
         return time.includes(':') ? time.split(':').reduce((acc, cur) => acc * 60 + +cur, 0):+time
-	return 0
+    return 0
 }
+
 // 변수 준비
 let player = null
 let video_click = -1 // 재생 전 초기 상태
