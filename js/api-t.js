@@ -31,7 +31,7 @@ function total_list() {
 
         // 미리보기 등록
         const img = document.createElement('img')
-        img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/default.jpg`
+        img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/mqdefault.jpg`
         btn.appendChild(img)
 
         // 첫 클릭 = 재생
@@ -62,6 +62,7 @@ function onYouTubeIframeAPIReady() {
 			autoplay: 0,
 			rel: 0,
 		},
+        // 현재 재생 상태 불러오기
 		events: {
 			onStateChange: onPlayerStateChange
 		}
@@ -114,7 +115,7 @@ function loop(index) {
 		const ratio = (cur - time_convert(video_play.start)) / (end - time_convert(video_play.start))
 		document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		update(cur)
-	}, 1000) // 1000ms
+	}, 100) // 100ms
 }
 
 function onPlayerStateChange(event) {
