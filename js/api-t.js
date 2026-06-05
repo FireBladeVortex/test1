@@ -156,7 +156,7 @@ function update(time = 0) {
 	// const end = time_convert(video_play.end) > 0 ? time_convert(video_play.end) : (player ? player.getDuration() : 0)
 	const end = time_convert(video_play.end) > 0 ? time_convert(video_play.end):player.getDuration()
 	const cur = fmt(time)
-	const end_time = video_play.end
+	const end_time = time_convert(video_play.end) > 0 ? video_play.end:fmt(player.getDuration())
 	if (time_convert(video_play.start) === 0) {
 		document.getElementById('play-msg').textContent = `${cur} → ${end_time}`
 	} else {
