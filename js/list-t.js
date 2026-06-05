@@ -6,66 +6,200 @@
 ════════════════════════════════════════ */
 const video_list = [
 	{
-		id: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+		start: 110,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 		start: '1:50',
-		end: '2:43'
+		end: 0
 	},
 	{
-		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
+		id: "https://youtu.be/dQw4w9WgXcQ?si=vxKMNftGkUcLYuLY",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/mW0jfEH6HW0?si=qnWfX0KNB0DIBsrL", /* 감규리 - 내꺼 하는 법 */
+		id: "https://youtu.be/dQw4w9WgXcQ?si=vxKMNftGkUcLYuLY",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=vxKMNftGkUcLYuLY",
+		start: 110,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=vxKMNftGkUcLYuLY",
+		start: '1:50',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=vxKMNftGkUcLYuLY&v=dQw4w9WgXcQ&feature=youtu.be",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/1dbXrB7hg7o?si=uQLfRYSg_V5D_zF3", /* 마레 플로스 - Fly Me To The Moon */
+		id: "https://www.youtube.com/watch?si=vxKMNftGkUcLYuLY&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=vxKMNftGkUcLYuLY&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 110,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=vxKMNftGkUcLYuLY&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 120,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=vxKMNftGkUcLYuLY&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: '1:50',
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/FkLVSBZb4sw?si=U9tTAzCw_GRDKeA0", /* 마레 플로스 - Englishman in New York */
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: 120,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: 100,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: 110,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: "1:50",
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: '1:30',
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dQw4w9WgXcQ?si=GWWWz5An6c8SfI4q&t=110",
+		start: '2:20',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/UOwS1ombcWY?si=WsuWMGD6SQwqWPDZ", /* 마레 플로스 - Over the Rainbow */
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 100,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 130,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: 120,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: '1:50',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: '2:00',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?si=GWWWz5An6c8SfI4q&t=120&v=dQw4w9WgXcQ&feature=youtu.be",
+		start: '2:10',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/tJjY_6eH0S4?si=dhitMcPtUjTJFGvE", /* 마레 플로스 - Englishman in New York */
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: 1,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: 100,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: 130,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: 120,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: "1:50",
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: '2:00',
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
+		start: "2:10",
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
 		start: 0,
 		end: 0
 	},
 	{
-		id: "https://youtu.be/PAzl7hXOAS8?si=MrSVud5AzlGxvYdi",
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120s",
 		start: 0,
 		end: 0
 	},
-	{
-		id: "https://youtu.be/_7NIkJwT9Wg?si=KqNIVWdRpIB10dly",
-		start: 0,
-		end: 0
-	},
-	{
-		id: "https://youtu.be/jVilOvw1oHU?si=zUsurujKacsDXMv2",
-		start: 0,
-		end: 0
-	},
-	{
-		id: "https://youtu.be/bCBVxqCUAeY?si=DGAM3Qm5HK-3USSS",
-		start: 0,
-		end: 0
-	},
-	{
-		id: "https://youtu.be/7_XPAV88jB8?si=LMblgI7USOEPQfu2",
-		start: 0,
-		end: 0
-	},
-	/* ── 여기에 추가 입력 ──
 	{
 		id: "영상ID",
 		start: 0,
@@ -81,5 +215,34 @@ const video_list = [
 		start: 0,
 		end: 0
 	},
-	*/
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "영상ID",
+		start: 0,
+		end: 0
+	},
 ]
