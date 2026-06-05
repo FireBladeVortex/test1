@@ -69,7 +69,6 @@ function total_list() {
 
 		// 마우스 나갔을때 강조효과 종료
 		btn.addEventListener('mouseleave', () => {
-			if (btn.classList.contains('blur'))
 				btn.style.filter = ''
 		})
 
