@@ -67,7 +67,8 @@ function total_list() {
 		// 첫 클릭 아무것도 안함
 		// 재생 시작 후 클릭 일시정지, 이어서 재생
 		document.getElementById('overlay_big').addEventListener('click', overlay_click)
-		document.getElementById('overlay_small').addEventListener('click', overlay_click)
+		document.getElementById('overlay_small_1').addEventListener('click', overlay_click)
+		document.getElementById('overlay_small_2').addEventListener('click', overlay_click)
 
 	}
 }
@@ -77,7 +78,8 @@ function overlay_click() {
 	if (video_click === -1)
 		return
 	document.getElementById('overlay_big').style.cursor = 'pointer'
-	document.getElementById('overlay_small').style.cursor = 'pointer'
+	document.getElementById('overlay_small_1').style.cursor = 'pointer'
+	document.getElementById('overlay_small_2').style.cursor = 'pointer'
 	if (player.getPlayerState() === YT.PlayerState.PLAYING) {
 		player.pauseVideo()
 	}
@@ -136,8 +138,6 @@ function loop(index) {
 		...(time_convert(video_play.end) > 0 && {endSeconds: time_convert(video_play.end)})
 	})
 
-	document.getElementById('overlay_big').style.cursor = 'pointer'
-	document.getElementById('overlay_small').style.cursor = 'pointer'
 	update()
 
 	play_bar_ctrl = setInterval(() => {
