@@ -52,34 +52,29 @@ function total_list() {
 		// 첫 클릭 = 재생
 		// 이후 클릭 = 일시 정지, 이어서 재생 반복
 		btn.addEventListener('click', () => {
-			/*
 			document.getElementById('overlay_big').style.cursor = 'pointer'
 			document.getElementById('overlay_small_1').style.cursor = 'pointer'
 			document.getElementById('overlay_small_2').style.cursor = 'pointer'
-			*/
-			document.querySelectorAll('#overlay_big, #overlay_small_1, #overlay_small_2').forEach(overlay =>
-				overlay.style.cursor = 'pointer')
-			const State = player.getPlayerState()
-			if (video_click === i) {
-				if (State === YT.PlayerState.PLAYING) {
+			if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
 					player.pauseVideo()
 				}
-				else if (State === YT.PlayerState.PAUSED) {
+			else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
 					player.playVideo()
 				}
 			else {
 				loop(i)
-			}}
+			}
 		})
-
-	}
-}
 		// 화면 절반 오른쪽도 같은 기능
 		// 첫 클릭 아무것도 안함
 		// 재생 시작 후 클릭 일시정지, 이어서 재생
 		document.getElementById('overlay_big').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_1').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_2').addEventListener('click', overlay_click)
+	}
+}
+
+
 // 오른쪽 투명 오버레이 재생 조작
 function overlay_click() {
 	if (video_click === -1)
