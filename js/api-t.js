@@ -40,7 +40,7 @@ function total_list() {
                 return player.playVideo()
             }
             else {
-                playSlot(i)
+                loop(i)
             }
         })
         //미리보기 불러와
@@ -78,11 +78,11 @@ function loop(index) {
 
     // 버튼 상태 관리
     // 모든 버튼을 검색
-    document.querySelectorAll('btn').forEach(btn => {
+    document.querySelectorAll('.btn').forEach(btn => {
         // 버튼 상태 강조, 어둡게 초기화
         btn.classList.remove('active', 'blur')
         // 선택한 버튼 값과 불일치하면 어둡게
-        if (parseInt(btn.dataset.index) !== index) b.classList.add('blur')})
+        if (parseInt(btn.dataset.index) !== index) btn.classList.add('blur')})
     // 일치하는 버튼을 탐색하면 그 버튼만 관리
     document.querySelector(`.btn[data-index="${index}"]`).classList.add('active')
 
