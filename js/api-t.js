@@ -22,6 +22,22 @@ let video_click = -1 // 재생 전 초기 상태
 function total_list() {
 	const list = document.getElementById('list')
 
+
+	/*
+    // onclick은 마지막 할당만 유효 → 중복 등록 불가
+    document.getElementById('overlay_big').onclick = overlay_click
+    document.getElementById('overlay_small_1').onclick = overlay_click
+    document.getElementById('overlay_small_2').onclick = overlay_click
+		// 커서 변경
+		document.getElementById('overlay_big').style.cursor = 'pointer'
+		document.getElementById('overlay_small_1').style.cursor = 'pointer'
+		document.getElementById('overlay_small_2').style.cursor = 'pointer'
+		*/
+
+
+
+
+		
 	// 영상 목록 순서대로 불러오기
 	for (let i = 0; i < video_list.length; i++) {
 		const ready = video_list[i]
@@ -52,9 +68,6 @@ function total_list() {
 		// 첫 클릭 = 재생
 		// 이후 클릭 = 일시 정지, 이어서 재생 반복
 		btn.addEventListener('click', () => {
-			document.getElementById('overlay_big').style.cursor = 'pointer'
-			document.getElementById('overlay_small_1').style.cursor = 'pointer'
-			document.getElementById('overlay_small_2').style.cursor = 'pointer'
 			if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
 					player.pauseVideo()
 				}
@@ -65,12 +78,17 @@ function total_list() {
 				loop(i)
 			}
 		})
+
+		/*
 		// 화면 절반 오른쪽도 같은 기능
 		// 첫 클릭 아무것도 안함
 		// 재생 시작 후 클릭 일시정지, 이어서 재생
 		document.getElementById('overlay_big').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_1').addEventListener('click', overlay_click)
 		document.getElementById('overlay_small_2').addEventListener('click', overlay_click)
+
+
+		*/
 	}
 }
 
@@ -87,6 +105,8 @@ function overlay_click() {
 	}
 }
 
+// 속도 느릴 때 에러 렉 방지
+let player_ready = false
 
 // iframe 준비
 function onYouTubeIframeAPIReady() {
@@ -100,6 +120,7 @@ function onYouTubeIframeAPIReady() {
 		},
 		// 현재 재생 상태 불러오기
 		events: {
+			onReady: () => { player_ready = true },
 			onStateChange: onPlayerStateChange
 		}
 	})
@@ -108,11 +129,28 @@ function onYouTubeIframeAPIReady() {
 // 변수 준비
 let play_bar_ctrl = null
 let video_play = null
+let overlay_init = false
 
 // 재생 준비
 function loop(index) {
 	// 에러 발생시 즉시 종료
-	// if (!player || !video_list[index]) return
+	if (!player_ready) {
+		setTimeout(() => loop(index), 200)  // 200ms 후 재시도
+		return
+	}
+	if (!player || !video_list[index])
+		return
+
+    // 여기서부터는 player_ready = true 보장
+    if (!overlay_init) {
+        overlay_init = true
+        document.getElementById('overlay_big').style.cursor = 'pointer'
+        document.getElementById('overlay_small_1').style.cursor = 'pointer'
+        document.getElementById('overlay_small_2').style.cursor = 'pointer'
+    }
+    document.getElementById('overlay_big').onclick = overlay_click
+    document.getElementById('overlay_small_1').onclick = overlay_click
+    document.getElementById('overlay_small_2').onclick = overlay_click
 
 	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
