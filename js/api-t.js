@@ -22,7 +22,7 @@ function total_list() {
     for (let i = 0; i < video_list.length; i++) {
         const ready = video_list[i]
         const btn = document.createElement('button')
-        btn.id = 'btn'
+        btn.className = 'btn'
         btn.dataset.index = i
 
         // 미리보기 등록
