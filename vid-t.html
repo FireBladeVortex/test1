@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<title>유튜브 구간 반복 재생</title>
+	<style>
+		/* { margin: 0; padding: 0; box-sizing: border-box; } */
+
+		:root {
+			/* 색상 */
+			--bg: #021322; /* 배경 */
+			--box: #220213; /* 목록 배경 */
+			--highlight: #FFD700; /* 강조 */
+			--emp: #800020; /* 임시 */
+			--text: #ffffff; /* 글자 색 */
+			--img-w: 160px; /* 이미지 가로 길이 */
+			--img-h: 90px; /* 이미지 세로 길이 */
+			--gap: 1%; /* 이미지 간격 */
+		}
+
+		body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden; /* 스크롤바 방지 */
+			background: var(--bg);
+			color: var(--highlight);
+		}
+
+		#box { /* 화면을 절반으로 */
+			display: flex;
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+		}
+
+		#left {
+			flex: 0 0 50%; /* 화면 절반으로 고정 */
+			background: var(--box);
+			padding: var(--gap);
+		}
+
+		#left h1 {
+			font-size: 14px;
+			color: var(--highlight);
+			text-align: center;
+			border-bottom: 3px solid var(--emp);
+			padding-bottom: var(--gap);
+		}
+
+		#list {
+			display: block; /* 왼쪽부터 순서대로 */ /* 없어도 되나 실험 */
+			flex: 1; /* 이 안에 있는 모든 것을 같은 비율로 유지 */ /* 없어도 되나 실험 */
+			flex-wrap: wrap; /* 줄바꿈 효과 */
+			gap: var(--gap); /* 간격 */
+			overflow: hidden; /* 스크롤바 방지 */
+			min-height: 0; /* 없어도 되나 실험 */
+		}
+
+		.btn {
+			display: flex; /* 없어도 되나 실험 */
+			align-items: center; /* 없어도 되나 실험 */
+			justify-content: center; /* 없어도 되나 실험 */
+			position: relative; /* 없어도 되나 실험 */
+			width: var(--img-w);
+			height: var(--img-h);
+			flex: 0 0; /* 없어도 되나 실험 */
+			background: var(--box);
+			overflow: hidden; /* 스크롤 바 방지 */
+			cursor: pointer;
+		}
+
+		.btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
+			background: var(--emp);
+			filter: brightness(50%);
+			transition: filter 0.3s;
+		}
+
+		.btn:active { /* 활성화 상태 강조 // 클릭 후 */
+			background: var(--highlight);
+		}
+
+		.btn.blur { /* 흐리거나 어둡게 */
+			opacity: 50%; /* 실험 */
+			filter: brightness(50%); /* 어둡게 */
+		}
+
+		.btn img { /* 없어도 되나 실험 */
+			width: var(--img-h); /* 100% */
+			height: var(--img-w); /* 100% */
+			object-fit: cover; /* 이미지 비율 유지 + 가득 채움 */
+			display: block; /* 이미지 가운데 정렬 */
+		}
+
+		.btn-text { /* 1234 표시하는걸 재생 중 .▶⏸ ⏸ ⏹ 재생 대기 중 기능으로 변경 */
+			position: absolute;
+			bottom: 10%;
+			right: 10%;
+			font-size: 20px;
+			color: var(--text);
+			pointer-events: none; /* 실험 */
+		}
+
+		#right { /* 오른쪽 */
+			flex: 1; /* 일정하게 정렬 */
+			display: flex; /* */
+			flex-direction: column; /* 가로 + 실험 */
+			align-items: center; /* 가운데 */
+			justify-content: center; /* 가운데 */
+			gap: var(--gap);
+		}
+
+		#player { /* 재생 공간 */
+			position: relative;
+			width: min(640px, 100%); /* 최대 640px, 공간 부족하면 축소 */
+			aspect-ratio: 16 / 9; /* 640×390 비율 고정 */
+		}
+
+		#player iframe, #you_player { /* 유튜브가 들어갈 공간 */
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		#play-bar { /* 재생 막대 표시 */
+			width: min(640px, 100%);
+			height: 7px;
+			background: #000000;
+			border-radius: var(--img-h);
+			overflow: hidden;
+		}
+
+		#play-now { /* 재생 막대 진행도 */
+			height: 100%;
+			width: 0%;
+			background: var(--highlight);
+			border-radius: var(--img-h);
+			overflow: hidden;
+		}
+		
+		#play-msg { /* 메세지 + 시간 표시 */
+			font-size: 14px;
+			color: var(--highlight);
+			text-align: center;
+		}
+
+	</style>
+</head>
+
+<body>
+	<div id="box">
+		<div id="left">
+			<h1> 재생 목록</h1>
+			<div id="list"></div>
+		</div>
+
+		<div id="right">
+			<div id="player">
+				<div id="you_player"></div>
+			</div>
+			<div id="play-bar">
+				<div id="play-now"></div>
+			</div>
+			<div id="play-msg">재생 목록에서 선택하세요</div>
+		</div>
+	</div>
+</body>
+
+<script src="js/list-t.js"></script>
+<script src="js/api-t.js"></script>
+
+</body>
+</html>
