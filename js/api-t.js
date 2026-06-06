@@ -224,9 +224,12 @@ function update(time = 0) {
 }
 
 // 볼륨 조절 막대 값 반영 시키기
-document.getElementById('Volume-bar').addEventListener('input', Volume => {
+document.getElementById('Volume_bar').addEventListener('input', Volume => {
 	if (player) player.setVolume(+Volume.target.value)
 })
+document.getElementById('Volume').addEventListener('mousedown', drag => drag.stopPropagation())
+document.getElementById('Volume').addEventListener('click', click => click.stopPropagation())
+
 
 // 시작
 total_list()

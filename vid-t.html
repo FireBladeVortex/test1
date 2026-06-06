@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>유튜브 구간 반복 재생</title>
-	<style>
+	<style> /* https://codingeverybody.kr/ */
 		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		:root {
@@ -165,7 +165,7 @@
 
 		#play-bar { /* 재생 막대 표시 */
 			width: min(640px, 100%);
-			height: 5px;
+			height: 9px;
 			background: #000000;
 			border-radius: var(--img-h);
 			overflow: hidden;	
@@ -189,18 +189,89 @@
 		#Volume {
 			display: flex;
 			align-items: center;
-			gap: 5px;
-			width: 640px, 100%;
+			width: min(640px, 100%)
 		}
-
 		#Volume_bar {
 			flex: 1;
 			accent-color: var(--emp);
+			
+		}
+		#Volume_bar:hover {
+			cursor: grab;
+			flex: 1;
+			accent-color: var(--emp);
+			
+		}
+		#Volume_bar:active {
+			cursor: grabbing;
+			flex: 1;
+			accent-color: var(--emp);
+			
 		}
 
-		/* #vol-bar::-webkit-slider-runnable-track { background: var(--emp); }
 
-		#vol-bar::-webkit-slider-thumb { background: var(--highlight); } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 세로 모드
+input[type="range"] { 
+  writing-mode: vertical-lr;
+} 
+
+
+[type="range"] {
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    height: 1.5rem; 
+    margin: 0; 
+    padding: 0; 
+    background-color: violet;
+}
+
+[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.5rem; 
+    height: 1.5rem;
+    border: none;
+    border-radius: 50%;
+    background-color: #007475;
+    transition: all 0.15s ease-in-out;
+    margin-top: calc((0.5rem - 1.5rem) * 0.5); 
+}
+[type="range"]::-webkit-slider-runnable-track {
+    cursor: pointer;
+    width: 100%;
+    height: 0.5rem;
+    background-color: #d3d9de;
+    border-radius: 0.25rem;
+}
+
+[type="range"]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(0, 116, 117, .4);
+}
+
+[type="range"]::-webkit-slider-thumb:active {
+    background-color: #99c7c7;
+}
+
+*/
 
 	</style>
 </head>
@@ -224,7 +295,7 @@
 			</div>
 			<div id="play-msg">재생 목록에서 선택하세요</div>
 			<div id="Volume">
-				<input id="Volume-bar" type="range" min="0" max="100" step="1" value="10">
+				<input id="Volume_bar" type="range" min="0" max="100">
 			</div>
 		</div>
 	</div>
