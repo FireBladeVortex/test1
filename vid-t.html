@@ -93,19 +93,22 @@
 			filter: brightness(100%);
 		}
 
-		.btn img { /* 없어도 되나 실험 */
+		.btn img {
 			width: var(--img-w); /* 100% */
 			height: var(--img-h); /* 100% */
-			object-fit: cover; /* 이미지 비율 유지 + 가득 채움 */
+			/* 이미지 비율 유지 + 가득 채움
+			// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
+			object-fit: cover;
 		}
 
-		.btn-text { /* 1234 표시하는걸 재생 중 .▶⏸ ⏸ ⏹ 재생 대기 중 기능으로 변경 */
+		/* ▶⏸ ⏸ ⏹ 재생 대기 중 특수문자로 표시 기능 구현 중지 // 다른 방법 생각남 */
+		.btn-text {
 			position: absolute;
 			bottom: 10%;
 			right: 10%;
 			font-size: 20px;
 			color: var(--text);
-			pointer-events: none; /* 실험 */
+			pointer-events: none; /* ? */
 		}
 
 		#overlay_big {
@@ -114,6 +117,7 @@
 			height: 100%;
 			z-index: 1;
 			cursor: default;
+			display: none; /* 비활성화 */
 		}
 
 		#overlay_small_1 {
@@ -140,6 +144,7 @@
 			align-items: center; /* 가운데 */
 			justify-content: center; /* 가운데 */
 			gap: 3px;
+			cursor: default;
 		}
 
 		#player { /* 재생 공간 */
@@ -178,7 +183,24 @@
 			font-size: 14px;
 			color: var(--highlight);
 			text-align: center;
+			display: none; /* 비활성화 */
 		}
+
+		#Volume {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			width: 640px, 100%;
+		}
+
+		#Volume_bar {
+			flex: 1;
+			accent-color: var(--emp);
+		}
+
+		/* #vol-bar::-webkit-slider-runnable-track { background: var(--emp); }
+
+		#vol-bar::-webkit-slider-thumb { background: var(--highlight); } */
 
 	</style>
 </head>
@@ -201,6 +223,9 @@
 				<div id="play-now"></div>
 			</div>
 			<div id="play-msg">재생 목록에서 선택하세요</div>
+			<div id="Volume">
+				<input id="Volume-bar" type="range" min="0" max="100" step="1" value="10">
+			</div>
 		</div>
 	</div>
 </body>

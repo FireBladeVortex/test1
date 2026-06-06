@@ -3,9 +3,9 @@
 //////////////////////////////////////////////////////////////////////
 
 // YouTube Player iframe API 불러오기
-const tag = document.createElement('script')
-	tag.src = "https://www.youtube.com/iframe_api"
-	document.head.appendChild(tag)
+const api = document.createElement('script')
+	api.src = "https://www.youtube.com/iframe_api"
+	document.head.appendChild(api)
 
 // youtube id 찾기
 const id_find = id => {
@@ -27,7 +27,7 @@ const time_convert = time => {
 	return 0
 }
 
-// 시작시간 예상치 못한 경우 대비
+// 시작시간 예상치 못한 여러가지 경우의 수 대비
 const time_find = id => {
 	try {
 		const time = new URL(id).searchParams.get('t')
@@ -40,8 +40,6 @@ const time_find = id => {
 // 전역 변수 준비
 let player = null
 let video_click = -1 // 재생 전 초기 상태
-let play_bar_ctrl = null
-let video_play = null
 
 // 왼쪽 영상 미리보기 불러오기
 function total_list() {
@@ -80,8 +78,8 @@ function total_list() {
 
 
 // 오른쪽 투명 오버레이 재생 조작
+// 오버레이 3개 만들어서 광고 스킵 자리 제외
 let overlay_ready = false
-// 광고 스킵 자리 제외
 function overlay_click() {
 	if (video_click === -1)
 		return
@@ -105,16 +103,19 @@ function onYouTubeIframeAPIReady() {
 		playerVars: {
 			autoplay: 0,
 			rel: 0,
+			controls: 0, // 유튜브 ui 숨김 (볼륨 조절용)
 		},
 		// 현재 상태 불러오기
 		events: {
-			onReady: () => { player_ready = true },
+			onReady: () => { player_ready = true }, // 느릴 때 에러 방지
 			onStateChange: onPlayerStateChange
 		}
 	})
 }
 
 // 시간 관리
+let video_play = null
+let play_bar_ctrl = null
 let start_sec = 0
 let end_sec = 0
 let last_sec = 0
@@ -122,22 +123,22 @@ let last_sec = 0
 // 재생 준비
 function loop(index) {
 
-	// 에러 발생시 즉시 종료
+	// 예상 에러 발생시 진행을 멈추고 즉시 종료
 	if (!player_ready) {
-		setTimeout(() => loop(index), 100) // 200ms 후 재시도
+		setTimeout(() => loop(index), 100) // 100ms 후 재시도
 		return
 	}
 	if (!player || !video_list[index])
 		return
 
-	// 오버레이 기능, 커서 상태 조작
+	// 오버레이 기능, 커서 상태 조절
 	if (!overlay_ready) {
 		overlay_ready = true
-		document.getElementById('overlay_big').style.cursor = 'pointer'
+		document.getElementById('right').style.cursor = 'pointer'
 		document.getElementById('overlay_small_1').style.cursor = 'pointer'
 		document.getElementById('overlay_small_2').style.cursor = 'pointer'
 	}
-	document.getElementById('overlay_big').onclick = overlay_click
+	document.getElementById('right').onclick = overlay_click
 	document.getElementById('overlay_small_1').onclick = overlay_click
 	document.getElementById('overlay_small_2').onclick = overlay_click
 
@@ -148,16 +149,16 @@ function loop(index) {
 	document.querySelectorAll('.btn').forEach(btn => {
 		// 강조, 어둡게 삭제
 		btn.classList.remove('active', 'blur')
-		// 선택한 버튼 값과 불일치한 버튼은 모두 어둡게
+		// 선택한 버튼 제외 나머지 버튼을 모두 어둡게
 		if (parseInt(btn.dataset.index) !== index) btn.classList.add('blur')})
-	// 일치하는 버튼 강조
+	// 일치하는 버튼만 강조
 	document.querySelector(`.btn[data-index="${index}"]`).classList.add('active')
 
-	// index 이용할 준비
+	// list index 이용할 준비
 	video_click = index
 	video_play = video_list[index]
 
-	// 시간값들 여러 경우의 수 대비
+	// 시간값들 여러 경우의 수 대비 및 정리
 	const time_sec = time_find(video_play.id)
 	end_sec = time_convert(video_play.end)
 	start_sec = (() => {
@@ -173,11 +174,12 @@ function loop(index) {
 		...(end_sec > 0 && {endSeconds: end_sec})
 	})
 
+	// 상태 갱신
 	update()
 
-	// 결정된 시간 값 관리
+	// 결정될 시간 값 관리
 	if (end_sec === 0) {
-		setTimeout(() => { last_sec = player.getDuration() }, 300)
+		setTimeout(() => { last_sec = player.getDuration() }, 100) // 0 일때 100ms 후 영상길이 불러와서 반영하고 종료
 	}
 	else {
 		last_sec = end_sec
@@ -185,8 +187,11 @@ function loop(index) {
 
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() => {
+		// 에러 방지
 		if (!player || !video_play) return
 		if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
+
+		// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
 		const cur = player.getCurrentTime()
 		const end = last_sec > 0 ? end_sec : player.getDuration()
 		if (end_sec > 0 && cur >= end_sec) {
@@ -195,7 +200,7 @@ function loop(index) {
 		const ratio = (cur - start_sec) / (end - start_sec)
 		document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		update(cur)
-	}, 100)
+	}, 100) // 100ms
 }
 
 // 유튜브 상태 확인
@@ -217,6 +222,11 @@ function update(time = 0) {
 		document.getElementById('play-msg').textContent = `${fmt(start_sec)} → ${cur} → ${end}`
 	}
 }
+
+// 볼륨 조절 막대 값 반영 시키기
+document.getElementById('Volume-bar').addEventListener('input', Volume => {
+	if (player) player.setVolume(+Volume.target.value)
+})
 
 // 시작
 total_list()
