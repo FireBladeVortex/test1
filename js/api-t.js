@@ -242,5 +242,11 @@ document.addEventListener('keydown', v => {
 	}
 })
 
+document.addEventListener('keydown', e => {
+	if (e.code !== 'Space') return
+	if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(e.target.tagName)) return
+	e.preventDefault()
+	overlay_click()
+})
 // 시작
 total_list()
