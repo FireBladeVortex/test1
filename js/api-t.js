@@ -1,5 +1,7 @@
 //////////////////////////////////////////////////////////////////////
 // https://developers.google.com/youtube/iframe_api_reference?hl=ko //
+// https://gist.github.com/Araxeus/fc574d0f31ba71d62215c0873a7b048e //
+// http://developer.mozilla.org/									//
 //////////////////////////////////////////////////////////////////////
 
 // YouTube Player iframe API 불러오기
@@ -120,6 +122,9 @@ let start_sec = 0
 let end_sec = 0
 let last_sec = 0
 
+// 오버레이 준비
+const overlay = document.querySelectorAll('#right, #overlay_small_1, #overlay_small_2')
+
 // 재생 준비
 function loop(index) {
 
@@ -134,13 +139,15 @@ function loop(index) {
 	// 오버레이 기능, 커서 상태 조절
 	if (!overlay_ready) {
 		overlay_ready = true
-		document.getElementById('right').style.cursor = 'pointer'
-		document.getElementById('overlay_small_1').style.cursor = 'pointer'
-		document.getElementById('overlay_small_2').style.cursor = 'pointer'
+		overlay.style.cursor = 'pointer'
+		// document.getElementById('right').style.cursor = 'pointer'
+		// document.getElementById('overlay_small_1').style.cursor = 'pointer'
+		// document.getElementById('overlay_small_2').style.cursor = 'pointer'
 	}
-	document.getElementById('right').onclick = overlay_click
-	document.getElementById('overlay_small_1').onclick = overlay_click
-	document.getElementById('overlay_small_2').onclick = overlay_click
+	overlay.onclick = overlay_click
+	// document.getElementById('right').onclick = overlay_click
+	// document.getElementById('overlay_small_1').onclick = overlay_click
+	// document.getElementById('overlay_small_2').onclick = overlay_click
 
 	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
@@ -242,10 +249,12 @@ document.addEventListener('keydown', v => {
 	}
 })
 
+
 document.addEventListener('keydown', e => {
 	if (e.code !== 'Space') return
 	e.preventDefault()
 	overlay_click()
 })
+
 // 시작
 total_list()
