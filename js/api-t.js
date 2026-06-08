@@ -227,9 +227,20 @@ function update(time = 0) {
 document.getElementById('Volume_bar').addEventListener('input', Volume => {
 	if (player) player.setVolume(+Volume.target.value)
 })
+
+// 
 document.getElementById('Volume').addEventListener('mousedown', drag => drag.stopPropagation())
 document.getElementById('Volume').addEventListener('click', click => click.stopPropagation())
 
+
+// 볼륨 가로세로 변환
+let vol_vertical = false
+document.addEventListener('keydown', v => {
+	if (v.key === 'v' || v.key === 'V') {
+		vol_vertical = !vol_vertical
+		document.getElementById('Volume_bar').classList.toggle('vertical', vol_vertical)
+	}
+})
 
 // 시작
 total_list()
