@@ -124,9 +124,16 @@ function overlay_click() {
 	}
 }
 
+let state_log_p = '' // getPlayerState 누적
+let state_log_a = '' // getAdState 누적
+
+
 // 재생 준비
 function loop(index) {
 
+	// 상태 로그 초기화
+	state_log_p = ''
+	state_log_a = ''
 	// 예상 에러 발생시 진행을 멈추고 즉시 종료
 	if (!player_ready) {
 		setTimeout(() => loop(index), 100) // 100ms 후 재시도
@@ -139,14 +146,8 @@ function loop(index) {
 	if (!overlay_ready) {
 		overlay_ready = true
 		overlay.forEach(c => {c.style.cursor = 'pointer'})
-		// document.getElementById('right').style.cursor = 'pointer'
-		// document.getElementById('overlay_small_1').style.cursor = 'pointer'
-		// document.getElementById('overlay_small_2').style.cursor = 'pointer'
 	}
 	overlay.forEach(c => {c.onclick = overlay_click})
-	// document.getElementById('right').onclick = overlay_click
-	// document.getElementById('overlay_small_1').onclick = overlay_click
-	// document.getElementById('overlay_small_2').onclick = overlay_click
 
 	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
@@ -196,6 +197,27 @@ function loop(index) {
 		last_sec = end_sec
 	}
 
+
+play_bar_ctrl = setInterval(() => {
+	if (!player || !video_play) return
+
+	// 상태 누적 먼저
+	try { state_log_p += player.getPlayerState() } catch { state_log_p += '?' }
+	try { state_log_a += player.getAdState()    } catch { state_log_a += '?' }
+
+	const msg = document.getElementById('play-msg')
+	msg.style.display = 'block'
+	msg.innerHTML = `P: ${state_log_p}<br>A: ${state_log_a}`
+
+	// 이후 재생 중일 때만 진행
+	if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
+	// ... 기존 진행바 코드
+}, 100)
+
+
+
+
+/*
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() => {
 		// 에러 방지
@@ -212,6 +234,7 @@ function loop(index) {
 		document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		update(cur)
 	}, 100) // 100ms
+	*/
 }
 
 // 유튜브 상태 확인
@@ -229,7 +252,9 @@ function onPlayerStateChange(event) {
 }
 
 // 상태 메세지 실시간 업데이트
+
 function update(time = 0) {
+	/*
 	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
 	const cur = fmt(time)
 	const end = end_sec > 0 ? fmt(end_sec) : fmt(player.getDuration())
@@ -238,17 +263,21 @@ function update(time = 0) {
 	} else {
 		document.getElementById('play-msg').textContent = `${fmt(start_sec)} → ${cur} → ${end}`
 	}
+		*/
 }
+
+
+
+
 
 // 볼륨 조절 막대 값 반영 시키기
 document.getElementById('Volume_bar').addEventListener('input', Volume => {
 	if (player) player.setVolume(+Volume.target.value)
 })
 
-// 
+// 볼륨 조절에 오버레이 간섭 방지
 document.getElementById('Volume').addEventListener('mousedown', drag => drag.stopPropagation())
 document.getElementById('Volume').addEventListener('click', click => click.stopPropagation())
-
 
 // 볼륨 가로세로 변환
 let vol_vertical = false
@@ -259,10 +288,10 @@ document.addEventListener('keydown', v => {
 	}
 })
 
-
-document.addEventListener('keydown', e => {
-	if (e.code !== 'Space') return
-	e.preventDefault()
+// 스페이스 바가 가진 모든 기능을 무시하고 일시중지, 이어서 재생 만을 실행
+document.addEventListener('keydown', key => {
+	if (key.code !== 'Space') return
+	key.preventDefault()
 	overlay_click()
 })
 
