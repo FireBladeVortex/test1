@@ -38,6 +38,7 @@ body {
 	flex-direction: column; /* 가로 정렬 */
 	align-items: center; /* 중앙 정렬 */
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
+	min-width: 0; /* 추가: flex 자식이 콘텐츠 너비로 늘어나는 것 방지 */
 	background: var(--box);
     transition: flex 0.3s ease; /* 추가 */
 }

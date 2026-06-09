@@ -90,63 +90,56 @@ function total_list() {
 	// const img_w = parseInt(getComputedStyle(...).getPropertyValue('--img-w'))
 	// y 방향: img_h 도 추가 필요
 	// const img_h = parseInt(getComputedStyle(...).getPropertyValue('--img-h'))
+function rebuild(col_count) {
+	const GROUP = ROW * col_count
+	const total = video_list.length
+	const group_count = Math.ceil(total / GROUP)
+	const order = []
 
-	// DOM 순서 재배치 + 스냅 포인트 적용
-	function rebuild(col_count) {
-		const GROUP = ROW * col_count
-		const total = video_list.length
-		const group_count = Math.ceil(total / GROUP)
-		const order = []
-
-		for (let g = 0; g < group_count; g++) {
-			for (let col = 0; col < col_count; col++) {
-				for (let row = 0; row < ROW; row++) {
-					const i = g * GROUP + row * col_count + col
-					if (i < total) order.push(i)
-				}
+	for (let g = 0; g < group_count; g++) {
+		for (let col = 0; col < col_count; col++) {
+			for (let row = 0; row < ROW; row++) {
+				const i = g * GROUP + row * col_count + col
+				if (i < total) order.push(i)
 			}
-		}
-
-		// 기존 버튼 전부 제거 후 재삽입
-		list.innerHTML = ''
-		for (const i of order) {
-			const btn = document.createElement('button')
-			btn.className = 'btn'
-			btn.dataset.index = i
-
-			const pos_in_group = order.indexOf(i) % (ROW * col_count)
-			const col_in_group = Math.floor(pos_in_group / ROW)
-			// col_in_group === 0 이면 스냅 포인트
-			if (col_in_group === 0) btn.style.scrollSnapAlign = 'start'
-			// y 방향: col_in_group 대신 row_in_group === 0 일때 적용
-			// y 방향: if (row_in_group === 0) btn.style.scrollSnapAlign = 'start'
-
-			const img = document.createElement('img')
-			img.src = `https://img.youtube.com/vi/${id_find(video_list[i].id)}/mqdefault.jpg`
-			btn.appendChild(img)
-			list.appendChild(btn)
-
-			btn.addEventListener('click', () => {
-				if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
-					player.pauseVideo()
-				} else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
-					player.playVideo()
-				} else {
-					loop(i)
-				}
-			})
-		}
-
-		// active/blur 상태 복원
-		if (video_click !== -1) {
-			document.querySelectorAll('.btn').forEach(btn => {
-				btn.classList.remove('active', 'blur')
-				if (parseInt(btn.dataset.index) !== video_click) btn.classList.add('blur')
-			})
-			document.querySelector(`.btn[data-index="${video_click}"]`)?.classList.add('active')
 		}
 	}
 
+	list.innerHTML = ''
+	order.forEach((i, pos) => { // indexOf 대신 forEach의 pos 사용
+		const btn = document.createElement('button')
+		btn.className = 'btn'
+		btn.dataset.index = i
+
+		const col_in_group = Math.floor(pos / ROW) % col_count
+		// y 방향: col_in_group 대신 row_in_group === 0 일때 적용
+		// y 방향: if (row_in_group === 0) btn.style.scrollSnapAlign = 'start'
+		if (col_in_group === 0) btn.style.scrollSnapAlign = 'start'
+
+		const img = document.createElement('img')
+		img.src = `https://img.youtube.com/vi/${id_find(video_list[i].id)}/mqdefault.jpg`
+		btn.appendChild(img)
+		list.appendChild(btn)
+
+		btn.addEventListener('click', () => {
+			if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
+				player.pauseVideo()
+			} else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
+				player.playVideo()
+			} else {
+				loop(i)
+			}
+		})
+	})
+
+	if (video_click !== -1) {
+		document.querySelectorAll('.btn').forEach(btn => {
+			btn.classList.remove('active', 'blur')
+			if (parseInt(btn.dataset.index) !== video_click) btn.classList.add('blur')
+		})
+		document.querySelector(`.btn[data-index="${video_click}"]`)?.classList.add('active')
+	}
+}
 	// 너비 기반 열 수 계산
 	let last_col = 0
 	function calc_col(width) {
