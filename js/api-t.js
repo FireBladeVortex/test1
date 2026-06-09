@@ -222,9 +222,9 @@ function onPlayerStateChange(event) {
 	}
 	try {
 		const ad_now = player.getAdState() === 1
-		ad.classList.toggle('skip', ad_now)
+		overlay.classList.toggle('skip', ad_now)
 	} catch {
-		ad.classList.remove('skip')
+		overlay.classList.remove('skip')
 	}
 }
 
