@@ -86,7 +86,7 @@ const video_list = [
 		end: 0
 	},
 	{
-		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+		id: "https://youtu.be/23sM_7PtNvY?si=3FK35sKkSspoW2dH",
 		start: 0,
 		end: 0
 	},
