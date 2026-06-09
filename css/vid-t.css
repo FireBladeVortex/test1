@@ -66,7 +66,6 @@ body {
 	position: relative;
 	width: var(--img-w);
 	height: var(--img-h);
-	background: var(--box);
 	overflow: hidden; /* 스크롤 바 방지 */
 	cursor: pointer; /* 커서 변경 */
 	border: none;
@@ -204,6 +203,7 @@ body {
 	font-size: 14px;
 	color: var(--highlight);
 	text-align: center;
+	/*
 	display: none; /* 비활성화 */
 }
 

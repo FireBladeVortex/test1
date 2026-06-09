@@ -214,11 +214,10 @@ function onPlayerStateChange(event) {
 		player.seekTo(start_sec, true)
 		player.playVideo()
 	}
-	document.getElementById('ad').classList.toggle('skip', event.data === -1)
+	document.getElementById('ad').classList.toggle('skip', event.data !== 1 && event.data !== 2)
 }
 
 // 상태 메세지 실시간 업데이트
-
 function update(time = 0) {
 	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
 	const cur = fmt(time)
@@ -248,11 +247,12 @@ document.addEventListener('keydown', v => {
 	}
 })
 
-// 스페이스 바가 가진 모든 기능을 무시하고 일시중지, 이어서 재생 만을 실행
+// 스페이스 바가 할 수 있는 모든 기능을 무시하고 overlay_click() 만을 실행
 document.addEventListener('keydown', key => {
-	if (key.code !== 'Space') return
-	key.preventDefault()
-	overlay_click()
+	if (key.code === 'Space') {
+		key.preventDefault()
+		overlay_click()
+	}
 })
 
 // 시작
