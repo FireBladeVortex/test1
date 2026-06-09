@@ -42,7 +42,6 @@ const time_find = id => {
 // 전역 변수 준비
 let player = null
 let video_click = -1 // 재생 전 초기 상태
-/*
 // 왼쪽 영상 미리보기 불러오기
 function total_list() {
 	const list = document.getElementById('list')
@@ -76,47 +75,6 @@ function total_list() {
 			}
 		})
 	}
-}
-*/
-function total_list() {
-	const recommend = document.getElementById('list-recommend')
-	const shorts = document.getElementById('list-shorts')
-
-	for (let i = 0; i < video_list.length; i++) {
-		// 추천 영상 버튼
-		const btn_r = make_btn(i)
-		recommend.appendChild(btn_r)
-
-		// 쇼츠 버튼
-		const btn_s = make_btn(i)
-		shorts.appendChild(btn_s)
-	}
-}
-
-function make_btn(i) {
-	const ready = video_list[i]
-	const btn = document.createElement('button')
-	btn.className = 'btn'
-	btn.dataset.index = i
-
-	const img = document.createElement('img')
-	img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/mqdefault.jpg`
-
-	btn.appendChild(img)
-
-	btn.addEventListener('click', () => {
-		if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
-			player.pauseVideo()
-		}
-		else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
-			player.playVideo()
-		}
-		else {
-			loop(i)
-		}
-	})
-
-	return btn
 }
 
 // 속도 느릴 때 에러 렉 방지
