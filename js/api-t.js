@@ -167,11 +167,16 @@ function loop(index) {
 	// 시간값들 여러 경우의 수 대비 및 정리
 	const time_sec = time_find(video_play.id)
 	end_sec = time_convert(video_play.end)
-	start_sec = (() => {
-		if (time_sec === 0) return time_convert(video_play.start)
-		if (end_sec > 0 && end_sec <= time_sec) return 0
-		return time_sec
-	})()
+
+	if (time_sec === 0) {
+		start_sec = time_convert(video_play.start)
+	}
+	else if (end_sec > 0 && end_sec <= time_sec) {
+		start_sec = 0
+	}
+	else {
+		start_sec = time_sec
+	}
 
 	// 클릭한 영상 정보 id start end 값을 불러옴
 	player.loadVideoById({
