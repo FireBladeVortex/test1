@@ -123,7 +123,7 @@ let end_sec = 0
 let last_sec = 0
 
 // 오버레이 준비
-const overlay = document.querySelectorAll('#right, #overlay_small_1, #overlay_small_2')
+const overlay = document.querySelectorAll('#right, #ad_skip')
 
 // 재생 준비
 function loop(index) {
@@ -139,12 +139,12 @@ function loop(index) {
 	// 오버레이 기능, 커서 상태 조절
 	if (!overlay_ready) {
 		overlay_ready = true
-		overlay.style.cursor = 'pointer'
+		overlay.forEach(c => {c.style.cursor = 'pointer'})
 		// document.getElementById('right').style.cursor = 'pointer'
 		// document.getElementById('overlay_small_1').style.cursor = 'pointer'
 		// document.getElementById('overlay_small_2').style.cursor = 'pointer'
 	}
-	overlay.onclick = overlay_click
+	overlay.forEach(c => {c.onclick = overlay_click})
 	// document.getElementById('right').onclick = overlay_click
 	// document.getElementById('overlay_small_1').onclick = overlay_click
 	// document.getElementById('overlay_small_2').onclick = overlay_click
