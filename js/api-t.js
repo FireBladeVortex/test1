@@ -23,7 +23,7 @@ const id_find = id => {
 const time_convert = time => {
 	if (typeof time === 'number') return time
 	if (typeof time === 'string') {
-		const sec = time.trim().replace(/s$/i, '')
+		const sec = time.replace(/[^0-9:]/g, '')
 		return sec.includes(':') ? sec.split(':').reduce((acc, cur) => acc * 60 + +cur, 0) : +sec
 	}
 	return 0
@@ -79,20 +79,6 @@ function total_list() {
 }
 
 
-// 오른쪽 투명 오버레이 재생 조작
-// 오버레이 3개 만들어서 광고 스킵 자리 제외
-let overlay_ready = false
-function overlay_click() {
-	if (video_click === -1)
-		return
-	if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-		player.pauseVideo()
-	}
-	else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
-		player.playVideo()
-	}
-}
-
 // 속도 느릴 때 에러 렉 방지
 let player_ready = false
 
@@ -123,7 +109,20 @@ let end_sec = 0
 let last_sec = 0
 
 // 오버레이 준비
-const overlay = document.querySelectorAll('#right, #ad_skip')
+const overlay = document.querySelectorAll('#right, #ad')
+// 오른쪽 투명 오버레이 재생 조작
+// 오버레이 만들어서 광고 스킵 자리 제외
+let overlay_ready = false
+function overlay_click() {
+	if (video_click === -1)
+		return
+	if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+		player.pauseVideo()
+	}
+	else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
+		player.playVideo()
+	}
+}
 
 // 재생 준비
 function loop(index) {
@@ -172,7 +171,7 @@ function loop(index) {
 		if (time_sec === 0) return time_convert(video_play.start)
 		if (end_sec > 0 && end_sec <= time_sec) return 0
 		return time_sec
-	})()
+	})
 
 	// 클릭한 영상 정보 id start end 값을 불러옴
 	player.loadVideoById({
@@ -215,6 +214,12 @@ function onPlayerStateChange(event) {
 	if (event.data === YT.PlayerState.ENDED && video_play) {
 		player.seekTo(start_sec, true)
 		player.playVideo()
+	}
+	try {
+		const ad_now = player.getAdState() === 1
+		ad.classList.toggle('skip', ad_now)
+	} catch {
+		ad.classList.remove('skip')
 	}
 }
 

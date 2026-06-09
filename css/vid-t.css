@@ -162,7 +162,7 @@ body {
 	display: block;
 }
 
-#ad_skip {
+#ad {
 	position: absolute;
 	inset: 0;
 	z-index: 10;
@@ -170,6 +170,11 @@ body {
 	/* 시계 방향으로 x y 좌표 찍으며 다각형 그리기
 	여기서는 첫 출발점이 (0,0)
 	polygon(x y, x1 y1, x2 y2, x3 y3...) */
+	background: var(--emp);
+	opacity: 50%;
+}
+
+#ad.skip {
 	clip-path: polygon(
 		0 0,
 		100% 0,
@@ -178,7 +183,6 @@ body {
 		75% 100%,
 		0 100%);
 }
-
 
 #play-bar { /* 재생 막대 표시 */
 	width: min(640px, 100%);
