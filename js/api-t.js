@@ -171,7 +171,7 @@ function loop(index) {
 		if (time_sec === 0) return time_convert(video_play.start)
 		if (end_sec > 0 && end_sec <= time_sec) return 0
 		return time_sec
-	})
+	})()
 
 	// 클릭한 영상 정보 id start end 값을 불러옴
 	player.loadVideoById({
