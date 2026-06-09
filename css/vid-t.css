@@ -39,7 +39,6 @@ body {
 	align-items: center; /* 중앙 정렬 */
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	background: var(--box);
-	padding: 10px;
     transition: flex 0.3s ease; /* 추가 */
 }
 
@@ -95,6 +94,26 @@ body {
 }
 
 
+.section {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 0; /* 3등분 균등 */
+	min-height: 0;
+	border-bottom: 3px solid var(--emp);
+}
+
+.section:last-child {
+	border-bottom: none;
+}
+
+.section h1 {
+	flex-shrink: 0;
+	font-size: 14px;
+	color: var(--highlight);
+	text-align: center;
+	border-bottom: 2px solid var(--emp);
+	padding: 6px 0;
+}
 
 
 
