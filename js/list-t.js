@@ -66,6 +66,31 @@ const video_list = [
 		end: 0
 	},
 	{
+		id: "https://youtu.be/fkQ5e8gSr2c?si=TyTCkt_fXrHcUI8w",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/dxDdDUUdQpo?si=lvNfwn-xb3kLu7kf",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/hsc4DGU90NM?si=b9AvJ8tUwuz39T0S",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "https://youtu.be/Ey70UkwcDvc?si=6ovuFWhW5Z1wH3Nm",
+		start: 0,
+		end: 0
+	},
+	{
+		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+		start: 0,
+		end: 0
+	},
+	{
 		id: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 		start: 0,
 		end: 0
