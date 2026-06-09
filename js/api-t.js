@@ -124,16 +124,9 @@ function overlay_click() {
 	}
 }
 
-let state_log_p = '' // getPlayerState 누적
-let state_log_a = '' // getAdState 누적
-
-
 // 재생 준비
 function loop(index) {
 
-	// 상태 로그 초기화
-	state_log_p = ''
-	state_log_a = ''
 	// 예상 에러 발생시 진행을 멈추고 즉시 종료
 	if (!player_ready) {
 		setTimeout(() => loop(index), 100) // 100ms 후 재시도
@@ -145,9 +138,9 @@ function loop(index) {
 	// 오버레이 기능, 커서 상태 조절
 	if (!overlay_ready) {
 		overlay_ready = true
-		overlay.forEach(c => {c.style.cursor = 'pointer'})
+		overlay.forEach(overlay => {overlay.style.cursor = 'pointer'})
 	}
-	overlay.forEach(c => {c.onclick = overlay_click})
+	overlay.forEach(overlay => {overlay.onclick = overlay_click})
 
 	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
@@ -197,27 +190,6 @@ function loop(index) {
 		last_sec = end_sec
 	}
 
-
-play_bar_ctrl = setInterval(() => {
-	if (!player || !video_play) return
-
-	// 상태 누적 먼저
-	try { state_log_p += player.getPlayerState() } catch { state_log_p += '?' }
-	try { state_log_a += player.getAdState()    } catch { state_log_a += '?' }
-
-	const msg = document.getElementById('play-msg')
-	msg.style.display = 'block'
-	msg.innerHTML = `P: ${state_log_p}<br>A: ${state_log_a}`
-
-	// 이후 재생 중일 때만 진행
-	if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
-	// ... 기존 진행바 코드
-}, 100)
-
-
-
-
-/*
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() => {
 		// 에러 방지
@@ -234,7 +206,6 @@ play_bar_ctrl = setInterval(() => {
 		document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		update(cur)
 	}, 100) // 100ms
-	*/
 }
 
 // 유튜브 상태 확인
@@ -243,18 +214,12 @@ function onPlayerStateChange(event) {
 		player.seekTo(start_sec, true)
 		player.playVideo()
 	}
-	try {
-		const ad_now = player.getAdState() === 1
-		overlay.classList.toggle('skip', ad_now)
-	} catch {
-		overlay.classList.remove('skip')
-	}
+	document.getElementById('ad').classList.toggle('skip', event.data === -1)
 }
 
 // 상태 메세지 실시간 업데이트
 
 function update(time = 0) {
-	/*
 	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
 	const cur = fmt(time)
 	const end = end_sec > 0 ? fmt(end_sec) : fmt(player.getDuration())
@@ -263,12 +228,7 @@ function update(time = 0) {
 	} else {
 		document.getElementById('play-msg').textContent = `${fmt(start_sec)} → ${cur} → ${end}`
 	}
-		*/
 }
-
-
-
-
 
 // 볼륨 조절 막대 값 반영 시키기
 document.getElementById('Volume_bar').addEventListener('input', Volume => {
