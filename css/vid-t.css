@@ -1,7 +1,12 @@
 /* https://codingeverybody.kr/ */
 /* http://developer.mozilla.org/ */
 
-* { margin: 0; padding: 0; box-sizing: border-box; } /* 기본 설정 초기화 */
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	box-sizing: content-box;
+} /* 기본 설정 초기화 */
 
 :root {
 	--bg: #021322; /* 배경 */
@@ -35,29 +40,66 @@ body {
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	background: var(--box);
 	padding: 10px;
+    transition: flex 0.3s ease; /* 추가 */
 }
 
 #left h1 {
 	width: 90%;
-	margin: 0 auto;
 	font-size: 14px;
 	color: var(--highlight);
-	text-align: center;
+	text-align: left;
 	border-bottom: 3px solid var(--emp);
 	padding-bottom: 10px;
 }
 
+/*
 #list {
 	margin-top: 9px;
 	width: 100%;
 	justify-content: center;
 	display: flex;
 	flex-wrap: wrap; /* 줄바꿈 효과 */
+	/*
 	gap: 5px; /* 간격 */
+	/*
 	overflow-y: auto;    /* 세로 스크롤 바 허용 */
+	/*
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
+	/*
 	padding: 5px;
 }
+*/
+
+.list {
+	display: grid;
+	grid-template-rows: repeat(2, var(--img-h));
+	grid-auto-flow: column;
+	grid-auto-columns: var(--img-w);
+	gap: 5px;
+	padding: 5px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	align-content: start;
+}
+
+/* 2섹션 전용 크기 오버라이드 */
+#list-shorts {
+	--img-w: 90px;
+	--img-h: 160px;
+	grid-template-rows: repeat(2, var(--img-h));
+	grid-auto-columns: var(--img-w);
+}
+
+#list-shorts .btn img {
+	object-fit: contain;
+}
+
+
+
+
+
+
+
 
 .btn {
 	display: flex;
@@ -90,12 +132,13 @@ body {
 .btn img {
 	width: var(--img-w); /* 100% */
 	height: var(--img-h); /* 100% */
-/* 이미지 비율 유지 + 가득 채움
+	/* 이미지 비율 유지 + 가득 채움
 	// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
 	object-fit: cover;
 }
 
-/* ▶⏸ ⏸ ⏹ 재생 대기 중 특수문자로 표시 기능 구현 중지 // 다른 방법 생각남 */
+/* ▶⏸ ⏸ ⏹ 재생 대기 중 특수문자로 표시 기능 구현 중지 // 다른 방법 생각남
+영상 이름 표시?? */
 .btn-text {
 	position: absolute;
 	bottom: 10%;
@@ -104,51 +147,22 @@ body {
 	color: var(--text);
 	pointer-events: none; /* ? */
 }
-/*
-#overlay_big {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	cursor: default;
-	display: none; 
-}
-
-#overlay_small_1 {
-	position: absolute;
-	width: 100%;
-	height: 75%;
-	z-index: 3;
-	cursor: default;
-}
-
-#overlay_small_2 {
-	position: absolute;
-	width: 75%;
-	height: 100%;
-	z-index: 3;
-	cursor: default;
-}
-*/
-
 
 #right { /* 오른쪽 */
 	position: relative;
-	flex: 1; /* 일정하게 정렬 */
 	display: flex; /* 정렬 */
-	flex-direction: column; /* 가로 + 실험 */
+	flex: 1; /* 일정하게 정렬 */
+	flex-direction: column; /* 가로 정렬 */
 	align-items: center; /* 가운데 */
 	justify-content: center; /* 가운데 */
 	gap: 3px;
 	cursor: default;
 }
 
-
-
 #player { /* 재생 공간 */
 	position: relative;
 	width: min(640px, 100%); /* 최대 640px, 공간 부족하면 축소 */
-	aspect-ratio: 16 / 9; /* 640×390 비율 고정 */
+	aspect-ratio: 16 / 9; /* 비율 고정 */
 	margin-bottom: 14px;
 	border: 3px solid var(--emp);
 	outline: 5px solid #000000;
@@ -166,14 +180,12 @@ body {
 	inset: 0;
 	z-index: 10;
 	cursor: default;
-	/* 시계 방향으로 x y 좌표 찍으며 다각형 그리기
-	여기서는 첫 출발점이 (0,0)
-	polygon(x y, x1 y1, x2 y2, x3 y3...) */
-	background: var(--emp);
-	opacity: 50%;
 }
 
 #ad.skip {
+	/* 시계 방향으로 x y 좌표 찍으며 다각형 그리기
+	여기서는 첫 출발점이 (0,0)
+	polygon(x y, x1 y1, x2 y2, x3 y3...) */
 	clip-path: polygon(
 		0 0,
 		100% 0,
@@ -213,6 +225,7 @@ body {
 	width: min(640px, 100%);
 	height: 50px;
 }
+
 #Volume_bar {
 /* appearance: none; */
 	flex: 1;
@@ -221,18 +234,17 @@ body {
 	writing-mode: horizontal-tb;
 	transition: width 0.2s, height 0.2s;
 }
+
 #Volume_bar:hover {
 	cursor: grab;
-	flex: 1;
 	accent-color: var(--emp);
 
 }
+
 #Volume_bar:active {
 	cursor: grabbing;
-	flex: 1;
 	accent-color: var(--emp);
 }
-
 
 #Volume_bar.vertical {
 /* appearance: none; */ 
