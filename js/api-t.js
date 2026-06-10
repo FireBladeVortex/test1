@@ -43,7 +43,6 @@ const time_find = id => {
 let player = null
 let video_click = -1 // 재생 전 초기 상태
 
-/*
 // 왼쪽 영상 미리보기 불러오기
 function total_list() {
 	const list = document.getElementById('list')
@@ -78,109 +77,6 @@ function total_list() {
 		})
 	}
 }
-*/
-
-function total_list() {
-	const list = document.getElementById('list')
-	const left = document.getElementById('left')
-	const ROW = 2
-	const MAX_COL = 5
-	const GAP = 5
-	const img_w = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--img-w'))
-	// const img_w = parseInt(getComputedStyle(...).getPropertyValue('--img-w'))
-	// y 방향: img_h 도 추가 필요
-	// const img_h = parseInt(getComputedStyle(...).getPropertyValue('--img-h'))
-function rebuild(col_count) {
-	const GROUP = ROW * col_count
-	const total = video_list.length
-	const group_count = Math.ceil(total / GROUP)
-	const order = []
-
-	for (let g = 0; g < group_count; g++) {
-		for (let col = 0; col < col_count; col++) {
-			for (let row = 0; row < ROW; row++) {
-				const i = g * GROUP + row * col_count + col
-				if (i < total) order.push(i)
-			}
-		}
-	}
-
-	list.innerHTML = ''
-	order.forEach((i, pos) => { // indexOf 대신 forEach의 pos 사용
-		const btn = document.createElement('button')
-		btn.className = 'btn'
-		btn.dataset.index = i
-
-		const col_in_group = Math.floor(pos / ROW) % col_count
-		// y 방향: col_in_group 대신 row_in_group === 0 일때 적용
-		// y 방향: if (row_in_group === 0) btn.style.scrollSnapAlign = 'start'
-		if (col_in_group === 0) btn.style.scrollSnapAlign = 'start'
-
-		const img = document.createElement('img')
-		img.src = `https://img.youtube.com/vi/${id_find(video_list[i].id)}/mqdefault.jpg`
-		btn.appendChild(img)
-		list.appendChild(btn)
-
-		btn.addEventListener('click', () => {
-			if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
-				player.pauseVideo()
-			} else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
-				player.playVideo()
-			} else {
-				loop(i)
-			}
-		})
-	})
-
-	if (video_click !== -1) {
-		document.querySelectorAll('.btn').forEach(btn => {
-			btn.classList.remove('active', 'blur')
-			if (parseInt(btn.dataset.index) !== video_click) btn.classList.add('blur')
-		})
-		document.querySelector(`.btn[data-index="${video_click}"]`)?.classList.add('active')
-	}
-}
-	// 너비 기반 열 수 계산
-	let last_col = 0
-	function calc_col(width) {
-		const fit = Math.floor((width - GAP) / (img_w + GAP)) // padding 5px 감안
-		return Math.max(1, Math.min(MAX_COL, fit))
-	}
-
-	// 크기 변화 감지
-	new ResizeObserver(entries => {
-		const width = entries[0].contentRect.width
-		const col = calc_col(width)
-		if (col === last_col) return // 열 수 변화 없으면 무시
-		last_col = col
-		rebuild(col)
-
-		// 휠 → 가로 스크롤 재등록 방지용 플래그
-		// _snap_w 계산
-		list._snap_w = (img_w + GAP) * col
-		// y 방향: list._snap_h = (img_h + GAP) * row  (row는 ROW 상수 그대로)
-		}).observe(left)
-
-		// 휠 → 가로 스크롤 (그룹 단위)
-		list.addEventListener('wheel', e => {
-			e.preventDefault()
-		const dir = e.deltaY > 0 ? 1 : -1
-		list.scrollBy({ left: dir * (list._snap_w ?? img_w + GAP), behavior: 'smooth' })
-		// y 방향: list.scrollBy({ top: dir * (list._snap_h ?? img_h + GAP), behavior: 'smooth' })
-		}, { passive: false })
-
-
-
-
-
-
-}
-
-
-
-
-
-
 
 
 
@@ -339,7 +235,7 @@ function update(time = 0) {
 }
 
 // 볼륨 조절 막대 값 반영 시키기
-document.getElementById('Volume_bar').addEventListener('input', Volume => {
+document.getElementById('Volume-bar').addEventListener('input', Volume => {
 	if (player) player.setVolume(+Volume.target.value)
 })
 
@@ -352,7 +248,7 @@ let vol_vertical = false
 document.addEventListener('keydown', v => {
 	if (v.key === 'v' || v.key === 'V') {
 		vol_vertical = !vol_vertical
-		document.getElementById('Volume_bar').classList.toggle('vertical', vol_vertical)
+		document.getElementById('Volume-bar').classList.toggle('vertical', vol_vertical)
 	}
 })
 

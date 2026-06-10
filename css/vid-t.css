@@ -1,13 +1,15 @@
 /* https://codingeverybody.kr/ */
 /* http://developer.mozilla.org/ */
 
+/* 기본 설정 초기화 */
 * {
 	margin: 0;
 	padding: 0;
 	border: 0;
 	box-sizing: content-box;
-} /* 기본 설정 초기화 */
+}
 
+/* 변수 선언 */
 :root {
 	--bg: #021322; /* 배경 */
 	--box: #220213; /* 목록 배경 */
@@ -23,7 +25,6 @@ body {
 	height: 100%;
 	overflow: hidden; /* 스크롤바 방지 */
 	background: var(--bg);
-	color: var(--highlight);
 }
 
 #box { /* 좌우 배열 결정 */
@@ -38,9 +39,8 @@ body {
 	flex-direction: column; /* 가로 정렬 */
 	align-items: center; /* 중앙 정렬 */
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
-	min-width: 0; /* 추가: flex 자식이 콘텐츠 너비로 늘어나는 것 방지 */
+	min-width: 0; /* 50% 이상 늘어나는 것 방지 */
 	background: var(--box);
-    transition: flex 0.3s ease; /* 추가 */
 }
 
 #left h1 {
@@ -51,39 +51,18 @@ body {
 	border-bottom: 3px solid var(--emp);
 	padding-bottom: 10px;
 }
-/*
+
 #list {
 	margin-top: 9px;
 	width: 100%;
 	justify-content: center;
 	display: flex;
 	flex-wrap: wrap; /* 줄바꿈 효과 */
-	/*
 	gap: 5px; /* 간격 */
-	/*
 	overflow-y: auto;    /* 세로 스크롤 바 허용 */
-	/*
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
-	/*
 	padding: 5px;
 }
-*/
-
-#list {
-	margin-top: 9px;
-	width: 100%;
-	display: grid;
-	grid-template-rows: repeat(2, var(--img-h)); /* y 방향: grid-template-columns: repeat(5, var(--img-w)); */
-	grid-auto-flow: column;     /* y 방향: row */
-	grid-auto-columns: var(--img-w); /* y 방향: grid-auto-rows: var(--img-h); */
-	gap: 5px;
-	overflow-y: hidden;  /* y 방향: auto */
-	overflow-x: auto;    /* y 방향: hidden */
-	padding: 5px;
-	scroll-snap-type: x mandatory; /* y 방향: y mandatory */
-}
-
-
 
 .btn {
 	display: flex;
@@ -94,7 +73,6 @@ body {
 	height: var(--img-h);
 	overflow: hidden; /* 스크롤 바 방지 */
 	cursor: pointer; /* 커서 변경 */
-	border: none;
 }
 
 .btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
@@ -119,17 +97,6 @@ body {
 	/* 이미지 비율 유지 + 가득 채움
 	// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
 	object-fit: cover;
-}
-
-/* ▶⏸ ⏸ ⏹ 재생 대기 중 특수문자로 표시 기능 구현 중지 // 다른 방법 생각남
-영상 이름 표시?? */
-.btn-text {
-	position: absolute;
-	bottom: 10%;
-	right: 10%;
-	font-size: 20px;
-	color: var(--text);
-	pointer-events: none; /* ? */
 }
 
 #right { /* 오른쪽 */
@@ -210,7 +177,7 @@ body {
 	height: 50px;
 }
 
-#Volume_bar {
+#Volume-bar {
 /* appearance: none; */
 	flex: 1;
 	accent-color: var(--emp);
@@ -219,18 +186,18 @@ body {
 	transition: width 0.2s, height 0.2s;
 }
 
-#Volume_bar:hover {
+#Volume-bar:hover {
 	cursor: grab;
 	accent-color: var(--emp);
 
 }
 
-#Volume_bar:active {
+#Volume-bar:active {
 	cursor: grabbing;
 	accent-color: var(--emp);
 }
 
-#Volume_bar.vertical {
+#Volume-bar.vertical {
 /* appearance: none; */ 
 	width: 6px;
 	height: min(100%);
@@ -240,9 +207,9 @@ body {
 }
 
 /*
-#Volume_bar {}::-webkit-slider-thumb {
-#Volume_bar {}::-webkit-slider-runnable-track {
-#Volume_bar {}:focus::-webkit-slider-thumb {
+#Volume-bar {}::-webkit-slider-thumb {
+#Volume-bar {}::-webkit-slider-runnable-track {
+#Volume-bar {}:focus::-webkit-slider-thumb {
 ::-webkit-slider-thumb:active {
 */
 /* 세로 모드
