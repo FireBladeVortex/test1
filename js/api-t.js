@@ -75,7 +75,7 @@ function total_list() {
 	const list = document.getElementById('list')
 
 	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
-	for (let index = 0; index < video_list.length; i++) {
+	for (let index = 0; index < video_list.length; index++) {
 		const ready = video_list[index]
 		const btn = document.createElement('button')
 		btn.className = 'btn'
@@ -256,6 +256,8 @@ document.addEventListener('keydown', v => {
 })
 
 // 스페이스 바가 할 수 있는 모든 기능을 무시하고 overlay_click() 만을 실행
+// 숫자 패드 123으로 재생 속도조절
+// 숫자 패드 +-로 볼륨 5씩 조절
 document.addEventListener('keydown', key => {
 	if (!player || (player.getPlayerState() !== 1 && player.getPlayerState() !== 2))
 		return
