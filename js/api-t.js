@@ -31,7 +31,10 @@ function onYouTubeIframeAPIReady() {
 		},
 		// 현재 상태 불러오기
 		events: {
-			onReady: () => { player_ready = true }, // 느릴 때 에러 방지
+			onReady: () => {
+				player_ready = true // 느릴 때 에러 방지
+				player.setVolume(+document.getElementById('volume-bar').value) // value="25" 적용
+		},
 			onStateChange: onPlayerStateChange
 		}
 	})
