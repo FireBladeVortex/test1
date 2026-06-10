@@ -184,6 +184,7 @@ function loop(index) {
 		...(end_sec > 0 && {endSeconds: end_sec})
 	})
 
+	player.setPlaybackRate(1) // 추가
 	// 상태 갱신
 	update()
 
@@ -259,7 +260,17 @@ document.addEventListener('keydown', key => {
 		overlay_click()
 	}
 })
-
+// 재생 속도 조절 (숫자패드 1, 2, 3) // 추가
+document.addEventListener('keydown', key => { // 추가
+	if (video_click === -1) return // 추가
+	if (key.code === 'Numpad1') { // 추가
+		player.setPlaybackRate(Math.max(0.25, Math.round((player.getPlaybackRate() - 0.05) * 100) / 100)) // 추가
+	} else if (key.code === 'Numpad2') { // 추가
+		player.setPlaybackRate(Math.min(2, Math.round((player.getPlaybackRate() + 0.05) * 100) / 100)) // 추가
+	} else if (key.code === 'Numpad3') { // 추가
+		player.setPlaybackRate(1) // 추가
+	} // 추가
+}) // 추가
 
 // 시작
 total_list()
