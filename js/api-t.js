@@ -264,7 +264,7 @@ document.addEventListener('keydown', v => {
 document.addEventListener('keydown', key => {
 	if (!player || (player.getPlayerState() !== 1 && player.getPlayerState() !== 2))
 		return
-	else if (key.code === 'Space') {
+	if (key.code === 'Space') {
 		key.preventDefault()
 		overlay_click()
 	}
@@ -295,6 +295,26 @@ document.addEventListener('keydown', key => {
 		document.getElementById('volume-bar').value = Math.max(0, down)
 	}
 })
+
+
+
+document.addEventListener('wheel', wheel => {
+	wheel.preventDefault()
+	if (!player || (player.getPlayerState() !== 1 && player.getPlayerState() !== 2))
+		return
+	const volume = player.getVolume()
+	const delta = wheel.deltaY < 0 ? 5 : -5
+	const next = Math.min(100, Math.max(0, volume + delta))
+	player.setVolume(next)
+	document.getElementById('volume-bar').value = next
+})
+
+
+
+
+
+
+
 
 
 
