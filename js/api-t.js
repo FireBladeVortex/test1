@@ -76,7 +76,7 @@ function total_list() {
 
 	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
 	for (let index = 0; index < video_list.length; i++) {
-		const ready = video_list[i]
+		const ready = video_list[index]
 		const btn = document.createElement('button')
 		btn.className = 'btn'
 		btn.dataset.index = index
