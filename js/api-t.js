@@ -2,12 +2,40 @@
 // https://developers.google.com/youtube/iframe_api_reference?hl=ko //
 // https://gist.github.com/Araxeus/fc574d0f31ba71d62215c0873a7b048e //
 // http://developer.mozilla.org/									//
+// https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Events
+// https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+// https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
 //////////////////////////////////////////////////////////////////////
 
 // YouTube Player iframe API 불러오기
 const api = document.createElement('script')
 	api.src = "https://www.youtube.com/iframe_api"
 	document.head.appendChild(api)
+
+// iframe가 들어갈 변수 준비
+let player = null
+// 속도 느릴 때 에러 렉 방지
+let player_ready = false
+// iframe 준비
+function onYouTubeIframeAPIReady() {
+	player = new YT.Player('you_player', {
+		width: '100%',
+		height: '100%',
+		videoId: '',
+		playerVars: {
+			autoplay: 0,
+			rel: 0,
+			fs: 0,
+			disablekb: 1,
+			controls: 0, // 유튜브 ui 숨김 (볼륨 조절용)
+		},
+		// 현재 상태 불러오기
+		events: {
+			onReady: () => { player_ready = true }, // 느릴 때 에러 방지
+			onStateChange: onPlayerStateChange
+		}
+	})
+}
 
 // youtube id 찾기
 const id_find = id => {
@@ -39,20 +67,19 @@ const time_find = id => {
 	}
 }
 
-// 전역 변수 준비
-let player = null
-let video_click = -1 // 재생 전 초기 상태
+ // 최초 재생 시작하기 전
+let video_click = -1
 
 // 왼쪽 영상 미리보기 불러오기
 function total_list() {
 	const list = document.getElementById('list')
 
 	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
-	for (let i = 0; i < video_list.length; i++) {
+	for (let index = 0; index < video_list.length; i++) {
 		const ready = video_list[i]
 		const btn = document.createElement('button')
 		btn.className = 'btn'
-		btn.dataset.index = i
+		btn.dataset.index = index
 
 		// 미리보기 이미지 등록
 		const img = document.createElement('img')
@@ -65,46 +92,20 @@ function total_list() {
 		// 첫 클릭 => 재생 시작
 		// 이후 클릭 => 일시 정지, 이어서 재생 반복
 		btn.addEventListener('click', () => {
-			if (video_click === i && player.getPlayerState() === YT.PlayerState.PLAYING) {
+			if (video_click === index && player.getPlayerState() === YT.PlayerState.PLAYING) {
 					player.pauseVideo()
 				}
-			else if (video_click === i && player.getPlayerState() === YT.PlayerState.PAUSED) {
+			else if (video_click === index && player.getPlayerState() === YT.PlayerState.PAUSED) {
 					player.playVideo()
 				}
 			else {
-				loop(i)
+				loop(index)
 			}
 		})
 	}
 }
 
 
-
-
-
-
-
-// 속도 느릴 때 에러 렉 방지
-let player_ready = false
-
-// iframe 준비
-function onYouTubeIframeAPIReady() {
-	player = new YT.Player('you_player', {
-		width: '100%',
-		height: '100%',
-		videoId: '',
-		playerVars: {
-			autoplay: 0,
-			rel: 0,
-			controls: 0, // 유튜브 ui 숨김 (볼륨 조절용)
-		},
-		// 현재 상태 불러오기
-		events: {
-			onReady: () => { player_ready = true }, // 느릴 때 에러 방지
-			onStateChange: onPlayerStateChange
-		}
-	})
-}
 
 // 시간 관리
 let video_play = null
@@ -184,7 +185,8 @@ function loop(index) {
 		...(end_sec > 0 && {endSeconds: end_sec})
 	})
 
-	player.setPlaybackRate(1) // 추가
+
+	player.setPlaybackRate(1)
 	// 상태 갱신
 	update()
 
@@ -236,41 +238,61 @@ function update(time = 0) {
 }
 
 // 볼륨 조절 막대 값 반영 시키기
-document.getElementById('Volume-bar').addEventListener('input', Volume => {
+document.getElementById('volume-bar').addEventListener('input', Volume => {
 	if (player) player.setVolume(+Volume.target.value)
 })
 
 // 볼륨 조절에 오버레이 간섭 방지
-document.getElementById('Volume').addEventListener('mousedown', drag => drag.stopPropagation())
-document.getElementById('Volume').addEventListener('click', click => click.stopPropagation())
+document.getElementById('volume').addEventListener('mousedown', drag => drag.stopPropagation())
+document.getElementById('volume').addEventListener('click', click => click.stopPropagation())
 
 // 볼륨 가로세로 변환
 let vol_vertical = false
 document.addEventListener('keydown', v => {
 	if (v.key === 'v' || v.key === 'V') {
 		vol_vertical = !vol_vertical
-		document.getElementById('Volume-bar').classList.toggle('vertical', vol_vertical)
+		document.getElementById('volume-bar').classList.toggle('vertical', vol_vertical)
 	}
 })
 
 // 스페이스 바가 할 수 있는 모든 기능을 무시하고 overlay_click() 만을 실행
 document.addEventListener('keydown', key => {
-	if (key.code === 'Space') {
+	if (!player || (player.getPlayerState() !== 1 && player.getPlayerState() !== 2))
+		return
+	else if (key.code === 'Space') {
 		key.preventDefault()
 		overlay_click()
 	}
+	else if (key.code === 'Numpad1') {
+		key.preventDefault()
+		player.setPlaybackRate(Math.max(0.25, +((player.getPlaybackRate() * 100 - 5) / 100).toFixed(2)))
+	}
+	else if (key.code === 'Numpad2') {
+		key.preventDefault()
+		player.setPlaybackRate(Math.min(2, +((player.getPlaybackRate() * 100 + 5) / 100).toFixed(2)))
+	}
+	else if (key.code === 'Numpad3') {
+		key.preventDefault()
+		player.setPlaybackRate(1)
+	}
+	else if (key.code === 'NumpadAdd') {
+		key.preventDefault()
+		const volume = player.getVolume()
+		const up = volume % 5 === 0 ? volume + 5 : Math.ceil(volume / 5) * 5
+		player.setVolume(Math.min(100, up))
+		document.getElementById('volume-bar').value = Math.min(100, up)
+	}
+	else if (key.code === 'NumpadSubtract') {
+		key.preventDefault()
+		const volume = player.getVolume()
+		const down = volume % 5 === 0 ? volume - 5 : Math.floor(volume / 5) * 5
+		player.setVolume(Math.max(0, down))
+		document.getElementById('volume-bar').value = Math.max(0, down)
+	}
 })
-// 재생 속도 조절 (숫자패드 1, 2, 3) // 추가
-document.addEventListener('keydown', key => { // 추가
-	if (video_click === -1) return // 추가
-	if (key.code === 'Numpad1') { // 추가
-		player.setPlaybackRate(Math.max(0.25, Math.round((player.getPlaybackRate() - 0.05) * 100) / 100)) // 추가
-	} else if (key.code === 'Numpad2') { // 추가
-		player.setPlaybackRate(Math.min(2, Math.round((player.getPlaybackRate() + 0.05) * 100) / 100)) // 추가
-	} else if (key.code === 'Numpad3') { // 추가
-		player.setPlaybackRate(1) // 추가
-	} // 추가
-}) // 추가
+
+
+
 
 // 시작
 total_list()
