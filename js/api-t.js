@@ -23,11 +23,11 @@ function onYouTubeIframeAPIReady() {
 		height: '100%',
 		videoId: '',
 		playerVars: {
-			autoplay: 0,
-			rel: 0,
-			fs: 0,
-			disablekb: 1,
-			controls: 0, // 유튜브 ui 숨김 (볼륨 조절용)
+			autoplay: 0, // 자동재생 방지
+			rel: 0, // 영상 종료 때 추천 방지
+			fs: 0, // 풀 스크린 버튼 숨김
+			disablekb: 1, // 유튜브 자체 키보드 조작 기능 중지
+			controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
 		},
 		// 현재 상태 불러오기
 		events: {
@@ -60,7 +60,7 @@ const time_convert = time => {
 	return 0
 }
 
-// 시작시간 예상치 못한 여러가지 경우의 수 대비
+// 여러가지 경우의 수 대비
 const time_find = id => {
 	try {
 		const time = new URL(id).searchParams.get('t')
@@ -151,8 +151,12 @@ function loop(index) {
 	}
 	overlay.forEach(overlay => {overlay.onclick = overlay_click})
 
+
+/*
 	// 타이머 값 계속 초기화
 	clearInterval(play_bar_ctrl)
+*/
+
 
 	// 버튼 강조 관리
 	document.querySelectorAll('.btn').forEach(btn => {
@@ -182,13 +186,15 @@ function loop(index) {
 	}
 
 	// 클릭한 영상 정보 id start end 값을 불러옴
-	player.loadVideoById({
+	// loadVideoById == 즉시 재생 기능 (조회수 누적 안됨)
+	// cueVideoById == 재생 준비 (조회수 누적 가능)
+	player.cueVideoById({
 		videoId: id_find(video_play.id),
 		startSeconds: start_sec,
 		...(end_sec > 0 && {endSeconds: end_sec})
 	})
 
-
+/*
 	player.setPlaybackRate(1)
 	// 상태 갱신
 	update()
@@ -200,7 +206,9 @@ function loop(index) {
 	else {
 		last_sec = end_sec
 	}
+*/
 
+/*
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() => {
 		// 에러 방지
@@ -217,16 +225,55 @@ function loop(index) {
 		document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
 		update(cur)
 	}, 100) // 100ms
+*/
+
+
 }
+
+
+
+
+
+
+
 
 // 유튜브 상태 확인
 function onPlayerStateChange(event) {
+	if (event.data === YT.PlayerState.PLAYING && video_play) { // 수정
+		if (last_sec === 0) { // 추가
+			player.setPlaybackRate(1) // 추가
+			last_sec = end_sec > 0 ? end_sec : player.getDuration() // 추가
+			update(player.getCurrentTime()) // 추가
+		} // 추가
+
+		clearInterval(play_bar_ctrl) // 추가
+		play_bar_ctrl = setInterval(() => { // 추가
+			if (!player || !video_play) return
+			const cur = player.getCurrentTime()
+			const end = last_sec > 0 ? last_sec : player.getDuration() // 수정
+			if (end_sec > 0 && cur >= end_sec) {
+				player.seekTo(start_sec, true)
+			}
+			const ratio = (cur - start_sec) / (end - start_sec)
+			document.getElementById('play-now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+			update(cur)
+		}, 100) // 추가
+	} // 추가
 	if (event.data === YT.PlayerState.ENDED && video_play) {
 		player.seekTo(start_sec, true)
 		player.playVideo()
 	}
+	if (event.data === YT.PlayerState.PAUSED) { // 추가
+		clearInterval(play_bar_ctrl) // 추가
+	} // 추가
 	document.getElementById('ad').classList.toggle('skip', event.data !== 1 && event.data !== 2)
 }
+
+
+
+
+
+
 
 // 상태 메세지 실시간 업데이트
 function update(time = 0) {
