@@ -26,7 +26,7 @@ function onYouTubeIframeAPIReady() {
 			autoplay: 0, // 자동재생 방지
 			rel: 0, // 영상 종료 때 추천 방지
 			fs: 0, // 풀 스크린 버튼 숨김
-			disablekb: 1, // 유튜브 자체 키보드 조작 기능 중지
+			disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
 			controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
 		},
 		// 현재 상태 불러오기
@@ -149,7 +149,8 @@ function loop(index) {
 		overlay_ready = true
 		overlay.forEach(overlay => {overlay.style.cursor = 'pointer'})
 	}
-	overlay.forEach(overlay => {overlay.onclick = overlay_click})
+	// overlay.forEach(overlay => {overlay.onclick = overlay_click})
+	overlay.forEach(overlay => {overlay.onclick = null})  // 추가
 
 
 /*
@@ -244,6 +245,7 @@ function onPlayerStateChange(event) {
 			player.setPlaybackRate(1) // 추가
 			last_sec = end_sec > 0 ? end_sec : player.getDuration() // 추가
 			update(player.getCurrentTime()) // 추가
+			overlay.forEach(o => {o.onclick = overlay_click})  // 추가
 		} // 추가
 
 		clearInterval(play_bar_ctrl) // 추가
