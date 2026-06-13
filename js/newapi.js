@@ -393,6 +393,10 @@ document.addEventListener('keydown', key =>
 			volume_value(-5)
 		}
 	}
+	else if (cs && add || sub)
+	{
+		key.preventDefault()
+	}
 	if (!player || !play_now())
 		return
 	if (key.code === 'Space')
@@ -400,16 +404,13 @@ document.addEventListener('keydown', key =>
 		key.preventDefault()
 		play_or_pause()
 	}
-	else if (cs)
+	else if (cs && add || sub)
 	{
-		if  (add || sub)
-		{
-			key.preventDefault()
-			const updown = add ? 0.05 : -0.05
-			const limit = add ? 2 : 0.25
-			const minmax  = add ? Math.min : Math.max
-			player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
-		}
+		key.preventDefault()
+		const updown = add ? 0.05 : -0.05
+		const limit = add ? 2 : 0.25
+		const minmax  = add ? Math.min : Math.max
+		player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
 	}
 	else if (key.code === 'Numpad0')
 	{
@@ -448,7 +449,7 @@ function play_or_pause() {
 
 const overlay = document.querySelectorAll('#right, #ad')
 function onPlayerStateChange(event) {
-	const pop = event.data === 1 || event.data === 2
+	const pop = [1, 2, 3].includes(event.data)
 	overlay.forEach(overlay => { overlay.style.cursor = pop ? 'pointer' : 'default' })
 	overlay.forEach(overlay => { overlay.onclick = pop ? play_or_pause : null })
 	document.getElementById('ad').style.pointerEvents = pop ? 'auto' : 'none'
