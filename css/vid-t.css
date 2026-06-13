@@ -131,12 +131,14 @@ body {
 	inset: 0;
 	z-index: 10;
 	cursor: default;
+	pointer-events: none;
 }
-
+/*
 #ad.skip {
 	/* 시계 방향으로 x y 좌표 찍으며 다각형 그리기
 	여기서는 첫 출발점이 (0,0)
-	polygon(x y, x1 y1, x2 y2, x3 y3...) */
+	polygon(x y, x1 y1, x2 y2, x3 y3...)
+	
 	clip-path: polygon(
 		0 0,
 		100% 0,
@@ -145,7 +147,7 @@ body {
 		75% 100%,
 		0 100%);
 }
-
+*/
 #play_bar { /* 재생 막대 표시 */
 	width: min(640px, 100%);
 	height: 9px;

@@ -458,7 +458,8 @@ function onPlayerStateChange(event) {
 	const pop = event.data === 1 || event.data === 2
 	overlay.forEach(overlay => { overlay.style.cursor = pop ? 'pointer' : 'default' }) // 추가
 	overlay.forEach(overlay => { overlay.onclick = pop ? play_or_pause : null }) // 추가
-	document.getElementById('ad').classList.toggle('skip', !pop)
+	document.getElementById('ad').style.pointerEvents = pop ? 'auto' : 'none' // 추가
+	// document.getElementById('ad').classList.toggle('skip', !pop)
 	if (event.data === YT.PlayerState.ENDED && video_play) {
 		player.seekTo(start_sec, true)
 		player.playVideo()
