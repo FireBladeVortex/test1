@@ -377,6 +377,22 @@ document.getElementById('volume').addEventListener('click', click => click.stopP
 // 숫자 패드 +-로 볼륨 5씩 조절
 document.addEventListener('keydown', key =>
 {
+	const add = key.code === 'NumpadAdd'
+	const sub = key.code === 'NumpadSubtract'
+	const cs = key.ctrlKey || key.shiftKey
+	if (!cs)
+	{
+		if (add)
+		{
+			key.preventDefault()
+			volume_value(+5)
+		}
+		else if (sub)
+		{
+			key.preventDefault()
+			volume_value(-5)
+		}
+	}
 	if (!player || !play_now())
 		return
 	if (key.code === 'Space')
@@ -384,15 +400,14 @@ document.addEventListener('keydown', key =>
 		key.preventDefault()
 		play_or_pause()
 	}
-	else if (key.ctrlKey || key.shiftKey)
+	else if (cs)
 	{
-		if  (key.code === 'NumpadAdd' || key.code === 'NumpadSubtract')
+		if  (add || sub)
 		{
 			key.preventDefault()
-			const keys = key.code === 'NumpadAdd'
-			const updown = keys ? 0.05 : -0.05
-			const limit = keys ? 2 : 0.25
-			const minmax  = keys ? Math.min : Math.max
+			const updown = add ? 0.05 : -0.05
+			const limit = add ? 2 : 0.25
+			const minmax  = add ? Math.min : Math.max
 			player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
 		}
 	}
@@ -400,16 +415,6 @@ document.addEventListener('keydown', key =>
 	{
 		key.preventDefault()
 		player.setPlaybackRate(1)
-	}
-	else if (key.code === 'NumpadAdd')
-	{
-		key.preventDefault()
-		volume_value(+5)
-	}
-	else if (key.code === 'NumpadSubtract')
-	{
-		key.preventDefault()
-		volume_value(-5)
 	}
 })
 
@@ -420,6 +425,9 @@ document.addEventListener('wheel', wheel =>
 	volume_value(wheel.deltaY < 0 ? +5 : -5)
 })
 
+function play_speed(key, plma)
+{
+}
 
 function volume_value(plma)
 {
