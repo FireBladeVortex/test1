@@ -185,7 +185,7 @@ function loop(num)
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
 	{	
-		btn.classList.remove('active', 'blur')
+		// btn.classList.remove('active', 'blur')
 		const click = Number(btn.dataset.num) === num
 		btn.classList.toggle('active', click)
 		btn.classList.toggle('blur', !click)
