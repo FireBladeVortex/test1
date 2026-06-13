@@ -182,17 +182,14 @@ function loop(num)
 	if (!player || !video_list[num])
 		return
 
-	// 나머지 버튼 어둡게
+	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
 	{	
 		btn.classList.remove('active', 'blur')
-		if (btn.dataset.num !== num)
-		{
-			btn.classList.add('blur')
-		}
+		const click = Number(btn.dataset.num) === num
+		btn.classList.toggle('active', click)
+		btn.classList.toggle('blur', !click)
 	})
-	// 활성화된 버튼 계속 강조
-	document.querySelector(`.btn[data-num="${num}"]`).classList.add('active')
 
 	img_click = num
 	video_play = video_list[num]
