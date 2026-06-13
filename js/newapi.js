@@ -90,12 +90,8 @@ const time_find = id =>
 	}
 }
 
-
-
-
- // 최초 재생 시작하기 전
+ // 최초 재생 시작하기 전 상태
 let img_click = -1
-
 
 // 왼쪽 영상 미리보기 불러오기
 function total_list()
@@ -141,32 +137,6 @@ function total_list()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-현재 선택한 썸네일의 영상 번호를 어떻게 불러올까?
-썸네일 강조 표시
-썸네일 재생 일시정지 클릭
-*/
-
-
-
-
 // 시간 관리
 let video_play = null
 let play_bar_ctrl = null
@@ -174,9 +144,7 @@ let start_sec = 0
 let end_sec = 0
 let last_sec = 0
 
-
-
-
+// 
 function loop(num)
 {
 	if (!player || !video_list[num])
@@ -186,7 +154,7 @@ function loop(num)
 	document.querySelectorAll('.btn').forEach(btn =>
 	{	
 		// btn.classList.remove('active', 'blur')
-		const click = Number(btn.dataset.num) === num
+		const click = +btn.dataset.num === num
 		btn.classList.toggle('active', click)
 		btn.classList.toggle('blur', !click)
 	})
@@ -223,18 +191,12 @@ function loop(num)
 
 	// 상태 초기화
 	player.setPlaybackRate(1)
-	// update()
+	update()
 
 	// 결정될 시간 값 관리
 	if (end_sec === 0)
 	{
-		last_sec = player.getDuration() // 문제 있으면 아래꺼 다시 사용
-		/*
-		setTimeout(() =>
-		{
-			last_sec = player.getDuration()
-		}, 100) // 0 일때 100ms 후 영상길이 불러와서 반영하고 종료
-		*/
+		last_sec = player.getDuration()
 	}
 	else
 	{
@@ -245,8 +207,8 @@ function loop(num)
 	play_bar_ctrl = setInterval(() =>
 	{
 		// 에러 방지
-		if (!player || !video_play) return
-		if (!play()) return
+		if (!player || !video_play || !play())
+			return
 
 		// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
 		const cur = player.getCurrentTime()
@@ -262,14 +224,6 @@ function loop(num)
 
 }
 
-
-
-
-
-
-
-
-
 // 상태 메세지 실시간 업데이트
 function update(time = 0) {
 	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
@@ -282,90 +236,13 @@ function update(time = 0) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// 볼륨 바
 const volume_bar = document.getElementById('volume_bar')
 
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener('input', () =>
 {
-	if (player)
-	{
-		player.setVolume(+volume_bar.value)
-	}
+	if (player) { player.setVolume(+volume_bar.value) }
 })
 
 // 볼륨 조절에 오버레이 간섭 방지
@@ -397,8 +274,10 @@ document.addEventListener('keydown', key =>
 	{
 		key.preventDefault()
 	}
+
 	if (!player || !play_now())
 		return
+
 	if (key.code === 'Space')
 	{
 		key.preventDefault()
@@ -442,7 +321,8 @@ function volume_value(plma)
 }
 
 // 재생 일시중지
-function play_or_pause() {
+function play_or_pause()
+{
 	if (play()) { player.pauseVideo() }
 	else if (pause()) { player.playVideo() }
 }
