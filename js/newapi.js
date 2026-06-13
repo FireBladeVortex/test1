@@ -152,8 +152,7 @@ function loop(num)
 
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
-	{	
-		// btn.classList.remove('active', 'blur')
+	{
 		const click = +btn.dataset.num === num
 		btn.classList.toggle('active', click)
 		btn.classList.toggle('blur', !click)
@@ -225,11 +224,16 @@ function loop(num)
 }
 
 // 상태 메세지 실시간 업데이트
-function update(time = 0) {
-	const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
+function update(time = 0)
+{
+	/////////////////////////////////////////////////////////////////////
+	// const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
+	const fmt = sec => `${Math.floor(sec/60)}:${`${Math.floor(sec%60)}`.padStart(2,'0')}`
+	/////////////////////////////////////////////////
 	const cur = fmt(time)
 	const end = end_sec > 0 ? fmt(end_sec) : fmt(player.getDuration())
-	if (start_sec === 0) {
+	if (start_sec === 0)
+	{
 		document.getElementById('play_msg').textContent = `${cur} → ${end}`
 	} else {
 		document.getElementById('play_msg').textContent = `${fmt(start_sec)} → ${cur} → ${end}`
@@ -327,17 +331,25 @@ function play_or_pause()
 	else if (pause()) { player.playVideo() }
 }
 
+// 불필요한 클릭 상호작용 방지
 const overlay = document.querySelectorAll('#right, #ad')
-function onPlayerStateChange(event) {
+
+// 동영상 상태가 변화하면 즉시 작동
+function onPlayerStateChange(event)
+{
 	const pop = [1, 2, 3].includes(event.data)
-	overlay.forEach(overlay => { overlay.style.cursor = pop ? 'pointer' : 'default' })
-	overlay.forEach(overlay => { overlay.onclick = pop ? play_or_pause : null })
+	overlay.forEach(overlay =>
+	{
+		overlay.style.cursor = pop ? 'pointer' : 'default'
+		overlay.onclick = pop ? play_or_pause : null
+	})
 	document.getElementById('ad').style.pointerEvents = pop ? 'auto' : 'none'
-	if (event.data === YT.PlayerState.ENDED && video_play) {
+	if (event.data === YT.PlayerState.ENDED && video_play)
+	{
 		player.seekTo(start_sec, true)
 		player.playVideo()
 	}
 }
 
-
+// 싲가
 total_list()
