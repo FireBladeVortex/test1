@@ -183,7 +183,7 @@ function loop(num)
 		return
 
 	// 활성화된 버튼 계속 강조
-	document.querySelector(`.btn[data-index="${num}"]`).classList.add('active')
+	document.querySelector(`.btn[data-num="${num}"]`).classList.add('active')
 	// 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
 	{
