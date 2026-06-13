@@ -184,7 +184,8 @@ function loop(num)
 
 	// 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
-	{
+	{	
+		btn.classList.remove('active', 'blur')
 		if (btn.dataset.num !== num)
 		{
 			btn.classList.add('blur')
