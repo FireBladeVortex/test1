@@ -108,7 +108,7 @@ function total_list()
 		const ready = video_list[num]
 		const btn = document.createElement('button')
 		btn.className = 'btn'
-		btn.dataset.index = num
+		btn.dataset.num = num
 
 		// 미리보기 이미지 등록
 		const img = document.createElement('img')
@@ -457,7 +457,7 @@ const overlay = document.querySelectorAll('#right, #ad')
 function onPlayerStateChange(event) {
 	const pop = event.data === 1 || event.data === 2
 	overlay.forEach(overlay => { overlay.style.cursor = pop ? 'pointer' : 'default' }) // 추가
-	overlay.forEach(overlay => { overlay.onclick = pop ? play_or_pause() : null }) // 추가
+	overlay.forEach(overlay => { overlay.onclick = pop ? play_or_pause : null }) // 추가
 	document.getElementById('ad').classList.toggle('skip', !pop)
 	if (event.data === YT.PlayerState.ENDED && video_play) {
 		player.seekTo(start_sec, true)
