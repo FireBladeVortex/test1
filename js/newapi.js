@@ -182,8 +182,6 @@ function loop(num)
 	if (!player || !video_list[num])
 		return
 
-	// 활성화된 버튼 계속 강조
-	document.querySelector(`.btn[data-num="${num}"]`).classList.add('active')
 	// 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
 	{
@@ -192,6 +190,8 @@ function loop(num)
 			btn.classList.add('blur')
 		}
 	})
+	// 활성화된 버튼 계속 강조
+	document.querySelector(`.btn[data-num="${num}"]`).classList.add('active')
 
 	img_click = num
 	video_play = video_list[num]
@@ -230,13 +230,11 @@ function loop(num)
 	// 결정될 시간 값 관리
 	if (end_sec === 0)
 	{
-		last_sec = player.getDuration() // 문제 있으면 아래꺼 다시 사용
-		/*
+		// last_sec = player.getDuration() // 문제 있으면 아래꺼 다시 사용
 		setTimeout(() =>
 		{
 			last_sec = player.getDuration()
 		}, 100) // 0 일때 100ms 후 영상길이 불러와서 반영하고 종료
-		*/
 	}
 	else
 	{
