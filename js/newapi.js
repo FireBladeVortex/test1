@@ -45,8 +45,8 @@ function onYouTubeIframeAPIReady()
 // 영상 상태 확인
 // YT.PlayerState.PLAYING = 1
 // YT.PlayerState.PAUSED = 2
-const play = () => player?.getPlayerState() === YT.PlayerState.PLAYING
-const pause = () => player?.getPlayerState() === YT.PlayerState.PAUSED
+const play = () => player.getPlayerState() === YT.PlayerState.PLAYING
+const pause = () => player.getPlayerState() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
 // youtube id 찾기
@@ -261,8 +261,8 @@ document.addEventListener('keydown', key =>
 	const add = key.code === 'NumpadAdd'
 	const sub = key.code === 'NumpadSubtract'
 	const cs = key.ctrlKey || key.shiftKey
-	if (!cs)
-	{
+	// if (!cs)
+	// {
 		if (add)
 		{
 			key.preventDefault()
@@ -273,11 +273,11 @@ document.addEventListener('keydown', key =>
 			key.preventDefault()
 			volume_value(-5)
 		}
-	}
-	else if (cs && add || sub)
-	{
-		key.preventDefault()
-	}
+	// }
+	// else if (cs && add || sub)
+	// {
+		// key.preventDefault()
+	// }
 
 	if (!player || !play_now())
 		return
@@ -287,6 +287,7 @@ document.addEventListener('keydown', key =>
 		key.preventDefault()
 		play_or_pause()
 	}
+	/*
 	else if (cs && add || sub)
 	{
 		key.preventDefault()
@@ -300,6 +301,7 @@ document.addEventListener('keydown', key =>
 		key.preventDefault()
 		player.setPlaybackRate(1)
 	}
+		*/
 })
 
 // 마우스 휠 소리 크기 조절
