@@ -217,13 +217,13 @@ function loop(num)
 	{
 		last_sec = end_sec
 	}
-
+	/*
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() =>
 	{
 		update_bar()
 	}, 100) // 100ms
-
+	*/
 }
 
 // 진행 막대 실시간 관리
@@ -402,6 +402,11 @@ function onPlayerStateChange(event)
 		clearInterval(play_bar_ctrl)
 		update_msg()
 		player.setPlaybackRate(1)
+		// 진행 막대 관리
+		play_bar_ctrl = setInterval(() =>
+		{
+			update_bar()
+		}, 100) // 100ms
 	}
 }
 
