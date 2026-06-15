@@ -202,8 +202,9 @@ function loop(num)
 	})
 
 	// 상태 초기화
+	clearInterval(play_bar_ctrl)
+	update_msg()
 	player.setPlaybackRate(1)
-	update()
 
 	// 결정될 시간 값 관리
 	if (end_sec === 0)
@@ -218,26 +219,32 @@ function loop(num)
 	// 진행 막대 관리
 	play_bar_ctrl = setInterval(() =>
 	{
-		// 에러 방지
-		if (!player || !video_play || !play())
-			return
-
-		// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
-		const cur = player.getCurrentTime()
-		const end = last_sec > 0 ? end_sec : player.getDuration()
-		if (end_sec > 0 && cur >= end_sec)
-		{
-			player.seekTo(start_sec, true)
-		}
-		const ratio = (cur - start_sec) / (end - start_sec)
-		document.getElementById('play_now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
-		update(cur)
+		update_bar()
 	}, 100) // 100ms
 
 }
 
-// 상태 메세지 실시간 업데이트
-function update(time = 0)
+// 진행 막대 실시간 관리
+function update_bar()
+{
+	// 에러 방지
+	if (!player || !video_play || !play())
+		return
+
+	// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
+	const cur = player.getCurrentTime()
+	const end = last_sec > 0 ? end_sec : player.getDuration()
+	if (end_sec > 0 && cur >= end_sec)
+	{
+		player.seekTo(start_sec, true)
+	}
+	const ratio = (cur - start_sec) / (end - start_sec)
+	document.getElementById('play_now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
+	update_msg(cur)
+}
+
+// 상태 메세지 실시간 관리
+function update_msg(time = 0)
 {
 	/////////////////////////////////////////////////////////////////////
 	// const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
