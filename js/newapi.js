@@ -126,6 +126,7 @@ function total_list()
 		// 이후 클릭 => 일시 정지, 이어서 재생 반복
 		btn.addEventListener('click', () =>
 		{
+			/*
 			if (img_click === num)
 			{
 				if (play())
@@ -138,9 +139,9 @@ function total_list()
 				}
 			}
 			else
-			{
+			{*/
 				loop(num)
-			}
+			//}
 		})
 	}
 }
@@ -158,8 +159,10 @@ let last_sec = 0
 function loop(num)
 {
 	// 준비 안되면 작동 중지
+	/*
 	if (!player || !video_list[num])
 		return
+	*/
 
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll('.btn').forEach(btn =>
@@ -273,10 +276,10 @@ const stop = move => move.stopPropagation()
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener('input', () =>
 {
-	if (player)
-	{
+	//if (player)
+	//{
 		player.setVolume(+volume_bar.value)
-	}
+	//}
 })
 
 // 소리 크기 조절 간섭 방지
