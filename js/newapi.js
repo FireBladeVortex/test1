@@ -230,8 +230,8 @@ function loop(num)
 function update_bar()
 {
 	// 에러 방지
-	if (!player || !video_play || !play())
-		return
+	//if (!player || !video_play || !play())
+		//return
 
 	// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
 	const cur = player.getCurrentTime()
@@ -402,7 +402,10 @@ function onPlayerStateChange(event)
 		clearInterval(play_bar_ctrl)
 		update_msg()
 		player.setPlaybackRate(1)
-		// 진행 막대 관리
+		
+	}
+	else if (event.data === 1)
+	{ // 진행 막대 관리
 		play_bar_ctrl = setInterval(() =>
 		{
 			update_bar()
