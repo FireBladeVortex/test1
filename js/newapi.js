@@ -338,7 +338,7 @@ document.querySelectorAll('#left, #right').forEach(lr =>
 		wheel.preventDefault()
 		if (lr.id === 'right')
 		{
-			volume_value(e.deltaY < 0 ? +5 : -5)
+			volume_value(wheel.deltaY < 0 ? +5 : -5)
 		}
 	})
 })
