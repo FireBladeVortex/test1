@@ -201,6 +201,11 @@ function loop(num)
 		...(end_sec > 0 && {endSeconds : end_sec})
 	})
 
+	// 상태 초기화
+	clearInterval(play_bar_ctrl)
+	update_msg()
+	player.setPlaybackRate(1)
+
 	// 결정될 시간 값 관리
 	if (end_sec === 0)
 	{
@@ -392,9 +397,7 @@ function onPlayerStateChange(event)
 	}
 	if (event.data === YT.PlayerState.CUED)
 	{
-		clearInterval(play_bar_ctrl)
-		update_msg()
-		player.setPlaybackRate(1)
+		
 	}
 }
 
