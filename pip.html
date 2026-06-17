@@ -114,7 +114,14 @@
 
 <div class="player_wrap">
   <div class="video_box">
-    <div id="youtube_player"></div>
+    <iframe
+      id="youtube_player"
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?playsinline=1"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
   </div>
   <div class="controls">
     <span class="status" id="status_text">플레이어 로딩중...</span>
@@ -135,45 +142,25 @@
 </p>
 
 <script>
-  // YouTube IFrame Player API 로드
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
+  // var tag = document.createElement('script'); -- 삭제
+  // tag.src = "https://www.youtube.com/iframe_api"; -- 삭제
+  // document.head.appendChild(tag); -- 삭제
+  //
+  // var player; -- 삭제
+  // var video_id = "dQw4w9WgXcQ"; -- 삭제
+  //
+  // function onYouTubeIframeAPIReady() { ... } -- 삭제 (정적 iframe 사용으로 불필요)
+  //
+  // function on_player_ready() { ... } -- 삭제 (정적 iframe 사용으로 불필요)
+  // 삭제
 
-  var player;
-  var video_id = "dQw4w9WgXcQ"; // 원하는 영상 ID로 교체
-
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube_player', {
-      videoId: video_id,
-      playerVars: {
-        playsinline: 1,
-        enablejsapi: 1
-      },
-      events: {
-        onReady: on_player_ready
-      }
-    });
-  }
-
-  function on_player_ready() {
-    // YT.Player가 생성한 실제 iframe에 PiP 권한 속성을 직접 주입 (수정/추가)
-    var yt_iframe = document.getElementById('youtube_player');
-    if (yt_iframe && yt_iframe.tagName === 'IFRAME') {
-      yt_iframe.setAttribute(
-        'allow',
-        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-      );
-    }
-    document.getElementById('status_text').textContent = "재생 준비 완료";
-    document.getElementById('pip_btn').disabled = false;
-  }
+  document.getElementById('status_text').textContent = "재생 준비 완료"; // (수정)
+  document.getElementById('pip_btn').disabled = false; // (수정)
 
   var pip_btn = document.getElementById('pip_btn');
 
   pip_btn.addEventListener('click', function () {
-    // YouTube iframe은 공식 API로 PiP를 직접 트리거할 수 없어,
-    // iframe에 포커스를 주고 우클릭 메뉴 사용을 안내하는 방식으로 동작 (수정/추가)
+    // iframe에 포커스를 주고 우클릭 메뉴 사용을 안내 (수정/추가)
     var yt_iframe = document.getElementById('youtube_player');
     if (yt_iframe) {
       yt_iframe.focus();
