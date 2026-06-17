@@ -6,3 +6,5 @@ https://firebladevortex.github.io/test1/video.html
 
 https://firebladevortex.github.io/test1/vid-t.html
 
+
+https://firebladevortex.github.io/test1/pip.html
