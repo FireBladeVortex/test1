@@ -1,6 +1,6 @@
 ctrl shift p
-1. open user json
 
+1. open user json
 {
     "security.workspace.trust.untrustedFiles": "open",
     "files.associations": {
@@ -8,7 +8,19 @@ ctrl shift p
     },
     "chat.disableAIFeatures": true,
     "editor.lightbulb.enabled": "off",
+    "update.mode": "none",
+    "editor.wordBasedSuggestions": "matchingDocuments",
+    "window.confirmSaveUntitledWorkspace": false,
+    "explorer.confirmDelete": false,
+    "editor.quickSuggestions": {
+        "other": "offWhenInlineCompletions",
+        "comments": "off",
+        "strings": "off"
+    },
+    "editor.quickSuggestionsDelay": 100,
+    "workbench.startupEditor": "none",
 }
+
 
 2. open key json
 
