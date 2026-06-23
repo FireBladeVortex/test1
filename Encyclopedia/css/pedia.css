@@ -1,0 +1,134 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	box-sizing: content-box;
+}
+
+:root
+{
+	--bg: #021322;
+	--box: #220213;
+	--highlight: #FFD700;
+	--emp: #800020;
+	--text: #ffffff;
+	--width: 1600px;
+	--height: 900px;
+
+}
+
+body
+{
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+}
+
+#wall
+{
+	width: 100%;
+	height: calc(var(--height) / 3);
+	background: var(--box);
+}
+
+#floor
+{
+	width: 100%;
+	height: 100%;
+	background: var(--bg);
+}
+
+
+#table
+{
+	background: var(--highlight);
+	width: var(--width);
+	height: var(--height);
+	top: calc(var(--height) / 3);
+	left: 50%;
+	transform: translate(-50%, calc(var(--height) / 3 * -1));
+	position: absolute;
+	z-index: 1;
+	clip-path: polygon(
+		10% 20%,
+		90% 20%,
+		105% 100%,
+		-5% 100%
+	)
+}
+
+
+#book
+{
+	background: var(--bg);
+	top: calc(var(--height) / 3);
+	left: 50%;
+	transform: translate(-50%, calc(var(--height) / 3 * -1));
+	width: calc(var(--height)/2);
+	height: calc(var(--width)/3);
+	position: absolute;
+	z-index: 2;
+	clip-path: polygon(
+		35% 30%,
+		65% 30%,
+		70% 95%,
+		30% 95%
+	)
+}
+
+#book:hover,
+#table:hover,
+#open_book:hover
+{
+	cursor: grab;
+}
+
+
+#open_book
+{
+	background: linear-gradient( /* 수정 필요 */
+		to right,
+		#ffffff 0%,
+		#ffffff calc(50% - 1px),
+		#000000 calc(50% - 1px),
+		#000000 calc(50% + 1px),
+		#ffffff calc(50% + 1px),
+		#ffffff 100%
+	);
+	width: calc(var(--width) * 3 / 4);
+	height: calc(var(--height) / 3 * 2.5);
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: absolute;
+	z-index: 3;
+	display: none;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-flow: column; /* 추가 */
+	padding: 2% 4%;
+}
+
+#open_book.active
+{
+	display: grid;
+}
+
+
+#page_left,
+#page_right
+/* 가로 길이가 600px이니 좌우 각각 50px  여백 5등분*/
+{
+	display: grid; /* 추가 */
+
+  	grid-template-rows: repeat(24, 1fr); /* 수정 */
+	background: var(--box);
+	width: 100%;
+	height: 100%;
+	opacity: 50%;
+}
+
+.page_split
+{
+	border: 1px solid;
+}
+
