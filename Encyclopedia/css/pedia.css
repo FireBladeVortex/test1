@@ -86,15 +86,7 @@ body
 
 #open_book
 {
-	background: linear-gradient( /* 수정 필요 */
-		to right,
-		#ffffff 0%,
-		#ffffff calc(50% - 1px),
-		#000000 calc(50% - 1px),
-		#000000 calc(50% + 1px),
-		#ffffff calc(50% + 1px),
-		#ffffff 100%
-	);
+	background: #ffffff;
 	width: calc(var(--width) * 3 / 4);
 	height: calc(var(--height) / 3 * 2.5);
 	top: 50%;
@@ -114,21 +106,45 @@ body
 }
 
 
-#page_left,
-#page_right
+/* 3줄이 들어갈 8칸으로 쪼개고 그걸 1개 타이틀 + 여러 선택지 */
+.page
 /* 가로 길이가 600px이니 좌우 각각 50px  여백 5등분*/
 {
 	display: grid; /* 추가 */
-
-  	grid-template-rows: repeat(24, 1fr); /* 수정 */
+  	grid-template-rows: repeat(8, 1fr); /* 수정 */
 	background: var(--box);
 	width: 100%;
 	height: 100%;
-	opacity: 50%;
+	opacity: 100%;
 }
+
+.page.left
+{
+	border-right: 2px solid #000000; /* 추가 */
+}
+.page.right
+{
+	border-left: 2px solid #000000; /* 추가 */
+}
+
+
 
 .page_split
 {
-	border: 1px solid;
+	display: grid; /* 추가 */
+	border: 2px solid #ff0000;
+  	grid-template-rows: repeat(2, 1fr); /* 수정 */
+	padding: 15px;
 }
 
+.page_split_split
+{
+	display: grid;
+	border: 1px solid #FFD700;
+}
+
+.page_split_split:nth-child(even)
+{
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+}
