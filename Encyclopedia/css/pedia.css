@@ -76,11 +76,14 @@ body
 	)
 }
 
-#book:hover,
-#table:hover,
-#open_book:hover
+#book:hover
 {
 	cursor: grab;
+}
+
+#book:hover.grabbing
+{
+	cursor: grabbing; /* 수정 */
 }
 
 
@@ -146,4 +149,30 @@ body
 {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
-} /* 버튼 5개 삽입 해서 보이도록 하기*/
+	place-items: center;
+}
+
+.page_split_split:nth-child(odd)
+{
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	place-items: center;
+}
+
+
+.btn
+{
+	border: 1px solid #ff0000;
+	cursor: pointer;
+	height: 90%;
+	width: 90%;
+}
+
+
+
+
+.input
+{
+	
+	border: 1px solid #ff00ff;
+}
