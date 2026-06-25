@@ -143,22 +143,35 @@ body
 {
 	display: grid;
 	border: 1px solid #FFD700;
+	place-items: center;
 }
 
 .page_split_split:nth-child(even)
 {
-	display: grid;
 	grid-template-columns: repeat(5, 1fr);
-	place-items: center;
 }
 
-.page_split_split:nth-child(odd)
+.page_split_split:nth-child(3)
 {
-	display: grid;
-	grid-template-columns: repeat(5, 1fr);
-	place-items: center;
+	grid-template-columns: repeat(4, 1fr);
 }
 
+.col_2 /* 추가 */
+{
+	grid-column: 2;
+}
+.col_3 /* 추가 */
+{
+	grid-column: 3;
+}
+.col_4 /* 추가 */
+{
+	grid-column: 4;
+}
+.col_5 /* 추가 */
+{
+	grid-column: 5;
+}
 
 .btn
 {
@@ -171,7 +184,7 @@ body
 
 .btn:hover
 {
-	border: 5px solid #0000ff;
+	border: 1px solid #0000ff;
 }
 
 .btn.on
@@ -185,3 +198,14 @@ body
 	
 	border: 1px solid #ff00ff;
 }
+
+
+.btn_option
+{
+	
+	display: grid; /* 추가 */
+	border: 2px solid #ff0000;
+  	grid-template-columns: repeat(3, 1fr); /* 수정 */
+	padding: 15px;
+}
+
