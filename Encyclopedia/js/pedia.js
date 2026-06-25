@@ -8,11 +8,12 @@ book.addEventListener('click', () =>
 
 
 
-let is_grabbing = false // 추가
 
-setInterval(() =>
+setInterval(cursor_toggle, 300) // 추가
+
+let is_grabbing = false // 추가
+function cursor_toggle()
 {
 	is_grabbing = !is_grabbing // 추가
-
 	book.classList.toggle('grabbing', is_grabbing) // 수정
-}, 500) // 추가
+}
