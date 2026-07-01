@@ -63,49 +63,6 @@ const pause = () => player.getPlayerState() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
 
-/*
-// youtube id 찾기
-const id_find = id =>
-{
-	try
-	{
-		const url = new URL(id)
-		return url.searchParams.get("v") ?? url.pathname.split("/").pop()
-	}
-	catch
-	{
-		return id
-	}
-}
-
-// 시간 표시 변환
-const time_convert = time =>
-{
-	if (typeof time === "number")
-		return time
-	if (typeof time === "string")
-	{
-		const sec = time.replace(/[^0-9:]/g, "")
-		return sec.includes(":") ? sec.split(":").reduce((acc, cur) => acc * 60 + +cur, 0) : +sec
-	}
-	return 0
-}
-
-// 여러가지 경우의 수 대비
-const time_find = id =>
-{
-	try
-	{
-		const time = new URL(id).searchParams.get("t")
-		return time !== null ? time_convert(time) : 0
-	}
-	catch
-	{
-		return 0
-	}
-}
-*/
-
 
 
 // 최초 재생 시작하기 전 상태
@@ -152,7 +109,7 @@ function total_list()
 			else
 			{
 				click_img(num)
-				data_ready(ready.id, ready.start = 0, ready.end = 0)
+				data_ready(ready.id, ready.start, ready.end)
 			}
 		})
 	}
@@ -162,12 +119,17 @@ function total_list()
 // let video_play = null
 // 진행 막대 변수
 let play_bar_ctrl = null
+//
+let get_id = null
 // 시간 관리
-let start_sec = 0
-let end_sec = 0
-let last_sec = 0
-
-
+let sec_start = null
+let sec_end = null
+let sec_last = null
+let get_start = null
+let get_end = null
+// 시간 메세지
+let msg_start = null
+let msg_end = null
 
 
 function click_img(num)
@@ -185,65 +147,36 @@ function click_img(num)
 
 
 
-// 시간 관리
-let time_start = null
-let time_end = null
-let time_end_fix = null
-
 // youtube id 가져오기
-function data_ready(id, start, end)
+function data_ready(id, start = 0, end = 0)
 {
 	const url = new URL(id)
-	const get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
-	const get_time = parseInt(url.searchParams.get("t") ?? 0)
+	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
 
-	[time_start] = get_time > 0 ? split_data(get_time) : split_data(start)
-	[time_end] = end !== 0 ? split_data(end) : split_data(player.getDuration())
+	const get_start = parseInt(url.searchParams.get("t") ?? 0)
+
+	[sec_start, msg_start] = get_start > 0 ? data_split(get_start) : data_split(start)
+	[sec_end, msg_end] = end !== 0 ? data_split(end) : data_split(player.getDuration())
 
 	let try_count = 0
-	const try_ready = setInterval(data_try, 100)
-	return get_id
+	try_ready = setInterval(data_try, 100)
 }
 
-// data_ready로 다시 넣기
-function data_try()
-{
-	try_count++
-	if (try_count++ > 30)
-	{
-		clearInterval(try_ready)
-		return
-	}
 
-	const get_end = time_end > 0 ? time_end : player.getDuration()
-	if (get_end !== 0 && Number.isNaN(get_end))
-	{
-		clearInterval(try_ready)
-		player.cueVideoById(
-		{
-			videoId : get_id,
-			startSeconds : time_start,
-			...(get_end > 0 && {endSeconds : get_end})
-		})
-	}
-}
 
 function data_split(time) 
 {
-	if (typeof value === 'number')
+	if (typeof time === 'number' && time > 0)
 	{
-		if (time > 0)
-		{
-			const date = new Date(time * 1000)
-			const hh = date.getUTCHours()
-			const mm = date.getUTCMinutes()
-			const ss = date.getUTCSeconds()
-			const sss = time
-			const hms = hms_convert([hh, mm, ss])
-			return [ hms, sss ]
-		}
+		const date = new Date(time * 1000)
+		const hh = date.getUTCHours()
+		const mm = date.getUTCMinutes()
+		const ss = date.getUTCSeconds()
+		const sss = time
+		const hms = hms_convert([hh, mm, ss])
+		return [ sss, hms ]
 	}
-	else if (typeof value === 'string')
+	else if (typeof time === 'string')
 	{
 		const fix = time.replace(/;/g, ":")
 		const fix_check = time.includes(":")
@@ -255,17 +188,18 @@ function data_split(time)
 			const hh = fix_hms.length ? +(fix_hms.pop()) : 0
 			const sss = hh * 3600 + mm * 60 + ss
 			const hms = hms_convert([hh, mm, ss])
-			return [ hms, sss ]
+			return [ sss, hms ]
 		}
 	}
 	else
 		return 0
 }
 
+
 function hms_convert(hhmmss)
 {
 	const hms_check = hhmmss.findIndex(num => num !== 0)
-	const slice_ready = hms_check === -1 ? hms.length - 1 : hms_check
+	const slice_ready = hms_check === -1 ? hhmmss.length - 1 : hms_check
 	const slice_zero = hhmmss.slice(slice_ready)
 	const ctrl_zero = slice_zero.map((num, idx) => idx === 0 ? `${num}` : `${num}`.padStart(2,"0"))
 	const hms = ctrl_zero.join(":")
@@ -273,157 +207,54 @@ function hms_convert(hhmmss)
 }
 
 
-
-
-function time_ctrl(start, end)
+// data_ready로 다시 넣기
+function data_try()
 {
-	const msg = data_split(time)
-	const cur = data_split(player.getCurrentTime())
-
-	if (time_start === 0)
+	try_count++
+	if (try_count++ > 30)
 	{
-		document.getElementById("play_msg").textContent = `${cur} → ${end}`
+		clearInterval(try_ready)
+		return
 	}
-	else
+
+	const get_end = sec_end > 0 ? sec_end : player.getDuration()
+	if (Number.isNaN(get_end) && get_end > 0)
 	{
-		document.getElementById("play_msg").textContent = `${fmt(time_start)} → ${cur} → ${end}`
+		clearInterval(try_ready)
+		player.cueVideoById(
+		{
+			videoId : get_id,
+			startSeconds : sec_start,
+			...(get_end > 0 && {endSeconds : get_end})
+		})
 	}
 }
 
 
 
-
-
-
-
-
-function bar_ctrl(start, end)
+function ctrl_view()
 {
-	const current = player.getCurrentTime()
-	const end = last_sec > 0 ? end_sec : player.getDuration()
-	if (end_sec > 0 && cur >= end_sec)
-	{
-		player.seekTo(time_start, true)
-	}
-	const ratio = (cur - time_start) / (end - time_start)
-	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
-}
-
-
-
-
-/*
-
-// 미리보기 클릭한 상태에서 할 일
-function loop(num)
-{
-	// 준비 안되면 작동 중지
-	//if (!player || !video_list[num])
-	//	return
-
-	// 활성화 버튼 강조 나머지 버튼 어둡게
-	document.querySelectorAll(".btn").forEach(btn =>
-	{
-		const click = +btn.dataset.num === num
-		btn.classList.toggle("active", click)
-		btn.classList.toggle("blur", !click)
-	})
-
-	// 썸네일 클릭 장치
-	// img_click = num
-
-	// 지금 불러온 동영상 미리보기 번호
-	video_play = video_list[num]
-
-	// 시간값들 여러 경우의 수 대비 및 정리
-	const time_sec = time_find(video_play.id)
-	end_sec = time_convert(video_play.end)
-
-	//
-	if (time_sec === 0)
-	{
-		start_sec = time_convert(video_play.start)
-	}
-	else if (end_sec > 0 && end_sec <= time_sec)
-	{
-		start_sec = 0
-	}
-	else
-	{
-		start_sec = time_sec
-	}
-
-	// 클릭한 영상 정보 id start end 값을 불러옴
-	// loadVideoById == 즉시 재생 기능 (조회수 누적 안됨)
-	// cueVideoById == 재생 준비 (조회수 누적 가능)
-	player.cueVideoById(
-	{
-		videoId : id_find(video_play.id),
-		startSeconds : start_sec,
-		...(end_sec > 0 && {endSeconds : end_sec})
-	})
-
-	// 상태 초기화
-	clearInterval(play_bar_ctrl)
-	update_msg()
-	player.setPlaybackRate(1)
-
-	// 결정될 시간 값 관리
-	if (end_sec === 0)
-	{
-		last_sec = player.getDuration()
-	}
-	else
-	{
-		last_sec = end_sec
-	}
-	// 진행 막대 관리
-	play_bar_ctrl = setInterval(() =>
-	{
-		update_bar()
-	}, 100) // 100ms
-}
-
-// 진행 막대 실시간 관리
-function update_bar()
-{
-	// 에러 방지
-	//if (!player || !video_play || !play())
-		//return
-
-	// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
 	const cur = player.getCurrentTime()
-	const end = last_sec > 0 ? end_sec : player.getDuration()
-	if (end_sec > 0 && cur >= end_sec)
+	const [, msg_cur] = data_split(cur)
+	if (msg_end && msg_start)
 	{
-		player.seekTo(start_sec, true)
+		if (sec_start === 0)
+		{
+			document.getElementById("play_msg").textContent = `${msg_cur} < ${msg_end}`
+		}
+		else
+		{
+			document.getElementById("play_msg").textContent = `${msg_start} < ${msg_cur} > ${msg_end}`
+		}
 	}
-	const ratio = (cur - start_sec) / (end - start_sec)
+	const end = sec_end > 0 ? sec_end : player.getDuration()
+	if (sec_end > 0 && cur >= sec_end)
+	{
+		player.seekTo(sec_start, true)
+	}
+	const ratio = (cur - sec_start) / (end - sec_start)
 	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
-	update_msg(cur)
 }
-
-// 상태 메세지 실시간 관리
-function update_msg(time = 0)
-{
-	/////////////////////////////////////////////////////////////////////
-	// const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,"0")}`
-	//////////////////////////////////////////// 다른 방법 강구
-	const fmt = sec => `${Math.floor(sec/60)}:${`${Math.floor(sec%60)}`.padStart(2,"0")}`
-	/////////////////////////////////////////////////
-	const cur = fmt(time)
-	const end = end_sec > 0 ? fmt(end_sec) : fmt(player.getDuration())
-	if (start_sec === 0)
-	{
-		document.getElementById("play_msg").textContent = `${cur} → ${end}`
-	}
-	else
-	{
-		document.getElementById("play_msg").textContent = `${fmt(start_sec)} → ${cur} → ${end}`
-	}
-}
-
-*/
 
 
 // 볼륨 변수
@@ -564,19 +395,18 @@ function onPlayerStateChange(event)
 	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
 	if (event.data === 0)
 	{
-		player.seekTo(time_start, true)
+		player.seekTo(sec_start, true)
 		player.playVideo()
 	}
 	if (event.data === 5)
 	{
-		clearInterval(play_bar_ctrl)
+		clearInterval(ctrl_view)
 		update_msg()
 		player.setPlaybackRate(1)
-		
 	}
 	else if (event.data === 1)
 	{ // 진행 막대 관리
-		play_bar_ctrl = setInterval(bar_ctrl, 100) // 100ms
+		setInterval(ctrl_view, 100) // 100ms
 	}
 }
 
