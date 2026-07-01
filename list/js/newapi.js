@@ -83,7 +83,7 @@ function total_list()
 
 		// 미리보기 이미지 등록
 		const img = document.createElement("img")
-		img.src = `https://img.youtube.com/vi/${data_ready(ready.id)}/mqdefault.jpg`
+		img.src = `https://img.youtube.com/vi/${id_ready(ready.id)}/mqdefault.jpg`
 
 		// 미리보기 불러와
 		btn.appendChild(img)
@@ -145,13 +145,17 @@ function click_img(num)
 	img_click = num
 }
 
+function id_ready(id)
+{
+	const url = new URL(id)
+	return url.searchParams.get("v") ?? url.pathname.split("/").pop()
+}
 
 
 // youtube id 가져오기
 function data_ready(id, start = 0, end = 0)
 {
-	const url = new URL(id)
-	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
+	const url = id_ready(id)
 
 	const get_start = parseInt(url.searchParams.get("t") ?? 0)
 
@@ -160,6 +164,7 @@ function data_ready(id, start = 0, end = 0)
 
 	let try_count = 0
 	try_ready = setInterval(data_try, 100)
+
 }
 
 
