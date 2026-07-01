@@ -83,7 +83,7 @@ function total_list()
 
 		// 미리보기 이미지 등록
 		const img = document.createElement("img")
-		img.src = `https://img.youtube.com/vi/${id_ready(ready.id)}/mqdefault.jpg`
+		img.src = `https://img.youtube.com/vi/${ready_id(ready.id)}/mqdefault.jpg`
 
 		// 미리보기 불러와
 		btn.appendChild(img)
@@ -109,7 +109,7 @@ function total_list()
 			else
 			{
 				click_img(num)
-				data_ready(ready.id, ready.start, ready.end)
+				ready_data(ready.id, ready.start, ready.end)
 			}
 		})
 	}
@@ -145,7 +145,7 @@ function click_img(num)
 	img_click = num
 }
 
-function id_ready(id)
+function ready_id(id)
 {
 	const url = new URL(id)
 	return url.searchParams.get("v") ?? url.pathname.split("/").pop()
@@ -153,9 +153,10 @@ function id_ready(id)
 
 
 // youtube id 가져오기
-function data_ready(id, start = 0, end = 0)
+function ready_data(id, start = 0, end = 0)
 {
-	const url = id_ready(id)
+	const url = new URL(id)
+	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
 
 	const get_start = parseInt(url.searchParams.get("t") ?? 0)
 
@@ -212,7 +213,7 @@ function hms_convert(hhmmss)
 }
 
 
-// data_ready로 다시 넣기
+// ready_data로 다시 넣기
 function data_try()
 {
 	try_count++
