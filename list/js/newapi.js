@@ -83,7 +83,7 @@ function total_list()
 
 		// 미리보기 이미지 등록
 		const img = document.createElement("img")
-		img.src = `https://img.youtube.com/vi/${ready_id(ready.id)}/mqdefault.jpg`
+		img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
 
 		// 미리보기 불러와
 		btn.appendChild(img)
@@ -131,6 +131,7 @@ let get_end = null
 let msg_start = null
 let msg_end = null
 
+let try_count = null // (추가)
 
 function click_img(num)
 {
@@ -145,25 +146,22 @@ function click_img(num)
 	img_click = num
 }
 
-function ready_id(id)
-{
-	const url = new URL(id)
-	return url.searchParams.get("v") ?? url.pathname.split("/").pop()
-}
-
 
 // youtube id 가져오기
 function ready_data(id, start = 0, end = 0)
 {
 	const url = new URL(id)
-	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
+	if (arguments.length === 1)
+	{
+		return url.searchParams.get("v") ?? url.pathname.split("/").pop()
+	}
 
 	const get_start = parseInt(url.searchParams.get("t") ?? 0)
 
 	[sec_start, msg_start] = get_start > 0 ? data_split(get_start) : data_split(start)
 	[sec_end, msg_end] = end !== 0 ? data_split(end) : data_split(player.getDuration())
 
-	let try_count = 0
+	try_count = 0
 	try_ready = setInterval(data_try, 100)
 
 }
@@ -224,7 +222,7 @@ function data_try()
 	}
 
 	const get_end = sec_end > 0 ? sec_end : player.getDuration()
-	if (Number.isNaN(get_end) && get_end > 0)
+	if (!Number.isNaN(get_end) && get_end > 0)
 	{
 		clearInterval(try_ready)
 		player.cueVideoById(
