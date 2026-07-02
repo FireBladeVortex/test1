@@ -151,9 +151,10 @@ function click_img(num)
 function ready_data(id, start = 0, end = 0)
 {
 	const url = new URL(id)
+	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
 	if (arguments.length === 1)
 	{
-		return url.searchParams.get("v") ?? url.pathname.split("/").pop()
+		return get_id
 	}
 
 	const get_start = parseInt(url.searchParams.get("t") ?? 0)
