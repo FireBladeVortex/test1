@@ -93,6 +93,7 @@ function total_list()
 		// 이후 미리보기 클릭 => 일시 정지, 이어서 재생 반복
 		btn.addEventListener("click", () =>
 		{
+			if (!player) return
 			if (img_click === num)
 			{
 				if (play())
