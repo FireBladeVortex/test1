@@ -12,13 +12,9 @@ const video_list = [
 	},
 	{
 		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
-		start: 0,
-		end: 0
 	},
 	{
 		id: "https://youtu.be/mW0jfEH6HW0?si=qnWfX0KNB0DIBsrL", /* 감규리 - 내꺼 하는 법 */
-		start: 0,
-		end: 0
 	},
 	{
 		id: "https://youtu.be/1dbXrB7hg7o?si=uQLfRYSg_V5D_zF3", /* 마레 플로스 - Fly Me To The Moon */

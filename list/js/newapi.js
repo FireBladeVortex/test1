@@ -19,7 +19,7 @@ const api = document.createElement("script")
 	api.src = "https://www.youtube.com/iframe_api"
 	document.head.appendChild(api)
 
-// iframe 들어갈 변수 준비
+// iframe 들어갈 변수 준비 (계속 바뀌는 값)
 let player = null
 
 // iframe 호출
@@ -34,9 +34,9 @@ function onYouTubeIframeAPIReady()
 		{
 			autoplay: 0, // 자동재생 방지
 			rel: 0, // 영상 종료 때 추천 방지
-			fs: 0, // 풀 스크린 버튼 숨김
-			disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
-			controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
+			// fs: 0, // 풀 스크린 버튼 숨김
+			// disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
+			// controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
 		},
 		// 현재 상태 불러오기
 		events:
@@ -90,7 +90,7 @@ function total_list()
 		list.appendChild(btn)
 
 		// 첫 클릭 => 재생 시작
-		// 이후 클릭 => 일시 정지, 이어서 재생 반복
+		// 이후 미리보기 클릭 => 일시 정지, 이어서 재생 반복
 		btn.addEventListener("click", () =>
 		{
 			if (img_click === num)
@@ -119,14 +119,10 @@ function total_list()
 // let video_play = null
 // 진행 막대 변수
 let play_bar_ctrl = null
-//
-let get_id = null
 // 시간 관리
 let sec_start = null
 let sec_end = null
 let sec_last = null
-let get_start = null
-let get_end = null
 // 시간 메세지
 let msg_start = null
 let msg_end = null
@@ -138,7 +134,7 @@ function click_img(num)
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll(".btn").forEach(btn =>
 	{
-		const click = +btn.dataset.num === num
+		const click = +(btn.dataset.num) === num
 		btn.classList.toggle("active", click)
 		btn.classList.toggle("blur", !click)
 	})
@@ -147,41 +143,40 @@ function click_img(num)
 }
 
 
-// youtube id 가져오기
+// youtube 정보 가져오기 cue 상태 되기전
 function ready_data(id, start = 0, end = 0)
 {
+	// 주소에서 id 추출
 	const url = new URL(id)
-	get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
+	const get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
 	if (arguments.length === 1)
 	{
 		return get_id
 	}
 
-	const get_start = parseInt(url.searchParams.get("t") ?? 0)
+	// 주소에서 t값 추출 + 시작시간 비교후 결정
+	const get_start = parseInt(url.searchParams.get("t"))
+	const set_start = !Number.isNaN(get_start) ? get_start : start
+	[sec_start, msg_start] = data_split(set_start)
 
-	[sec_start, msg_start] = get_start > 0 ? data_split(get_start) : data_split(start)
-	[sec_end, msg_end] = end !== 0 ? data_split(end) : data_split(player.getDuration())
+	// 종료 시간 결정(getDuration() 아님)
+	[sec_end, msg_end] = data_split(end)
 
-	
-	const get_end = sec_end > 0 ? sec_end : player.getDuration()
-		player.cueVideoById(
-		{
-			videoId : get_id,
-			startSeconds : sec_start,
-			...(get_end > 0 && {endSeconds : get_end})
-		})
-	/*
-	try_count = 0
-	try_ready = setInterval(data_try, 100)
-	*/
+	// 영상 불러오기
+	player.cueVideoById(
+	{
+		videoId : get_id,
+		startSeconds : sec_start,
+		...(sec_end > 0 && {endSeconds : sec_end})
+	})
 
 }
 
 
-
+// 시간값 시간표시 정리
 function data_split(time) 
 {
-	if (typeof time === 'number' && time > 0)
+	if (typeof time === "number" && time > 0)
 	{
 		const date = new Date(time * 1000)
 		const hh = date.getUTCHours()
@@ -191,7 +186,7 @@ function data_split(time)
 		const hms = hms_convert([hh, mm, ss])
 		return [ sss, hms ]
 	}
-	else if (typeof time === 'string')
+	else if (typeof time === "string")
 	{
 		const fix = time.replace(/;/g, ":")
 		const fix_check = time.includes(":")
@@ -207,10 +202,13 @@ function data_split(time)
 		}
 	}
 	else
-		return 0
+	{
+		return [ 0, 0 ]
+	}
 }
 
 
+// 시간 메세지 표기법 정리 24:00:00
 function hms_convert(hhmmss)
 {
 	const hms_check = hhmmss.findIndex(num => num !== 0)
@@ -219,30 +217,6 @@ function hms_convert(hhmmss)
 	const ctrl_zero = slice_zero.map((num, idx) => idx === 0 ? `${num}` : `${num}`.padStart(2,"0"))
 	const hms = ctrl_zero.join(":")
 	return hms
-}
-
-
-// ready_data로 다시 넣기
-function data_try()
-{
-	try_count++
-	if (try_count++ > 30)
-	{
-		clearInterval(try_ready)
-		return
-	}
-
-	const get_end = sec_end > 0 ? sec_end : player.getDuration()
-	if (!Number.isNaN(get_end) && get_end > 0)
-	{
-		clearInterval(try_ready)
-		player.cueVideoById(
-		{
-			videoId : get_id,
-			startSeconds : sec_start,
-			...(get_end > 0 && {endSeconds : get_end})
-		})
-	}
 }
 
 
@@ -280,10 +254,7 @@ const stop = move => move.stopPropagation()
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener("input", () =>
 {
-	//if (player)
-	//{
-		player.setVolume(+volume_bar.value)
-	//}
+	player.setVolume(+volume_bar.value)
 })
 
 // 소리 크기 조절 간섭 방지
@@ -347,22 +318,12 @@ document.addEventListener("keydown", key =>
 })
 
 // 마우스 휠 소리 크기 조절 및 오작동 억제
-document.querySelectorAll("#left, #right").forEach(lr =>
+document.addEventListener("wheel", wheel =>
 {
-	lr.addEventListener("wheel", wheel =>
-	{
-		wheel.preventDefault()
-		if (lr.id === "right")
-		{
-			volume_value(wheel.deltaY < 0 ? +5 : -5)
-		}
-	})
+	wheel.preventDefault()
+	volume_value(wheel.deltaY < 0 ? +5 : -5)
 })
 
-// 재생 속도 조절
-function play_speed(key, plma)
-{
-}
 
 // 소리 크기 조절
 function volume_value(plma)
@@ -374,6 +335,11 @@ function volume_value(plma)
 	const change = Math.min(100, Math.max(0, updown))
 	player.setVolume(change)
 	volume_bar.value = change
+}
+
+// 재생 속도 조절
+function play_speed(key, plma)
+{
 }
 
 // 재생 일시중지
@@ -415,13 +381,11 @@ function onPlayerStateChange(event)
 	}
 	if (event.data === 5)
 	{
-		clearInterval(ctrl_view)
-		update_msg()
 		player.setPlaybackRate(1)
-	}
-	else if (event.data === 1)
-	{ // 진행 막대 관리
-		setInterval(ctrl_view, 100) // 100ms
+		if (sec_end === 0)
+		{
+			sec_end = player.getDuration()
+		}
 	}
 }
 
