@@ -156,12 +156,12 @@ function ready_data(id, start = 0, end = 0)
 	}
 
 	// 주소에서 t값 추출 + 시작시간 비교후 결정
-	const get_start = parseInt(url.searchParams.get("t"))
-	const set_start = !Number.isNaN(get_start) ? get_start : start
-	[sec_start, msg_start] = data_split(set_start)
+	const get_start = parseInt(url.searchParams.get("t"));
+	const set_start = !Number.isNaN(get_start) ? get_start : start;
+	[sec_start, msg_start] = data_split(set_start);
 
 	// 종료 시간 결정(getDuration() 아님)
-	[sec_end, msg_end] = data_split(end)
+	[sec_end, msg_end] = data_split(end);
 
 	// 영상 불러오기
 	player.cueVideoById(
