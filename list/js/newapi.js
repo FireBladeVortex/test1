@@ -162,8 +162,18 @@ function ready_data(id, start = 0, end = 0)
 	[sec_start, msg_start] = get_start > 0 ? data_split(get_start) : data_split(start)
 	[sec_end, msg_end] = end !== 0 ? data_split(end) : data_split(player.getDuration())
 
+	
+	const get_end = sec_end > 0 ? sec_end : player.getDuration()
+		player.cueVideoById(
+		{
+			videoId : get_id,
+			startSeconds : sec_start,
+			...(get_end > 0 && {endSeconds : get_end})
+		})
+	/*
 	try_count = 0
 	try_ready = setInterval(data_try, 100)
+	*/
 
 }
 
