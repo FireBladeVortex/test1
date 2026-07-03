@@ -181,11 +181,6 @@ body
 	display: none; 비활성화 */
 }
 
-#play_msg.title
-{
-	text-align: start;
-}
-
 #volume
 {
 	display: flex;
