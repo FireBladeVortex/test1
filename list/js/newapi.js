@@ -220,6 +220,7 @@ function hms_convert(hhmmss)
 function ctrl_view()
 {
 	const cur = player.getCurrentTime()
+	/*
 	const [, msg_cur] = data_split(cur)
 	if (msg_end && msg_start)
 	{
@@ -232,12 +233,8 @@ function ctrl_view()
 			document.getElementById("play_msg").textContent = `${msg_start} < ${msg_cur} > ${msg_end}`
 		}
 	}
-	const end = sec_end > 0 ? sec_end : player.getDuration()
-	if (sec_end > 0 && cur >= sec_end)
-	{
-		player.seekTo(sec_start, true)
-	}
-	const ratio = (cur - sec_start) / (end - sec_start)
+		*/
+	const ratio = (cur - sec_start) / (sec_end - sec_start)
 	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
 }
 
@@ -245,7 +242,7 @@ function ctrl_view()
 // 볼륨 변수
 const volume = document.getElementById("volume")
 const volume_bar = document.getElementById("volume_bar")
-const stop = move => move.stopPropagation()
+const stopp = move => move.stopPropagation()
 
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener("input", () =>
@@ -254,8 +251,8 @@ volume_bar.addEventListener("input", () =>
 })
 
 // 소리 크기 조절 간섭 방지
-volume.addEventListener("mousedown", stop)
-volume.addEventListener("click", stop)
+volume.addEventListener("mousedown", stopp)
+volume.addEventListener("click", stopp)
 
 // 해당하는 키 입력 기본 작동을 무시
 // 스페이스 바가 play_or_pause()를 실행
