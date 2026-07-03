@@ -123,8 +123,6 @@ let sec_end = null
 let msg_start = null
 let msg_end = null
 
-let play_bar = null
-
 function click_img(num)
 {
 	// 활성화 버튼 강조 나머지 버튼 어둡게
@@ -382,26 +380,27 @@ function onPlayerStateChange(event)
 	// 재생 중일 때 100ms마다 진행바 갱신
 	if (event.data === 1)
 	{
-		clearInterval(play_bar)
+		clearInterval(play_bar) // 인터벌 중복 호출 방지
 		play_bar = setInterval(ctrl_view, 100)
 	}
 	else
 	{
 		clearInterval(play_bar)
 	}
+	// 영상 재시작
+	if (event.data === 0)
+	{
+		player.seekTo(sec_start, true)
+		player.playVideo()
+	}
+	//
 	const pop = [1, 2, 3].includes(event.data)
 	document.querySelectorAll("#right, #ad").forEach(overlay =>
 	{
 		overlay.style.cursor = pop ? "pointer" : "default"
 		overlay.onclick = pop ? play_or_pause : null
 	})
-	//
 	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
-	if (event.data === 0)
-	{
-		player.seekTo(sec_start, true)
-		player.playVideo()
-	}
 }
 
 // 싲가
