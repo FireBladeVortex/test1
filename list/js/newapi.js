@@ -361,6 +361,7 @@ YT.PlayerState.BUFFERING = 3
 YT.PlayerState.CUED = 5
 */
 
+let play_bar = null
 function onPlayerStateChange(event)
 {
 	// 영상 정보 불러온 상태(재생 시작 전)
@@ -372,7 +373,16 @@ function onPlayerStateChange(event)
 			[sec_end, msg_end] = data_split(player.getDuration())
 		}
 	}
-	//
+	//	//	// 재생 중일 때 100ms마다 진행바 갱신 (추가)
+	if (event.data === 1)
+	{
+		clearInterval(play_bar)
+		play_bar = setInterval(ctrl_view, 100)
+	}
+	else
+	{
+		clearInterval(play_bar)
+	}
 	const pop = [1, 2, 3].includes(event.data)
 	document.querySelectorAll("#right, #ad").forEach(overlay =>
 	{
