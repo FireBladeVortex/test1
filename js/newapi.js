@@ -15,118 +15,85 @@ https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_v
 */
 
 // YouTube Player iframe API 불러오기
-const api = document.createElement('script')
+const api = document.createElement("script")
 	api.src = "https://www.youtube.com/iframe_api"
 	document.head.appendChild(api)
 
-// iframe 들어갈 변수 준비
+// iframe 들어갈 변수 준비 (계속 바뀌는 값)
 let player = null
 
 // iframe 호출
 function onYouTubeIframeAPIReady()
 {
-	player = new YT.Player('you_player',
+	player = new YT.Player("you_player",
 	{
-		width: '100%',
-		height: '100%',
-		videoId: '',
+		width: "100%",
+		height: "100%",
+		videoId: "d8dqNFNrXPk",
 		playerVars:
 		{
 			autoplay: 0, // 자동재생 방지
 			rel: 0, // 영상 종료 때 추천 방지
-			fs: 0, // 풀 스크린 버튼 숨김
-			disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
-			controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
+			// fs: 0, // 풀 스크린 버튼 숨김
+			// disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
+			// controls: 0, // 유튜브 일부 ui 숨김
+			origin: window.location.origin,
 		},
 		// 현재 상태 불러오기
 		events:
 		{
 			onReady: () =>
 			{
-				player.setVolume(+volume_bar.value) // value="25" 적용
+				player.setVolume(+volume_bar.value) // 현재 value 적용
 			},
 			onStateChange : onPlayerStateChange
 		}
 	})
 }
 
-// 영상 상태 확인
-// YT.PlayerState.PLAYING = 1
-// YT.PlayerState.PAUSED = 2
-const play = () => player.getPlayerState() === YT.PlayerState.PLAYING
-const pause = () => player.getPlayerState() === YT.PlayerState.PAUSED
+/*
+영상 상태 확인
+YT.PlayerState.ENDED = 0
+YT.PlayerState.PLAYING = 1
+YT.PlayerState.PAUSED = 2
+YT.PlayerState.BUFFERING = 3
+YT.PlayerState.CUED = 5
+*/
+const play = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
+const pause = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
-// youtube id 찾기
-const id_find = id =>
-{
-	try
-	{
-		const url = new URL(id)
-		return url.searchParams.get('v') ?? url.pathname.split('/').pop()
-	}
-	catch
-	{
-		return id
-	}
-}
 
-// 시간 표시 변환
-const time_convert = time =>
-{
-	if (typeof time === 'number')
-		return time
-	if (typeof time === 'string')
-	{
-		const sec = time.replace(/[^0-9:]/g, '')
-		return sec.includes(':') ? sec.split(':').reduce((acc, cur) => acc * 60 + +cur, 0) : +sec
-	}
-	return 0
-}
 
-// 여러가지 경우의 수 대비
-const time_find = id =>
-{
-	try
-	{
-		const time = new URL(id).searchParams.get('t')
-		return time !== null ? time_convert(time) : 0
-	}
-	catch
-	{
-		return 0
-	}
-}
 
- // 최초 재생 시작하기 전 상태
-let img_click = -1
+// 최초 재생 시작하기 전 상태
+let img_click = null
 
 // 왼쪽 영상 미리보기 불러오기
 function total_list()
 {
-	const list = document.getElementById('list')
+	const list = document.getElementById("list")
 
 	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
 	for (let num = 0; num < video_list.length; num++)
 	{
 		const ready = video_list[num]
-		const btn = document.createElement('button')
-		btn.className = 'btn'
+		const btn = document.createElement("button")
+		btn.className = "btn"
 		btn.dataset.num = num
 
 		// 미리보기 이미지 등록
-		const img = document.createElement('img')
-		img.src = `https://img.youtube.com/vi/${id_find(ready.id)}/mqdefault.jpg`
+		const img = document.createElement("img")
+		img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
 
 		// 미리보기 불러와
 		btn.appendChild(img)
 		list.appendChild(btn)
 
 		// 첫 클릭 => 재생 시작
-		// 이후 클릭 => 일시 정지, 이어서 재생 반복
-		btn.addEventListener('click', () =>
+		// 이후 미리보기 클릭 => 일시 정지, 이어서 재생 반복
+		btn.addEventListener("click", () =>
 		{
-			/*
 			if (img_click === num)
 			{
 				if (play())
@@ -137,163 +104,167 @@ function total_list()
 				{
 					player.playVideo()
 				}
+				else
+					return
 			}
 			else
-			{*/
-				loop(num)
-			//}
+			{
+				click_img(num)
+				ready_data(ready.id, ready.start, ready.end)
+			}
 		})
 	}
 }
 
-// 플레이 상태 관리
-let video_play = null
-// 진행 막대 변수
-let play_bar_ctrl = null
 // 시간 관리
-let start_sec = 0
-let end_sec = 0
-let last_sec = 0
+let sec_start = null
+let sec_end = null
+// 시간 메세지
+let msg_start = null
+let msg_end = null
 
-// 미리보기 클릭한 상태에서 할 일
-function loop(num)
+let try_count = null // (추가)
+
+function click_img(num)
 {
-	// 준비 안되면 작동 중지
-	/*
-	if (!player || !video_list[num])
-		return
-	*/
-
 	// 활성화 버튼 강조 나머지 버튼 어둡게
-	document.querySelectorAll('.btn').forEach(btn =>
+	document.querySelectorAll(".btn").forEach(btn =>
 	{
-		const click = +btn.dataset.num === num
-		btn.classList.toggle('active', click)
-		btn.classList.toggle('blur', !click)
+		const click = +(btn.dataset.num) === num
+		btn.classList.toggle("active", click)
+		btn.classList.toggle("blur", !click)
 	})
-
-	//
+	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
 	img_click = num
-	video_play = video_list[num]
+}
 
-	// 시간값들 여러 경우의 수 대비 및 정리
-	const time_sec = time_find(video_play.id)
-	end_sec = time_convert(video_play.end)
 
-	//
-	if (time_sec === 0)
+// youtube 정보 가져오기 cue 상태 되기전
+function ready_data(id, start = 0, end = 0)
+{
+	// 주소에서 id 추출
+	const url = new URL(id)
+	const get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
+	if (arguments.length === 1)
 	{
-		start_sec = time_convert(video_play.start)
-	}
-	else if (end_sec > 0 && end_sec <= time_sec)
-	{
-		start_sec = 0
-	}
-	else
-	{
-		start_sec = time_sec
+		return get_id
 	}
 
-	// 클릭한 영상 정보 id start end 값을 불러옴
-	// loadVideoById == 즉시 재생 기능 (조회수 누적 안됨)
-	// cueVideoById == 재생 준비 (조회수 누적 가능)
+	// 주소에서 t값 추출 + 시작시간 비교후 결정
+	const get_start = parseInt(url.searchParams.get("t"))
+	const set_start = !Number.isNaN(get_start) ? get_start : start
+	;[sec_start, msg_start] = data_split(set_start)
+
+	// 종료 시간 결정(getDuration() 아님)
+	;[sec_end, msg_end] = data_split(end)
+
+	// 영상 불러오기
 	player.cueVideoById(
 	{
-		videoId : id_find(video_play.id),
-		startSeconds : start_sec,
-		...(end_sec > 0 && {endSeconds : end_sec})
+		videoId : get_id,
+		startSeconds : sec_start,
+		...(sec_end > 0 && {endSeconds : sec_end})
 	})
 
-	// 상태 초기화
-	/*
-	clearInterval(play_bar_ctrl)
-	update_msg()
-	player.setPlaybackRate(1)
-	*/
+}
 
-	// 결정될 시간 값 관리
-	if (end_sec === 0)
+
+// 시간값 시간표시 정리
+function data_split(time) 
+{
+	if (typeof time === "number" && time > 0)
 	{
-		last_sec = player.getDuration()
+		const date = new Date(time * 1000)
+		const hh = date.getUTCHours()
+		const mm = date.getUTCMinutes()
+		const ss = date.getUTCSeconds()
+		const sss = time
+		const hms = hms_convert([hh, mm, ss])
+		return [ sss, hms ]
+	}
+	else if (typeof time === "string")
+	{
+		const fix = time.replace(/;/g, ":")
+		const fix_check = time.includes(":")
+		if (fix_check)
+		{
+			const fix_hms = fix.split(":")
+			const ss = +(fix_hms.pop())
+			const mm = fix_hms.length ? +(fix_hms.pop()) : 0
+			const hh = fix_hms.length ? +(fix_hms.pop()) : 0
+			const sss = hh * 3600 + mm * 60 + ss
+			const hms = hms_convert([hh, mm, ss])
+			return [ sss, hms ]
+		}
 	}
 	else
 	{
-		last_sec = end_sec
+		return [ 0, 0 ]
 	}
-	/*
-	// 진행 막대 관리
-	play_bar_ctrl = setInterval(() =>
-	{
-		update_bar()
-	}, 100) // 100ms
-	*/
 }
 
-// 진행 막대 실시간 관리
-function update_bar()
-{
-	// 에러 방지
-	//if (!player || !video_play || !play())
-		//return
 
-	// 현재시간 종료시간 비율로 진행 막대 계산 100ms 마다
+// 시간 메세지 표기법 정리 24:00:00
+function hms_convert(hhmmss)
+{
+	const hms_check = hhmmss.findIndex(num => num !== 0)
+	const slice_ready = hms_check === -1 ? hhmmss.length - 1 : hms_check
+	const slice_zero = hhmmss.slice(slice_ready)
+	const ctrl_zero = slice_zero.map((num, idx) => idx === 0 ? `${num}` : `${num}`.padStart(2,"0"))
+	const hms = ctrl_zero.join(":")
+	return hms
+}
+
+
+
+function ctrl_view()
+{
 	const cur = player.getCurrentTime()
-	const end = last_sec > 0 ? end_sec : player.getDuration()
-	if (end_sec > 0 && cur >= end_sec)
+	const [, msg_cur] = data_split(cur)
+	if (msg_end && msg_start)
 	{
-		player.seekTo(start_sec, true)
+		if (sec_start === 0)
+		{
+			document.getElementById("play_msg").textContent = `${msg_cur} < ${msg_end}`
+		}
+		else
+		{
+			document.getElementById("play_msg").textContent = `${msg_start} < ${msg_cur} > ${msg_end}`
+		}
 	}
-	const ratio = (cur - start_sec) / (end - start_sec)
-	document.getElementById('play_now').style.width = Math.max(0, Math.min(1, ratio)) * 100 + '%'
-	update_msg(cur)
+	const end = sec_end > 0 ? sec_end : player.getDuration()
+	if (sec_end > 0 && cur >= sec_end)
+	{
+		player.seekTo(sec_start, true)
+	}
+	const ratio = (cur - sec_start) / (end - sec_start)
+	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
 }
 
-// 상태 메세지 실시간 관리
-function update_msg(time = 0)
-{
-	/////////////////////////////////////////////////////////////////////
-	// const fmt = sec => `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`
-	//////////////////////////////////////////// 다른 방법 강구
-	const fmt = sec => `${Math.floor(sec/60)}:${`${Math.floor(sec%60)}`.padStart(2,'0')}`
-	/////////////////////////////////////////////////
-	const cur = fmt(time)
-	const end = end_sec > 0 ? fmt(end_sec) : fmt(player.getDuration())
-	if (start_sec === 0)
-	{
-		document.getElementById('play_msg').textContent = `${cur} → ${end}`
-	}
-	else
-	{
-		document.getElementById('play_msg').textContent = `${fmt(start_sec)} → ${cur} → ${end}`
-	}
-}
 
 // 볼륨 변수
-const volume = document.getElementById('volume')
-const volume_bar = document.getElementById('volume_bar')
+const volume = document.getElementById("volume")
+const volume_bar = document.getElementById("volume_bar")
 const stop = move => move.stopPropagation()
 
 // 볼륨 조절 막대 값 반영 시키기
-volume_bar.addEventListener('input', () =>
+volume_bar.addEventListener("input", () =>
 {
-	//if (player)
-	//{
-		player.setVolume(+volume_bar.value)
-	//}
+	player.setVolume(+volume_bar.value)
 })
 
 // 소리 크기 조절 간섭 방지
-volume.addEventListener('mousedown', stop)
-volume.addEventListener('click', stop)
+volume.addEventListener("mousedown", stop)
+volume.addEventListener("click", stop)
 
 // 해당하는 키 입력 기본 작동을 무시
 // 스페이스 바가 play_or_pause()를 실행
 // 숫자 패드 컨트롤 또는 쉬프트 +-로 재생 속도 조절 (보류)
 // 숫자 패드 +-로 소리 크기 조절
-document.addEventListener('keydown', key =>
+document.addEventListener("keydown", key =>
 {
-	const add = key.code === 'NumpadAdd'
-	const sub = key.code === 'NumpadSubtract'
+	const add = key.code === "NumpadAdd"
+	const sub = key.code === "NumpadSubtract"
 	// const cs = key.ctrlKey || key.shiftKey
 	/*
 	if (!cs)
@@ -320,7 +291,7 @@ document.addEventListener('keydown', key =>
 	if (!player || !play_now())
 		return
 	// 스페이스 바
-	if (key.code === 'Space')
+	if (key.code === "Space")
 	{
 		key.preventDefault()
 		play_or_pause()
@@ -334,7 +305,7 @@ document.addEventListener('keydown', key =>
 		const minmax  = add ? Math.min : Math.max
 		player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
 	}
-	else if (key.code === 'Numpad0')
+	else if (key.code === "Numpad0")
 	{
 		key.preventDefault()
 		player.setPlaybackRate(1)
@@ -343,22 +314,15 @@ document.addEventListener('keydown', key =>
 })
 
 // 마우스 휠 소리 크기 조절 및 오작동 억제
-document.querySelectorAll('#left, #right').forEach(lr =>
+document.addEventListener("wheel", wheel =>
 {
-	lr.addEventListener('wheel', wheel =>
-	{
-		wheel.preventDefault()
-		if (lr.id === 'right')
-		{
-			volume_value(wheel.deltaY < 0 ? +5 : -5)
-		}
-	})
+	wheel.preventDefault()
+	volume_value(wheel.deltaY < 0 ? +5 : -5)
+},
+{
+	passive: false
 })
 
-// 재생 속도 조절
-function play_speed(key, plma)
-{
-}
 
 // 소리 크기 조절
 function volume_value(plma)
@@ -370,6 +334,11 @@ function volume_value(plma)
 	const change = Math.min(100, Math.max(0, updown))
 	player.setVolume(change)
 	volume_bar.value = change
+}
+
+// 재생 속도 조절
+function play_speed(key, plma)
+{
 }
 
 // 재생 일시중지
@@ -386,33 +355,39 @@ function play_or_pause()
 }
 
 // 동영상 상태가 변화하면 즉시 작동
+/*
+영상 상태 확인
+YT.PlayerState.ENDED = 0
+YT.PlayerState.PLAYING = 1
+YT.PlayerState.PAUSED = 2
+YT.PlayerState.BUFFERING = 3
+YT.PlayerState.CUED = 5
+*/
+
 function onPlayerStateChange(event)
 {
-	const pop = [1, 2, 3].includes(event.data)
-	document.querySelectorAll('#right, #ad').forEach(overlay =>
+	// 영상 정보 불러온 상태(재생 시작 전)
+	if (event.data === 5)
 	{
-		overlay.style.cursor = pop ? 'pointer' : 'default'
+		player.setPlaybackRate(1)
+		if (sec_end === 0)
+		{
+			[sec_end, msg_end] = data_split(player.getDuration())
+		}
+	}
+	//
+	const pop = [1, 2, 3].includes(event.data)
+	document.querySelectorAll("#right, #ad").forEach(overlay =>
+	{
+		overlay.style.cursor = pop ? "pointer" : "default"
 		overlay.onclick = pop ? play_or_pause : null
 	})
-	document.getElementById('ad').style.pointerEvents = pop ? 'auto' : 'none'
-	if (event.data === YT.PlayerState.ENDED && video_play)
+	//
+	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
+	if (event.data === 0)
 	{
-		player.seekTo(start_sec, true)
+		player.seekTo(sec_start, true)
 		player.playVideo()
-	}
-	if (event.data === YT.PlayerState.CUED)
-	{
-		clearInterval(play_bar_ctrl)
-		update_msg()
-		player.setPlaybackRate(1)
-		
-	}
-	else if (event.data === 1)
-	{ // 진행 막대 관리
-		play_bar_ctrl = setInterval(() =>
-		{
-			update_bar()
-		}, 100) // 100ms
 	}
 }
 

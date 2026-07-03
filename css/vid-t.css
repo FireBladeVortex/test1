@@ -41,6 +41,7 @@ body {
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	min-width: 0; /* 50% 이상 늘어나는 것 방지 */
 	background: var(--box);
+	padding-top: 18px;
 }
 
 #left h1 {
@@ -55,10 +56,11 @@ body {
 #list {
 	margin-top: 9px;
 	width: 100%;
+	max-width: calc(var(--img-w) * 5);
+	justify-content: flex-start;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, var(--img-w));
 	justify-content: center;
-	display: flex;
-	flex-wrap: wrap; /* 줄바꿈 효과 */
-	gap: 5px; /* 간격 */
 	overflow-y: auto;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
 	padding: 5px;
@@ -76,11 +78,13 @@ body {
 }
 
 .btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
-	outline: 2px solid var(--highlight);
+	outline: 3px solid var(--highlight);
+	outline-offset: -3px; /* 추가 */
 }
 
 .btn.active { /* 활성화 상태 강조 // 클릭 후 */
-	outline: 2px solid var(--highlight);
+	outline: 3px solid var(--highlight);
+	outline-offset: -3px; /* 추가 */
 }
 
 .btn.blur { /* 비활성 표시 흐리고 어둡게 */
