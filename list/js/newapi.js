@@ -123,7 +123,7 @@ let sec_end = null
 let msg_start = null
 let msg_end = null
 
-let try_count = null // (추가)
+let play_bar = null
 
 function click_img(num)
 {
@@ -220,6 +220,10 @@ function hms_convert(hhmmss)
 function ctrl_view()
 {
 	const cur = player.getCurrentTime()
+	const ratio = (cur - sec_start) / (sec_end - sec_start)
+	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
+
+	
 	/*
 	const [, msg_cur] = data_split(cur)
 	if (msg_end && msg_start)
@@ -234,8 +238,8 @@ function ctrl_view()
 		}
 	}
 		*/
-	const ratio = (cur - sec_start) / (sec_end - sec_start)
-	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
+
+
 }
 
 
@@ -362,6 +366,7 @@ YT.PlayerState.CUED = 5
 */
 
 let play_bar = null
+
 function onPlayerStateChange(event)
 {
 	// 영상 정보 불러온 상태(재생 시작 전)
@@ -372,8 +377,9 @@ function onPlayerStateChange(event)
 		{
 			[sec_end, msg_end] = data_split(player.getDuration())
 		}
+		document.getElementById("play_msg").textContent = player.getVideoData().title 
 	}
-	//	//	// 재생 중일 때 100ms마다 진행바 갱신 (추가)
+	// 재생 중일 때 100ms마다 진행바 갱신
 	if (event.data === 1)
 	{
 		clearInterval(play_bar)

@@ -116,11 +116,10 @@ body {
 
 #player { /* 재생 공간 */
 	position: relative;
-	width: min(640px, 100%); /* 최대 640px, 공간 부족하면 축소 */
+	width: clamp(480px, 100%, 640px); /* 최소 480px 최대 640px, 공간 부족하면 축소 */
+	height: clamp(270px, 100%, 360px);
 	aspect-ratio: 16 / 9; /* 비율 고정 */
-	margin-bottom: 14px;
-	border: 3px solid var(--emp);
-	outline: 5px solid #000000;
+	margin-bottom: 10px;
 	z-index: 3;
 }
 
