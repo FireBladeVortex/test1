@@ -41,7 +41,7 @@ body {
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	min-width: 0; /* 50% 이상 늘어나는 것 방지 */
 	background: var(--box);
-	padding-top: 18px;
+	padding-top: 10px;
 }
 
 #left h1 {
