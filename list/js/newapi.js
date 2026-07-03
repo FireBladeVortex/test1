@@ -37,6 +37,7 @@ function onYouTubeIframeAPIReady()
 			// fs: 0, // 풀 스크린 버튼 숨김
 			// disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
 			// controls: 0, // 유튜브 일부 ui 숨김
+			origin: window.location.origin,
 		},
 		// 현재 상태 불러오기
 		events:
