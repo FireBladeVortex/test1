@@ -55,10 +55,11 @@ body {
 #list {
 	margin-top: 9px;
 	width: 100%;
-	justify-content: center;
+	max-width: calc(var(--img-w) * 5);
+	justify-content: flex-start;
 	display: flex;
 	flex-wrap: wrap; /* 줄바꿈 효과 */
-	gap: 5px; /* 간격 */
+	/* gap: 5px; /* 간격 */
 	overflow-y: auto;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
 	padding: 5px;
@@ -76,11 +77,13 @@ body {
 }
 
 .btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
-	outline: 2px solid var(--highlight);
+	outline: 3px solid var(--highlight);
+	outline-offset: -3px; /* 추가 */
 }
 
 .btn.active { /* 활성화 상태 강조 // 클릭 후 */
-	outline: 2px solid var(--highlight);
+	outline: 3px solid var(--highlight);
+	outline-offset: -3px; /* 추가 */
 }
 
 .btn.blur { /* 비활성 표시 흐리고 어둡게 */

@@ -44,7 +44,7 @@ function onYouTubeIframeAPIReady()
 		{
 			onReady: () =>
 			{
-				player.setVolume(+volume_bar.value) // value="25" 적용
+				player.setVolume(+volume_bar.value) // 현재 value 적용
 			},
 			onStateChange : onPlayerStateChange
 		}
