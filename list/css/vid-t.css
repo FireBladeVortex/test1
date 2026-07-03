@@ -10,7 +10,8 @@
 }
 
 /* 변수 선언 */
-:root {
+:root
+{
 	--bg: #021322; /* 배경 */
 	--box: #220213; /* 목록 배경 */
 	--highlight: #FFD700; /* 강조 */
@@ -20,21 +21,24 @@
 	--img-h: 90px; /* 이미지 세로 길이 */
 }
 
-body {
+body
+{
 	width: 100%;
 	height: 100%;
 	overflow: hidden; /* 스크롤바 방지 */
 	background: var(--bg);
 }
 
-#box { /* 좌우 배열 결정 */
+#box
+{ /* 좌우 배열 결정 */
 	display: flex;
 	width: 100vw;
 	height: 100vh;
 	overflow: hidden;
 }
 
-#left {
+#left
+{
 	display: flex;
 	flex-direction: column; /* 가로 정렬 */
 	align-items: center; /* 중앙 정렬 */
@@ -44,7 +48,8 @@ body {
 	padding-top: 10px;
 }
 
-#left h1 {
+#left h1
+{
 	width: 90%;
 	font-size: 14px;
 	color: var(--highlight);
@@ -53,7 +58,8 @@ body {
 	padding-bottom: 10px;
 }
 
-#list {
+#list
+{
 	margin-top: 9px;
 	width: 100%;
 	max-width: calc(var(--img-w) * 5);
@@ -66,7 +72,8 @@ body {
 	padding: 5px;
 }
 
-.btn {
+.btn
+{
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -77,25 +84,30 @@ body {
 	cursor: pointer; /* 커서 변경 */
 }
 
-.btn:hover { /* 마우스 올라간 이미지 강조 // 클릭 전 */
+.btn:hover
+{ /* 마우스 올라간 이미지 강조 // 클릭 전 */
 	outline: 3px solid var(--highlight);
 	outline-offset: -3px; /* 추가 */
 }
 
-.btn.active { /* 활성화 상태 강조 // 클릭 후 */
+.btn.active
+{ /* 활성화 상태 강조 // 클릭 후 */
 	outline: 3px solid var(--highlight);
 	outline-offset: -3px; /* 추가 */
 }
 
-.btn.blur { /* 비활성 표시 흐리고 어둡게 */
+.btn.blur
+{ /* 비활성 표시 흐리고 어둡게 */
 	filter: brightness(25%); /* 어둡게 */
 }
 
-.btn.blur:hover { /* 마우스 올라가면 비활성 취소 */
+.btn.blur:hover
+{ /* 마우스 올라가면 비활성 취소 */
 	filter: brightness(100%);
 }
 
-.btn img {
+.btn img
+{
 	width: var(--img-w); /* 100% */
 	height: var(--img-h); /* 100% */
 	/* 이미지 비율 유지 + 가득 채움
@@ -103,7 +115,8 @@ body {
 	object-fit: cover;
 }
 
-#right { /* 오른쪽 */
+#right
+{ /* 오른쪽 */
 	position: relative;
 	display: flex; /* 정렬 */
 	flex: 1; /* 일정하게 정렬 */
@@ -114,7 +127,8 @@ body {
 	cursor: default;
 }
 
-#player { /* 재생 공간 */
+#player
+{ /* 재생 공간 */
 	position: relative;
 	width: clamp(480px, 100%, 640px); /* 최소 480px 최대 640px, 공간 부족하면 축소 */
 	height: clamp(270px, 100%, 360px);
@@ -123,13 +137,15 @@ body {
 	z-index: 3;
 }
 
-#player iframe, #you_player { /* 유튜브가 들어갈 공간 */
+#player iframe, #you_player
+{ /* 유튜브가 들어갈 공간 */
 	width: 100%;
 	height: 100%;
 	display: block;
 }
 
-#ad {
+#ad
+{
 	position: absolute;
 	inset: 0;
 	z-index: 10;
@@ -137,7 +153,8 @@ body {
 	pointer-events: none;
 }
 
-#play_bar { /* 재생 막대 표시 */
+#play_bar
+{ /* 재생 막대 표시 */
 	width: min(640px, 100%);
 	height: 9px;
 	background: #000000;
@@ -146,7 +163,8 @@ body {
 	margin-bottom: 10px;
 }
 
-#play_now { /* 재생 막대 진행도 */
+#play_now
+{ /* 재생 막대 진행도 */
 	height: 100%;
 	width: 0%;
 	background: var(--emp);
@@ -154,22 +172,30 @@ body {
 	overflow: hidden;
 }
 
-#play_msg { /* 메세지 + 시간 표시 */
+#play_msg
+{ /* 메세지 + 시간 표시 */
 	font-size: 14px;
 	color: var(--highlight);
 	text-align: center;
 	/*
-	display: none; /* 비활성화 */
+	display: none; 비활성화 */
 }
 
-#volume {
+#play_msg.title
+{
+	text-align: start;
+}
+
+#volume
+{
 	display: flex;
 	align-items: center;
 	width: min(640px, 100%);
 	height: 50px;
 }
 
-#volume_bar {
+#volume_bar
+{
 /* appearance: none; */
 	flex: 1;
 	accent-color: var(--emp);
@@ -178,18 +204,21 @@ body {
 	transition: width 0.2s, height 0.2s;
 }
 
-#volume_bar:hover {
+#volume_bar:hover
+{
 	cursor: grab;
 	accent-color: var(--emp);
 
 }
 
-#volume_bar:active {
+#volume_bar:active
+{
 	cursor: grabbing;
 	accent-color: var(--emp);
 }
 
-#volume_bar.vertical {
+#volume_bar.vertical
+{
 /* appearance: none; */ 
 	width: 6px;
 	height: min(100%);
