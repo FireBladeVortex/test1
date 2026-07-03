@@ -29,15 +29,14 @@ function onYouTubeIframeAPIReady()
 	{
 		width: "100%",
 		height: "100%",
-		videoId: "",
+		videoId: "d8dqNFNrXPk",
 		playerVars:
 		{
 			autoplay: 0, // 자동재생 방지
 			rel: 0, // 영상 종료 때 추천 방지
 			// fs: 0, // 풀 스크린 버튼 숨김
 			// disablekb: 1, // 유튜브 자체 키보드 조작 기능 방지 방향키 숫자 0~9 등
-			// controls: 0, // 유튜브 일부 ui 숨김 (볼륨 조절용)
-			origin: "https://firebladevortex.github.io",
+			// controls: 0, // 유튜브 일부 ui 숨김
 		},
 		// 현재 상태 불러오기
 		events:
@@ -377,7 +376,7 @@ function onPlayerStateChange(event)
 		player.setPlaybackRate(1)
 		if (sec_end === 0)
 		{
-			sec_end = player.getDuration()
+			[sec_end, msg_end] = data_split(player.getDuration())
 		}
 	}
 	//
