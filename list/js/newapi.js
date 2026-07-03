@@ -58,8 +58,8 @@ YT.PlayerState.PAUSED = 2
 YT.PlayerState.BUFFERING = 3
 YT.PlayerState.CUED = 5
 */
-const play = () => player.getPlayerState() === YT.PlayerState.PLAYING
-const pause = () => player.getPlayerState() === YT.PlayerState.PAUSED
+const play = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
+const pause = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
 
@@ -93,7 +93,6 @@ function total_list()
 		// 이후 미리보기 클릭 => 일시 정지, 이어서 재생 반복
 		btn.addEventListener("click", () =>
 		{
-			if (!player) return
 			if (img_click === num)
 			{
 				if (play())
@@ -156,12 +155,12 @@ function ready_data(id, start = 0, end = 0)
 	}
 
 	// 주소에서 t값 추출 + 시작시간 비교후 결정
-	const get_start = parseInt(url.searchParams.get("t"));
-	const set_start = !Number.isNaN(get_start) ? get_start : start;
-	[sec_start, msg_start] = data_split(set_start);
+	const get_start = parseInt(url.searchParams.get("t"))
+	const set_start = !Number.isNaN(get_start) ? get_start : start
+	;[sec_start, msg_start] = data_split(set_start)
 
 	// 종료 시간 결정(getDuration() 아님)
-	[sec_end, msg_end] = data_split(end);
+	;[sec_end, msg_end] = data_split(end)
 
 	// 영상 불러오기
 	player.cueVideoById(
@@ -323,6 +322,9 @@ document.addEventListener("wheel", wheel =>
 {
 	wheel.preventDefault()
 	volume_value(wheel.deltaY < 0 ? +5 : -5)
+},
+{
+	passive: false
 })
 
 
@@ -368,18 +370,7 @@ YT.PlayerState.CUED = 5
 
 function onPlayerStateChange(event)
 {
-	const pop = [1, 2, 3].includes(event.data)
-	document.querySelectorAll("#right, #ad").forEach(overlay =>
-	{
-		overlay.style.cursor = pop ? "pointer" : "default"
-		overlay.onclick = pop ? play_or_pause : null
-	})
-	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
-	if (event.data === 0)
-	{
-		player.seekTo(sec_start, true)
-		player.playVideo()
-	}
+	// 영상 정보 불러온 상태(재생 시작 전)
 	if (event.data === 5)
 	{
 		player.setPlaybackRate(1)
@@ -387,6 +378,20 @@ function onPlayerStateChange(event)
 		{
 			sec_end = player.getDuration()
 		}
+	}
+	//
+	const pop = [1, 2, 3].includes(event.data)
+	document.querySelectorAll("#right, #ad").forEach(overlay =>
+	{
+		overlay.style.cursor = pop ? "pointer" : "default"
+		overlay.onclick = pop ? play_or_pause : null
+	})
+	//
+	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
+	if (event.data === 0)
+	{
+		player.seekTo(sec_start, true)
+		player.playVideo()
 	}
 }
 
