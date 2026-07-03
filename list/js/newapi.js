@@ -116,14 +116,9 @@ function total_list()
 	}
 }
 
-// 플레이 상태 관리
-// let video_play = null
-// 진행 막대 변수
-let play_bar_ctrl = null
 // 시간 관리
 let sec_start = null
 let sec_end = null
-let sec_last = null
 // 시간 메세지
 let msg_start = null
 let msg_end = null
