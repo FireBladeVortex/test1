@@ -64,20 +64,88 @@ const pause = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
 
-
-
 // 최초 재생 시작하기 전 상태
 let img_click = null
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function build_list() // 추가
+{
+	const left = document.getElementById("left") // 추가
+	const label_map = { video: "동영상", short: "쇼츠", long: "롱폼" } // 추가
+	const types = [ // 추가
+		{ name: "video", data: typeof list_video !== "undefined" ? list_video : null }, // 추가
+		{ name: "short", data: typeof list_short !== "undefined" ? list_short : null }, // 추가
+		{ name: "long", data: typeof list_long !== "undefined" ? list_long : null }, // 추가
+	] // 추가
+
+	types.forEach(type => // 추가
+	{
+		if (!type.data) return // 추가
+
+		const section = document.createElement("div") // 추가
+		section.className = "section" // 추가
+		section.dataset.type = type.name // 추가
+		left.appendChild(section) // 추가
+
+		const h1 = document.createElement("h1") // 추가
+		h1.textContent = `${label_map[type.name]} 재생 목록` // 추가
+		section.appendChild(h1) // 추가
+
+		const list = document.createElement("div") // 추가
+		list.className = `list ${type.name}` // 추가
+		section.appendChild(list) // 추가
+
+		for (let num = 0; num < type.data.length; num++) // 추가
+		{
+			const ready = type.data[num] // 추가
+			const btn = document.createElement("button") // 추가
+			btn.className = "btn" // 추가
+			btn.dataset.num = num // 추가
+			btn.dataset.type = type.name // 추가
+
+			const img = document.createElement("img") // 추가
+			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg` // 추가
+
+			btn.appendChild(img) // 추가
+			list.appendChild(btn) // 추가
+
+			btn.addEventListener("click", () => // 추가
+			{
+				const key = `${type.name}_${num}` // 추가
+				if (img_click === key) // 추가
+				{
+					if (play())
+					{
+						player.pauseVideo()
+					}
+					else if (pause())
+					{
+						player.playVideo()
+					}
+					else
+						return
+				}
+				else
+				{
+					click_img(key) // 추가
+					ready_data(ready.id, ready.start, ready.end) // 추가
+				}
+			})
+		}
+	}) // 추가
+} // 추가
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
 // 왼쪽 영상 미리보기 불러오기
 function total_list()
 {
 	const list = document.getElementById("list")
 
 	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
-	for (let num = 0; num < video_list.length; num++)
+	for (let num = 0; num < list_video.length; num++)
 	{
-		const ready = video_list[num]
+		const ready = list_video[num]
 		const btn = document.createElement("button")
 		btn.className = "btn"
 		btn.dataset.num = num
@@ -115,6 +183,7 @@ function total_list()
 		})
 	}
 }
+*/
 
 // 시간 관리
 let sec_start = null
@@ -405,4 +474,4 @@ function onPlayerStateChange(event)
 }
 
 // 싲가
-total_list()
+build_list()

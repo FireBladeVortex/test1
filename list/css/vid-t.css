@@ -45,7 +45,6 @@ body
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	min-width: 0; /* 50% 이상 늘어나는 것 방지 */
 	background: var(--box);
-	padding-top: 10px;
 }
 
 #left h1
@@ -58,7 +57,18 @@ body
 	padding-bottom: 10px;
 }
 
-#list
+.section /* 추가 */
+{
+	display: flex; /* 추가 */
+	flex-direction: column; /* 추가 */
+	align-items: center; /* 추가 */
+	flex: var(--ratio, 1) 1 0%; /* 추가 */
+	min-width: 0; /* 추가 */
+	overflow: hidden; /* 추가 */
+	width: 100%;
+}
+
+.list
 {
 	margin-top: 9px;
 	width: 100%;
