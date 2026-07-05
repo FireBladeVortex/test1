@@ -445,7 +445,7 @@ function onPlayerStateChange(event)
 			[sec_end, msg_end] = data_split(player.getDuration())
 		}
 		document.getElementById("play_msg").style.textAlign = "start"
-		document.getElementById("play_msg").textContent = player.getVideoData().title
+		document.getElementById("play_msg").textContent = `${player.getVideoData().title}<br>${player.getVideoData().publishedAt}<br>${player.getVideoData().viewCount}`
 	}
 	// 재생 중일 때 100ms마다 진행바 갱신
 	if (event.data === 1)
