@@ -1,4 +1,64 @@
+// ══════════════════════════════════════════════════════
+// (임시) oEmbed 응답(data) 전체를 화면 중앙 흰색 박스로 출력
+// 삭제할 때는 이 블록 전체만 지우면 됨
+// ══════════════════════════════════════════════════════
+async function show_raw_oembed(video_id) // 추가
+{
+	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${video_id}&format=json` // 추가
+	try // 추가
+	{
+		const res = await fetch(url) // 추가
+		const data = await res.json() // 추가
 
+		document.getElementById("raw_oembed_box")?.remove() // 추가 (이전 박스 있으면 제거)
+
+		const box = document.createElement("div") // 추가
+		box.id = "raw_oembed_box" // 추가
+		box.style.position = "fixed" // 추가
+		box.style.top = "50%" // 추가
+		box.style.left = "50%" // 추가
+		box.style.transform = "translate(-50%, -50%)" // 추가
+		box.style.background = "#ffffff" // 추가
+		box.style.color = "#000000" // 추가
+		box.style.padding = "20px" // 추가
+		box.style.zIndex = "9999" // 추가
+		box.style.maxWidth = "80vw" // 추가
+		box.style.maxHeight = "80vh" // 추가
+		box.style.overflow = "auto" // 추가
+		box.style.borderRadius = "8px" // 추가
+		box.style.boxShadow = "0 0 20px rgba(0,0,0,0.5)" // 추가
+		box.style.cursor = "pointer" // 추가
+		box.title = "클릭하면 닫힙니다" // 추가
+
+		const pre = document.createElement("pre") // 추가
+		pre.textContent = JSON.stringify(data, null, 2) // 추가
+		box.appendChild(pre) // 추가
+
+		box.addEventListener("click", () => box.remove()) // 추가 (클릭하면 닫기)
+
+		document.body.appendChild(box) // 추가
+	}
+	catch (error) // 추가
+	{
+		console.error("oEmbed 불러오기 실패:", error) // 추가
+	}
+} // 추가
+
+const raw_oembed_observer = new MutationObserver(() => // 추가
+{
+	if (player?.getPlayerState?.() === 5) // 추가
+	{
+		const video_id = player.getVideoData().video_id // 추가
+		if (video_id) show_raw_oembed(video_id) // 추가
+	}
+}) // 추가
+
+raw_oembed_observer.observe(document.getElementById("play_msg"), // 추가
+{
+	childList: true, // 추가
+	characterData: true, // 추가
+	subtree: true // 추가
+}) // 추가
 // ══════════════════════════════════════════════════════
 // (임시) play_msg에 oEmbed 정보(제목/채널명/채널주소/제공자) 추가 출력
 // 삭제할 때는 이 블록 전체만 지우면 됨
