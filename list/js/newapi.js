@@ -1,3 +1,43 @@
+
+// ══════════════════════════════════════════════════════
+// (임시) play_msg에 oEmbed 정보(제목/채널명/채널주소/제공자) 추가 출력
+// 삭제할 때는 이 블록 전체만 지우면 됨
+// ══════════════════════════════════════════════════════
+async function show_oembed_info(video_id) // 추가
+{
+	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${video_id}&format=json` // 추가
+	try
+	{
+		const res = await fetch(url) // 추가
+		const data = await res.json() // 추가
+		const msg = document.getElementById("play_msg") // 추가
+		play_msg_observer.disconnect() // 추가 (무한 루프 방지: 내가 바꾸는 동안은 감시 중지)
+		msg.textContent += ` | ${data.title} / ${data.author_name} (${data.author_url}) / ${data.provider_name} (${data.provider_url})` // 추가
+		play_msg_observer.observe(msg, { childList: true, characterData: true, subtree: true }) // 추가
+	}
+	catch (error) // 추가
+	{
+		console.error("oEmbed 불러오기 실패:", error) // 추가
+	}
+} // 추가
+
+const play_msg_observer = new MutationObserver(() => // 추가
+{
+	const data = player?.getVideoData?.() // 추가
+	if (data && data.video_id) // 추가
+	{
+		show_oembed_info(data.video_id) // 추가
+	}
+}) // 추가
+
+play_msg_observer.observe(document.getElementById("play_msg"), // 추가
+{
+	childList: true, // 추가
+	characterData: true, // 추가
+	subtree: true // 추가
+}) // 추가
+
+
 /*
 
 https://developers.google.com/youtube/iframe_api_reference?hl=ko
