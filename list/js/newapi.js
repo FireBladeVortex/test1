@@ -1,102 +1,3 @@
-// ══════════════════════════════════════════════════════
-// (임시) oEmbed 응답(data) 전체를 화면 중앙 흰색 박스로 출력
-// 삭제할 때는 이 블록 전체만 지우면 됨
-// ══════════════════════════════════════════════════════
-async function show_raw_oembed(video_id) // 추가
-{
-	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${video_id}&format=json` // 추가
-	try // 추가
-	{
-		const res = await fetch(url) // 추가
-		const data = await res.json() // 추가
-
-		document.getElementById("raw_oembed_box")?.remove() // 추가 (이전 박스 있으면 제거)
-
-		const box = document.createElement("div") // 추가
-		box.id = "raw_oembed_box" // 추가
-		box.style.position = "fixed" // 추가
-		box.style.top = "50%" // 추가
-		box.style.left = "50%" // 추가
-		box.style.transform = "translate(-50%, -50%)" // 추가
-		box.style.background = "#ffffff" // 추가
-		box.style.color = "#000000" // 추가
-		box.style.padding = "20px" // 추가
-		box.style.zIndex = "9999" // 추가
-		box.style.maxWidth = "80vw" // 추가
-		box.style.maxHeight = "80vh" // 추가
-		box.style.overflow = "auto" // 추가
-		box.style.borderRadius = "8px" // 추가
-		box.style.boxShadow = "0 0 20px rgba(0,0,0,0.5)" // 추가
-		box.style.cursor = "pointer" // 추가
-		box.title = "클릭하면 닫힙니다" // 추가
-
-		const pre = document.createElement("pre") // 추가
-		pre.textContent = JSON.stringify(data, null, 2) // 추가
-		box.appendChild(pre) // 추가
-
-		box.addEventListener("click", () => box.remove()) // 추가 (클릭하면 닫기)
-
-		document.body.appendChild(box) // 추가
-	}
-	catch (error) // 추가
-	{
-		console.error("oEmbed 불러오기 실패:", error) // 추가
-	}
-} // 추가
-
-const raw_oembed_observer = new MutationObserver(() => // 추가
-{
-	if (player?.getPlayerState?.() === 5) // 추가
-	{
-		const video_id = player.getVideoData().video_id // 추가
-		if (video_id) show_raw_oembed(video_id) // 추가
-	}
-}) // 추가
-
-raw_oembed_observer.observe(document.getElementById("play_msg"), // 추가
-{
-	childList: true, // 추가
-	characterData: true, // 추가
-	subtree: true // 추가
-}) // 추가
-// ══════════════════════════════════════════════════════
-// (임시) play_msg에 oEmbed 정보(제목/채널명/채널주소/제공자) 추가 출력
-// 삭제할 때는 이 블록 전체만 지우면 됨
-// ══════════════════════════════════════════════════════
-async function show_oembed_info(video_id) // 추가
-{
-	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${video_id}&format=json` // 추가
-	try
-	{
-		const res = await fetch(url) // 추가
-		const data = await res.json() // 추가
-		const msg = document.getElementById("play_msg") // 추가
-		play_msg_observer.disconnect() // 추가 (무한 루프 방지: 내가 바꾸는 동안은 감시 중지)
-		msg.textContent += ` | ${data.title} / ${data.author_name} (${data.author_url}) / ${data.provider_name} (${data.provider_url})` // 추가
-		play_msg_observer.observe(msg, { childList: true, characterData: true, subtree: true }) // 추가
-	}
-	catch (error) // 추가
-	{
-		console.error("oEmbed 불러오기 실패:", error) // 추가
-	}
-} // 추가
-
-const play_msg_observer = new MutationObserver(() => // 추가
-{
-	const data = player?.getVideoData?.() // 추가
-	if (data && data.video_id) // 추가
-	{
-		show_oembed_info(data.video_id) // 추가
-	}
-}) // 추가
-
-play_msg_observer.observe(document.getElementById("play_msg"), // 추가
-{
-	childList: true, // 추가
-	characterData: true, // 추가
-	subtree: true // 추가
-}) // 추가
-
 
 /*
 
@@ -285,6 +186,10 @@ function total_list()
 }
 */
 
+// 정보 관리
+let set_id = null
+let set_name = null
+let set_title = null
 // 시간 관리
 let sec_start = null
 let sec_end = null
@@ -317,6 +222,8 @@ function ready_data(id, start = 0, end = 0)
 		return get_id
 	}
 
+	// 클릭 시 id 저장
+	set_id = get_id
 	// 주소에서 t값 추출 + 시작시간 비교후 결정
 	const get_start = parseInt(url.searchParams.get("t"))
 	const set_start = !Number.isNaN(get_start) ? get_start : start
@@ -329,7 +236,7 @@ function ready_data(id, start = 0, end = 0)
 	player.cueVideoById(
 	{
 		videoId : get_id,
-		startSeconds : sec_start,
+		startSeconds : 0, // 광고 때문에 sec_start 대신 임시로 0
 		...(sec_end > 0 && {endSeconds : sec_end})
 	})
 
@@ -409,6 +316,41 @@ function ctrl_view()
 
 }
 
+async function fetch_oembed(id) // 추가
+{
+	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json` // 추가
+	try // 추가
+	{
+		const input = await fetch(url) // 추가
+		const data = await input.json() // 추가
+		
+		set_name = data.author_name
+		set_title = data.title
+		document.getElementById("play_msg").style.textAlign = "start"
+		document.getElementById("play_msg").textContent = set_title
+		document.title = set_name
+	}
+	catch
+	{
+	}
+} // 추가
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 볼륨 변수
 const volume = document.getElementById("volume")
@@ -463,6 +405,14 @@ document.addEventListener("keydown", key =>
 	{
 		key.preventDefault()
 		play_or_pause()
+	}
+	// 현재 재생 위치 변경
+	if (key.code.match(/^(Digit|Numpad)[0-9]$/))
+	{
+		key.preventDefault()
+		const ratio = +(key.code.slice(-1)) / 10
+		const npkey = sec_start + Math.floor((sec_end - sec_start) * ratio)
+		player.seekTo(npkey, true)
 	}
 	/*
 	else if (cs && add || sub)
@@ -544,12 +494,31 @@ function onPlayerStateChange(event)
 		{
 			[sec_end, msg_end] = data_split(player.getDuration())
 		}
-		document.getElementById("play_msg").style.textAlign = "start"
-		document.getElementById("play_msg").textContent = `${player.getVideoData().title}<br>${player.getVideoData().author}`
+		let title = null
+		try
+		{
+			title = player.getVideoData().title // 추가
+		}
+		catch
+		{
+		}
+		if (title)
+		{
+			document.getElementById("play_msg").style.textAlign = "start"
+			document.getElementById("play_msg").textContent = title
+		}
+		else
+		{
+			fetch_oembed(set_id)
+		}
 	}
 	// 재생 중일 때 100ms마다 진행바 갱신
 	if (event.data === 1)
 	{
+		if (player.getCurrentTime() < sec_start)
+		{
+			player.seekTo(sec_start, true)
+		}
 		clearInterval(play_bar) // 인터벌 중복 호출 방지
 		play_bar = setInterval(ctrl_view, 100)
 	}
