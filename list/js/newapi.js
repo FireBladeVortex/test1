@@ -561,23 +561,6 @@ function onPlayerStateChange(event)
 		overlay.onclick = pop ? play_or_pause : null
 	})
 	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
-	if (pop)
-	{
-		document.addEventListener("keydown", key =>
-		{
-			if (key.code === "ArrowLeft")
-			{
-				
-				key.preventDefault()
-				player.seekTo(math.max(sec_start, player.getCurrentTime() - 5), true) // sec_start 보다 작아질 수 없음
-			}
-			else if (key.code === "ArrowRight")
-			{
-				key.preventDefault()
-				player.seekTo(math.min(sec_end, player.getCurrentTime() + 5), true) // sec_end 보다 커질 수 없음
-			}
-		})
-	}
 }
 
 // 싲가
