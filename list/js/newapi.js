@@ -379,8 +379,8 @@ volume.addEventListener("click", stopp)
 // 숫자 패드 +-로 소리 크기 조절
 document.addEventListener("keydown", key =>
 {
-	const add = key.code === "NumpadAdd"
-	const sub = key.code === "NumpadSubtract"
+	const add = key.code === "NumpadAdd" || key.code === "ArrowUp"
+	const sub = key.code === "NumpadSubtract" || key.code === "ArrowDown"
 	// const cs = key.ctrlKey || key.shiftKey
 	/*
 	if (!cs)
@@ -407,34 +407,48 @@ document.addEventListener("keydown", key =>
 	if (!player || !play_now())
 		return
 	// 스페이스 바
-	if (key.code === "Space")
+	
+	if (!key.repeat)
 	{
-		key.preventDefault()
-		play_or_pause()
+		if (key.code === "Space")
+		{
+			key.preventDefault()
+			play_or_pause()
+		}
+		if (key.code === "ArrowLeft")
+		{
+			key.preventDefault()
+			player.seekTo(Math.max(sec_start, player.getCurrentTime() - 5), true) // sec_start 보다 작아질 수 없음
+		}
+		if (key.code === "ArrowRight")
+		{
+			key.preventDefault()
+			player.seekTo(Math.min(sec_end, player.getCurrentTime() + 5), true) // sec_end 보다 커질 수 없음
+		}
+		// 현재 재생 위치 변경
+		if (key.code.match(/^(Digit|Numpad)[0-9]$/))
+		{
+			key.preventDefault()
+			const ratio = +(key.code.slice(-1)) / 10
+			const numkey = sec_start + Math.floor((sec_end - sec_start) * ratio)
+			player.seekTo(numkey, true)
+		}
+		/*
+		else if (cs && add || sub)
+		{
+			key.preventDefault()
+			const updown = add ? 0.05 : -0.05
+			const limit = add ? 2 : 0.25
+			const minmax  = add ? Math.min : Math.max
+			player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
+		}
+		else if (key.code === "Numpad0")
+		{
+			key.preventDefault()
+			player.setPlaybackRate(1)
+		}
+		*/
 	}
-	// 현재 재생 위치 변경
-	if (key.code.match(/^(Digit|Numpad)[0-9]$/))
-	{
-		key.preventDefault()
-		const ratio = +(key.code.slice(-1)) / 10
-		const npkey = sec_start + Math.floor((sec_end - sec_start) * ratio)
-		player.seekTo(npkey, true)
-	}
-	/*
-	else if (cs && add || sub)
-	{
-		key.preventDefault()
-		const updown = add ? 0.05 : -0.05
-		const limit = add ? 2 : 0.25
-		const minmax  = add ? Math.min : Math.max
-		player.setPlaybackRate(minmax(limit, (player.getPlaybackRate() + updown)))
-	}
-	else if (key.code === "Numpad0")
-	{
-		key.preventDefault()
-		player.setPlaybackRate(1)
-	}
-	*/
 })
 
 // 마우스 휠 소리 크기 조절 및 오작동 억제
@@ -541,12 +555,29 @@ function onPlayerStateChange(event)
 	}
 	//
 	const pop = [1, 2, 3].includes(event.data)
-	document.querySelectorAll("#right, #ad").forEach(overlay =>
+	document.querySelectorAll("#right").forEach(overlay => // ("#right, #ad")  // #ad 임시 삭제 사용자 선택으로 버튼 만들기 전까지
 	{
 		overlay.style.cursor = pop ? "pointer" : "default"
 		overlay.onclick = pop ? play_or_pause : null
 	})
 	document.getElementById("ad").style.pointerEvents = pop ? "auto" : "none"
+	if (pop)
+	{
+		document.addEventListener("keydown", key =>
+		{
+			if (key.code === "ArrowLeft")
+			{
+				
+				key.preventDefault()
+				player.seekTo(math.max(sec_start, player.getCurrentTime() - 5), true) // sec_start 보다 작아질 수 없음
+			}
+			else if (key.code === "ArrowRight")
+			{
+				key.preventDefault()
+				player.seekTo(math.min(sec_end, player.getCurrentTime() + 5), true) // sec_end 보다 커질 수 없음
+			}
+		})
+	}
 }
 
 // 싲가
