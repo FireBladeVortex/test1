@@ -236,6 +236,7 @@ function ready_data(id, start = 0, end = 0)
 	player.cueVideoById(
 	{
 		videoId : get_id,
+		startSeconds : 0, // 광고 때문에 sec_start 대신 임시로 0
 		...(sec_end > 0 && {endSeconds : sec_end})
 	})
 
@@ -325,9 +326,15 @@ async function fetch_oembed(id) // 추가
 		
 		set_name = data.author_name
 		set_title = data.title
+		document.title = set_name
+
+		if (arguments.length !== 1)
+		{
+			return
+		}
+
 		document.getElementById("play_msg").style.textAlign = "start"
 		document.getElementById("play_msg").textContent = set_title
-		document.title = set_name
 	}
 	catch
 	{
@@ -505,6 +512,7 @@ function onPlayerStateChange(event)
 		{
 			document.getElementById("play_msg").style.textAlign = "start"
 			document.getElementById("play_msg").textContent = title
+			fetch_oembed(set_id, title)
 		}
 		else
 		{
