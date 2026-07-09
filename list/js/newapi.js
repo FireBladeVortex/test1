@@ -82,6 +82,7 @@ let sec_end = null
 // 시간 메세지
 let msg_start = null
 let msg_end = null
+//
 
 
 
@@ -96,8 +97,6 @@ function make_list()
 
 	video_type.forEach(type =>
 	{
-		if (!type.data) return
-
 		const section = document.createElement("div")
 		section.className = "section"
 		section.dataset.type = type.name
@@ -110,6 +109,8 @@ function make_list()
 		const list = document.createElement("div")
 		list.className = `list ${type.name}`
 		section.appendChild(list)
+
+		if (!type.data) return
 
 		for (let num = 0; num < type.data.length; num++)
 		{
@@ -158,8 +159,8 @@ function click_img(target)
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll(".btn").forEach(btn =>
 	{
-		const thisis = (btn.dataset.type + "_" + (btn.dataset.num + "").padStart(3, "0"))
-		const click_img = thisis === target
+		const compare = (btn.dataset.type + "_" + (btn.dataset.num + "").padStart(3, "0"))
+		const click_img = compare === target
 		btn.classList.toggle("active", click_img)
 		btn.classList.toggle("blur", !click_img)
 	})
@@ -511,7 +512,7 @@ function onPlayerStateChange(event)
 	}
 	//
 	const pop = [1, 2, 3].includes(event.data)
-	document.querySelectorAll("#left, #right").forEach(overlay => // ("#right, #ad")  // #ad 임시 삭제 사용자 선택으로 버튼 만들기 전까지
+	document.querySelectorAll("#right").forEach(overlay => // ("#right, #ad")  // #ad 임시 삭제 사용자 선택으로 버튼 만들기 전까지
 	{
 		overlay.style.cursor = pop ? "pointer" : "default"
 		overlay.onclick = pop ? play_or_pause : null

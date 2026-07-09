@@ -4,11 +4,14 @@
 	 start : 반복 시작 시간
 	 end   : 반복 종료 시간
 ════════════════════════════════════════ */
+window.list_data ??= {}
 list_data.long = [
 	{
 		id: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
-		start: "1:50",
-		end: "2:43"
+		song: [
+			{ start: "1:50", end: "2:43", },
+			{ start: "1:50", end: "2:43", },
+		]
 	},
 	{
 		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */

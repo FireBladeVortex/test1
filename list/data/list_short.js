@@ -4,6 +4,7 @@
 	 start : 반복 시작 시간
 	 end   : 반복 종료 시간
 ════════════════════════════════════════ */
+window.list_data ??= {}
 list_data.short = [
 	{
 		id: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
