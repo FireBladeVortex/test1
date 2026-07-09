@@ -98,7 +98,7 @@ function make_list()
 		left.appendChild(section)
 
 		const h1 = document.createElement("h1")
-		h1.textContent = `${type.label} 재생 목록`
+		h1.textContent = type.label + " 재생 목록"
 		section.appendChild(h1)
 
 		const list = document.createElement("div")
@@ -121,7 +121,7 @@ function make_list()
 
 			btn.addEventListener("click", () =>
 			{
-				const target = `${type.name}_${`${num}`.padStart(3, "0")}`
+				const target = (type.name + "_" + (num + "").padStart(3, "0"))
 				if (img_click === target)
 				{
 					if (play())
@@ -144,55 +144,6 @@ function make_list()
 		}
 	})
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-// 왼쪽 영상 미리보기 불러오기
-function total_list()
-{
-	const list = document.getElementById("list")
-
-	// 영상 목록을 반복해서 읽으면서 순서대로 불러오기
-	for (let num = 0; num < list_video.length; num++)
-	{
-		const ready = list_video[num]
-		const btn = document.createElement("button")
-		btn.className = "btn"
-		btn.dataset.num = num
-
-		// 미리보기 이미지 등록
-		const img = document.createElement("img")
-		img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
-
-		// 미리보기 불러와
-		btn.appendChild(img)
-		list.appendChild(btn)
-
-		// 첫 클릭 => 재생 시작
-		// 이후 미리보기 클릭 => 일시 정지, 이어서 재생 반복
-		btn.addEventListener("click", () =>
-		{
-			if (img_click === num)
-			{
-				if (play())
-				{
-					player.pauseVideo()
-				}
-				else if (pause())
-				{
-					player.playVideo()
-				}
-				else
-					return
-			}
-			else
-			{
-				click_img(num)
-				ready_data(ready.id, ready.start, ready.end)
-			}
-		})
-	}
-}
-*/
 
 // 정보 관리
 let set_id = null
@@ -205,19 +156,19 @@ let sec_end = null
 let msg_start = null
 let msg_end = null
 
-function click_img(num)
+function click_img(target)
 {
 	// 활성화 버튼 강조 나머지 버튼 어둡게
 	document.querySelectorAll(".btn").forEach(btn =>
 	{
-		const click = +(btn.dataset.num) === num
+		const thisis = (btn.dataset.type + "_" + (btn.dataset.num + "").padStart(3, "0"))
+		const click = thisis === target
 		btn.classList.toggle("active", click)
 		btn.classList.toggle("blur", !click)
 	})
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
-	img_click = num
+	img_click = target
 }
-
 
 // youtube 정보 가져오기 cue 상태 되기전
 function ready_data(id, start = 0, end = 0)
@@ -289,7 +240,7 @@ function hms_convert(hhmmss)
 	const hms_check = hhmmss.findIndex(num => num !== 0)
 	const slice_ready = hms_check === -1 ? hhmmss.length - 1 : hms_check
 	const slice_zero = hhmmss.slice(slice_ready)
-	const ctrl_zero = slice_zero.map((num, idx) => idx === 0 ? `${num}` : `${num}`.padStart(2,"0"))
+	const ctrl_zero = slice_zero.map((num, idx) => idx === 0 ? (num + "") : (num + "").padStart(2,"0"))
 	const hms = ctrl_zero.join(":")
 	return hms
 }
