@@ -70,51 +70,59 @@ let img_click = null
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function build_list() // 추가
+function make_list()
 {
-	const left = document.getElementById("left") // 추가
-	const label_map = { video: "동영상", short: "쇼츠", long: "롱폼" } // 추가
-	const types = [ // 추가
-		{ name: "video", data: typeof list_video !== "undefined" ? list_video : null }, // 추가
-		{ name: "short", data: typeof list_short !== "undefined" ? list_short : null }, // 추가
-		{ name: "long", data: typeof list_long !== "undefined" ? list_long : null }, // 추가
-	] // 추가
+	const left = document.getElementById("left")
 
-	types.forEach(type => // 추가
+	/*
+	const video_type = { video: "동영상", short: "쇼츠", long: "다시보기" }
+	const types = [
+		{ name: "video", data: typeof list_video !== "undefined" ? list_video : null },
+		{ name: "short", data: typeof list_short !== "undefined" ? list_short : null },
+		{ name: "long", data: typeof list_long !== "undefined" ? list_long : null },
+	]
+		*/
+
+	const video_type = [
+		{ name: "video", label: "동영상", data: list_data.video ?? null },
+		{ name: "short", label: "쇼츠", data: list_data.short ?? null },
+		{ name: "long", label: "다시보기", data: list_data.long ?? null },
+	]
+	video_type.forEach(type =>
 	{
-		if (!type.data) return // 추가
+		if (!type.data) return
 
-		const section = document.createElement("div") // 추가
-		section.className = "section" // 추가
-		section.dataset.type = type.name // 추가
-		left.appendChild(section) // 추가
+		const section = document.createElement("div")
+		section.className = "section"
+		section.dataset.type = type.name
+		left.appendChild(section)
 
-		const h1 = document.createElement("h1") // 추가
-		h1.textContent = `${label_map[type.name]} 재생 목록` // 추가
-		section.appendChild(h1) // 추가
+		const h1 = document.createElement("h1")
+		h1.textContent = `${type.label} 재생 목록`
+		section.appendChild(h1)
 
-		const list = document.createElement("div") // 추가
-		list.className = `list ${type.name}` // 추가
-		section.appendChild(list) // 추가
+		const list = document.createElement("div")
+		list.className = `list ${type.name}`
+		section.appendChild(list)
 
-		for (let num = 0; num < type.data.length; num++) // 추가
+		for (let num = 0; num < type.data.length; num++)
 		{
-			const ready = type.data[num] // 추가
-			const btn = document.createElement("button") // 추가
-			btn.className = "btn" // 추가
-			btn.dataset.num = num // 추가
-			btn.dataset.type = type.name // 추가
+			const ready = type.data[num]
+			const btn = document.createElement("button")
+			btn.className = "btn"
+			btn.dataset.num = num
+			btn.dataset.type = type.name
 
-			const img = document.createElement("img") // 추가
-			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg` // 추가
+			const img = document.createElement("img")
+			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
 
-			btn.appendChild(img) // 추가
-			list.appendChild(btn) // 추가
+			btn.appendChild(img)
+			list.appendChild(btn)
 
-			btn.addEventListener("click", () => // 추가
+			btn.addEventListener("click", () =>
 			{
-				const key = `${type.name}_${num}` // 추가
-				if (img_click === key) // 추가
+				const target = `${type.name}_${`${num}`.padStart(3, "0")}`
+				if (img_click === target)
 				{
 					if (play())
 					{
@@ -129,13 +137,13 @@ function build_list() // 추가
 				}
 				else
 				{
-					click_img(key) // 추가
-					ready_data(ready.id, ready.start, ready.end) // 추가
+					click_img(target)
+					ready_data(ready.id, ready.start, ready.end)
 				}
 			})
 		}
-	}) // 추가
-} // 추가
+	})
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 // 왼쪽 영상 미리보기 불러오기
@@ -217,10 +225,7 @@ function ready_data(id, start = 0, end = 0)
 	// 주소에서 id 추출
 	const url = new URL(id)
 	const get_id = url.searchParams.get("v") ?? url.pathname.split("/").pop()
-	if (arguments.length === 1)
-	{
-		return get_id
-	}
+	if (arguments.length === 1) return get_id
 
 	// 클릭 시 id 저장
 	set_id = get_id
@@ -316,22 +321,19 @@ function ctrl_view()
 
 }
 
-async function fetch_oembed(id) // 추가
+async function fetch_oembed(id)
 {
-	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json` // 추가
-	try // 추가
+	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
+	try
 	{
-		const input = await fetch(url) // 추가
-		const data = await input.json() // 추가
+		const input = await fetch(url)
+		const data = await input.json()
 		
 		set_name = data.author_name
 		set_title = data.title
 		document.title = set_name
 
-		if (arguments.length !== 1)
-		{
-			return
-		}
+		if (arguments.length !== 1) return
 
 		document.getElementById("play_msg").style.textAlign = "start"
 		document.getElementById("play_msg").textContent = set_title
@@ -339,7 +341,7 @@ async function fetch_oembed(id) // 추가
 	catch
 	{
 	}
-} // 추가
+}
 
 
 
@@ -361,7 +363,6 @@ async function fetch_oembed(id) // 추가
 // 볼륨 변수
 const volume = document.getElementById("volume")
 const volume_bar = document.getElementById("volume_bar")
-const stopp = move => move.stopPropagation()
 
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener("input", () =>
@@ -370,6 +371,7 @@ volume_bar.addEventListener("input", () =>
 })
 
 // 소리 크기 조절 간섭 방지
+const stopp = move => move.stopPropagation()
 volume.addEventListener("mousedown", stopp)
 volume.addEventListener("click", stopp)
 
@@ -404,9 +406,7 @@ document.addEventListener("keydown", key =>
 	}
 	*/
 	// 준비안됐으면 작동 중지
-	if (!player || !play_now())
-		return
-	// 스페이스 바
+	if (!player || !play_now()) return
 	
 	if (!key.repeat)
 	{
@@ -517,7 +517,7 @@ function onPlayerStateChange(event)
 		let title = null
 		try
 		{
-			title = player.getVideoData().title // 추가
+			title = player.getVideoData().title
 		}
 		catch
 		{
@@ -564,4 +564,4 @@ function onPlayerStateChange(event)
 }
 
 // 싲가
-build_list()
+make_list()
