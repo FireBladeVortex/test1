@@ -93,6 +93,7 @@ function make_list()
 		{ name: "short", tag: "쇼츠", data: list_data.short ?? null },
 		{ name: "long", tag: "다시보기", data: list_data.long ?? null },
 	]
+
 	video_type.forEach(type =>
 	{
 		if (!type.data) return
@@ -246,6 +247,9 @@ function hms_convert(hhmmss)
 }
 
 
+
+// 상태 변화 감지에서 사용할 재생 막대 변수
+let play_bar = null
 
 // 재생 막대
 function ctrl_view()
@@ -447,7 +451,6 @@ function play_or_pause()
 
 
 
-// 동영상 상태가 변화하면 즉시 작동
 /*
 영상 상태 확인
 YT.PlayerState.ENDED = 0
@@ -456,10 +459,7 @@ YT.PlayerState.PAUSED = 2
 YT.PlayerState.BUFFERING = 3
 YT.PlayerState.CUED = 5
 */
-let play_bar = null
-
-
-
+// 동영상 상태가 변화하면 즉시 작동
 function onPlayerStateChange(event)
 {
 	// 영상 정보 불러온 상태(재생 시작 전)

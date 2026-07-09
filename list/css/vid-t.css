@@ -72,30 +72,41 @@ body
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	flex: var(--ratio, 1) 1 0%;
 	min-width: 0;
 	overflow: hidden;
 	width: 100%;
 }
 
+.section[data-type="video"]
+{
+	flex: 2 1 0%; /* 추가 */
+}
 
+.section[data-type="short"]
+{
+	flex: 2 1 0%; /* 추가 */
+}
 
+.section[data-type="long"]
+{
+	flex: 1 1 0%; /* 추가 */
+}
 .list
 {
 	margin-top: 9px;
-	width: 100%;
 	max-width: calc(var(--img-w) * 5);
 	justify-content: flex-start;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, var(--img-w));
 	justify-content: center;
-	overflow-y: auto;    /* 세로 스크롤 바 허용 */
+	overflow-y: hidden;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
 	padding: 5px;
 }
 
 .list.short
 {
+	max-width: calc(var(--img-h) * 9);
 	grid-template-columns: repeat(auto-fill, var(--img-h));
 }
 
