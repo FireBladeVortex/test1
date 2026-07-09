@@ -9,19 +9,23 @@ http://developer.mozilla.org/
 
 https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Events
 
-https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
-
 https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
 
 */
 
+
+
 // YouTube Player iframe API 불러오기
 const api = document.createElement("script")
-	api.src = "https://www.youtube.com/iframe_api"
-	document.head.appendChild(api)
+api.src = "https://www.youtube.com/iframe_api"
+document.head.appendChild(api)
 
-// iframe 들어갈 변수 준비 (계속 바뀌는 값)
+
+
+// iframe 들어갈 변수 준비
 let player = null
+
+
 
 // iframe 호출
 function onYouTubeIframeAPIReady()
@@ -52,6 +56,8 @@ function onYouTubeIframeAPIReady()
 	})
 }
 
+
+
 /*
 영상 상태 확인
 YT.PlayerState.ENDED = 0
@@ -64,12 +70,21 @@ const play = () => player?.getPlayerState?.() === YT.PlayerState.PLAYING
 const pause = () => player?.getPlayerState?.() === YT.PlayerState.PAUSED
 const play_now = () => play() || pause() // !play_now === !play && !pause
 
-
 // 최초 재생 시작하기 전 상태
 let img_click = null
+// 정보 관리
+let set_id = null
+let set_name = null
+let set_title = null
+// 시간 관리
+let sec_start = null
+let sec_end = null
+// 시간 메세지
+let msg_start = null
+let msg_end = null
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function make_list()
 {
 	const left = document.getElementById("left")
@@ -135,16 +150,7 @@ function make_list()
 	})
 }
 
-// 정보 관리
-let set_id = null
-let set_name = null
-let set_title = null
-// 시간 관리
-let sec_start = null
-let sec_end = null
-// 시간 메세지
-let msg_start = null
-let msg_end = null
+
 
 function click_img(target)
 {
@@ -159,6 +165,8 @@ function click_img(target)
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
 	img_click = target
 }
+
+
 
 // youtube 정보 가져오기 cue 상태 되기전
 function ready_data(id, start = 0, end = 0)
@@ -187,6 +195,7 @@ function ready_data(id, start = 0, end = 0)
 	})
 
 }
+
 
 
 // 시간값 시간표시 정리
@@ -224,6 +233,7 @@ function data_split(time)
 }
 
 
+
 // 시간 메세지 표기법 정리 24:00:00
 function hms_convert(hhmmss)
 {
@@ -237,13 +247,13 @@ function hms_convert(hhmmss)
 
 
 
+// 재생 막대
 function ctrl_view()
 {
 	const cur = player.getCurrentTime()
 	const ratio = (cur - sec_start) / (sec_end - sec_start)
 	document.getElementById("play_now").style.width = Math.max(0, Math.min(1, ratio)) * 100 + "%"
 
-	
 	/*
 	const [, msg_cur] = data_split(cur)
 	if (msg_end && msg_start)
@@ -257,11 +267,13 @@ function ctrl_view()
 			document.getElementById("play_msg").textContent = `${msg_start} < ${msg_cur} > ${msg_end}`
 		}
 	}
-		*/
-
+	*/
 
 }
 
+
+
+// 이름 제목
 async function fetch_oembed(id)
 {
 	const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
@@ -286,24 +298,11 @@ async function fetch_oembed(id)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 볼륨 변수
 const volume = document.getElementById("volume")
 const volume_bar = document.getElementById("volume_bar")
+
+
 
 // 볼륨 조절 막대 값 반영 시키기
 volume_bar.addEventListener("input", () =>
@@ -311,10 +310,14 @@ volume_bar.addEventListener("input", () =>
 	player.setVolume(+volume_bar.value)
 })
 
+
+
 // 소리 크기 조절 간섭 방지
 const stopp = move => move.stopPropagation()
 volume.addEventListener("mousedown", stopp)
 volume.addEventListener("click", stopp)
+
+
 
 // 해당하는 키 입력 기본 작동을 무시
 // 스페이스 바가 play_or_pause()를 실행
@@ -374,6 +377,7 @@ document.addEventListener("keydown", key =>
 			const numkey = sec_start + Math.floor((sec_end - sec_start) * ratio)
 			player.seekTo(numkey, true)
 		}
+
 		/*
 		else if (cs && add || sub)
 		{
@@ -389,8 +393,11 @@ document.addEventListener("keydown", key =>
 			player.setPlaybackRate(1)
 		}
 		*/
+
 	}
 })
+
+
 
 // 마우스 휠 소리 크기 조절 및 오작동 억제
 document.addEventListener("wheel", wheel =>
@@ -401,6 +408,7 @@ document.addEventListener("wheel", wheel =>
 {
 	passive: false
 })
+
 
 
 // 소리 크기 조절
@@ -415,10 +423,14 @@ function volume_value(plma)
 	volume_bar.value = change
 }
 
+
+
 // 재생 속도 조절
 function play_speed(key, plma)
 {
 }
+
+
 
 // 재생 일시중지
 function play_or_pause()
@@ -433,6 +445,8 @@ function play_or_pause()
 	}
 }
 
+
+
 // 동영상 상태가 변화하면 즉시 작동
 /*
 영상 상태 확인
@@ -442,8 +456,9 @@ YT.PlayerState.PAUSED = 2
 YT.PlayerState.BUFFERING = 3
 YT.PlayerState.CUED = 5
 */
-
 let play_bar = null
+
+
 
 function onPlayerStateChange(event)
 {
@@ -496,7 +511,7 @@ function onPlayerStateChange(event)
 	}
 	//
 	const pop = [1, 2, 3].includes(event.data)
-	document.querySelectorAll("#right").forEach(overlay => // ("#right, #ad")  // #ad 임시 삭제 사용자 선택으로 버튼 만들기 전까지
+	document.querySelectorAll("#left, #right").forEach(overlay => // ("#right, #ad")  // #ad 임시 삭제 사용자 선택으로 버튼 만들기 전까지
 	{
 		overlay.style.cursor = pop ? "pointer" : "default"
 		overlay.onclick = pop ? play_or_pause : null
