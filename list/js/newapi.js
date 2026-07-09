@@ -73,20 +73,10 @@ let img_click = null
 function make_list()
 {
 	const left = document.getElementById("left")
-
-	/*
-	const video_type = { video: "동영상", short: "쇼츠", long: "다시보기" }
-	const types = [
-		{ name: "video", data: typeof list_video !== "undefined" ? list_video : null },
-		{ name: "short", data: typeof list_short !== "undefined" ? list_short : null },
-		{ name: "long", data: typeof list_long !== "undefined" ? list_long : null },
-	]
-		*/
-
 	const video_type = [
-		{ name: "video", label: "동영상", data: list_data.video ?? null },
-		{ name: "short", label: "쇼츠", data: list_data.short ?? null },
-		{ name: "long", label: "다시보기", data: list_data.long ?? null },
+		{ name: "video", tag: "동영상", data: list_data.video ?? null },
+		{ name: "short", tag: "쇼츠", data: list_data.short ?? null },
+		{ name: "long", tag: "다시보기", data: list_data.long ?? null },
 	]
 	video_type.forEach(type =>
 	{
@@ -98,7 +88,7 @@ function make_list()
 		left.appendChild(section)
 
 		const h1 = document.createElement("h1")
-		h1.textContent = type.label + " 재생 목록"
+		h1.textContent = type.tag + " 재생 목록"
 		section.appendChild(h1)
 
 		const list = document.createElement("div")
@@ -162,9 +152,9 @@ function click_img(target)
 	document.querySelectorAll(".btn").forEach(btn =>
 	{
 		const thisis = (btn.dataset.type + "_" + (btn.dataset.num + "").padStart(3, "0"))
-		const click = thisis === target
-		btn.classList.toggle("active", click)
-		btn.classList.toggle("blur", !click)
+		const click_img = thisis === target
+		btn.classList.toggle("active", click_img)
+		btn.classList.toggle("blur", !click_img)
 	})
 	// total_list에서 클릭한 썸네일 또 클릭할때 쓰는 장치
 	img_click = target

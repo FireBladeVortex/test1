@@ -72,34 +72,6 @@ body
 	overflow: hidden; /* 추가 */
 	width: 100%;
 }
-.nav_btns /* 추가 */
-{
-	display: flex; /* 추가 */
-	gap: 4px; /* 추가 */
-} /* 추가 */
-
-.nav_btn /* 추가 */
-{
-	width: 24px; /* 추가 */
-	height: 18px; /* 추가 */
-	background: var(--emp); /* 추가 */
-	color: var(--text); /* 추가 */
-	border: 0; /* 추가 */
-	border-radius: 4px; /* 추가 */
-	cursor: pointer; /* 추가 */
-	display: flex; /* 추가 */
-	align-items: center; /* 추가 */
-	justify-content: center; /* 추가 */
-	font-size: 10px; /* 추가 */
-	opacity: 0.7; /* 추가 */
-} /* 추가 */
-
-.nav_btn:hover /* 추가 */
-{
-	opacity: 1; /* 추가 */
-} /* 추가 */
-
-
 
 
 
@@ -153,11 +125,17 @@ body
 
 .btn img
 {
-	width: var(--img-w); /* 100% */
-	height: var(--img-h); /* 100% */
+	width: 100%; /* 100% */
+	height: 100%; /* 100% */
 	/* 이미지 비율 유지 + 가득 채움
 	// contain = 대체 옵션 / 비율 유지 큰거 우선 맞춤 (빈공간 생김) */
 	object-fit: cover;
+}
+
+.list.short .btn
+{
+	width: var(--img-h);
+	height: var(--img-w);
 }
 
 #right
