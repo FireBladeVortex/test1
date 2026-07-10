@@ -108,7 +108,11 @@ function make_list()
 		h1.textContent = type.tag + " 재생 목록"
 		section.appendChild(h1)
 
-		if (type.name === "long") return
+		if (type.name === "long")
+		{
+			make_long()
+			return
+		}
 
 		const list = document.createElement("div")
 		list.className = `list ${type.name}`
@@ -285,6 +289,19 @@ function make_long()
 {
 	if (!list_data.long) return // long 파일 없으면 작동 안함
 
+	const valid_list = [] // (추가) lang, name, title, start, end 모두 가진 song만 모아둠
+	list_data.long.forEach(video => // (추가)
+	{
+		;(video.song ?? []).forEach(song => // (추가)
+		{
+			if (song.lang && song.name && song.title && song.start && song.end) // (추가)
+			{
+				valid_list.push({ id: video.id, ...song }) // (추가) 재생에 필요한 id도 함께 저장
+			}
+		})
+	})
+
+
 	const section = document.querySelector('.section[data-type="long"]')
 	if (!section) return
 
@@ -348,7 +365,7 @@ function make_long()
 		const lang_value = lang_select.value
 		const names = new Set()
 
-		list_data.long.forEach(video =>
+		valid_list.forEach(video =>
 		{
 			;(video.song ?? []).forEach(song =>
 			{
@@ -377,7 +394,7 @@ function make_long()
 
 		const titles = new Set()
 
-		list_data.long.forEach(video =>
+		valid_list.forEach(video =>
 		{
 			;(video.song ?? []).forEach(song =>
 			{
@@ -401,51 +418,46 @@ function make_long()
 		update_title()
 	})
 	name_select.addEventListener("change", update_title)
-title_select.addEventListener("change", () => // (추가)
-{
-	ready_btn.style.display = title_select.value ? "block" : "none" // (추가) 제목 선택 시에만 버튼 표시
-})
-
-ready_btn.addEventListener("click", () => // (추가)
-{
-	const target = "long_ready" // (추가)
-	if (img_click === target) // (추가)
+	title_select.addEventListener("change", () => // (추가)
 	{
-		if (play()) // (추가)
+		ready_btn.style.display = title_select.value ? "block" : "none" // (추가) 제목 선택 시에만 버튼 표시
+	})
+
+	ready_btn.addEventListener("click", () => // (추가)
+	{
+		const target = "long_ready" // (추가)
+		if (img_click === target) // (추가)
 		{
-			player.pauseVideo() // (추가)
-		}
-		else if (pause()) // (추가)
-		{
-			player.playVideo() // (추가)
+			if (play()) // (추가)
+			{
+				player.pauseVideo() // (추가)
+			}
+			else if (pause()) // (추가)
+			{
+				player.playVideo() // (추가)
+			}
+			else // (추가)
+				return // (추가)
 		}
 		else // (추가)
-			return // (추가)
-	}
-	else // (추가)
-	{
-		click_img(target) // (추가)
-
-		const lang_value = lang_select.value // (추가)
-		const name_value = name_select.value // (추가)
-		const title_value = title_select.value // (추가)
-
-		for (const video of list_data.long) // (추가)
 		{
-			const song = (video.song ?? []).find(s => // (추가)
-				(!lang_value || s.lang === lang_value) && // (추가)
-				s.name === name_value && // (추가)
-				s.title === title_value // (추가)
-			) // (추가)
+			click_img(target) // (추가)
 
-			if (song) // (추가)
+			const lang_value = lang_select.value // (추가)
+			const name_value = name_select.value // (추가)
+			const title_value = title_select.value // (추가)
+			const song = valid_list.find(s => // (수정) list_data.long 순회 대신 valid_list에서 바로 찾음
+				(!lang_value || s.lang === lang_value) &&
+				s.name === name_value &&
+				s.title === title_value
+			)
+
+			if (song)
 			{
-				ready_data(video.id, song.start, song.end) // (추가)
-				break // (추가)
+				ready_data(song.id, song.start, song.end) // (수정) video.id 대신 song.id (valid_list에 이미 포함됨)
 			}
 		}
-	}
-})
+	})
 
 	update_name()
 }
