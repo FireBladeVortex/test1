@@ -365,15 +365,12 @@ function make_long()
 		const lang_value = lang_select.value
 		const names = new Set()
 
-		valid_list.forEach(video =>
+		valid_list.forEach(song =>
 		{
-			;(video.song ?? []).forEach(song =>
+			if ((!lang_value || song.lang === lang_value) && song.name)
 			{
-				if ((!lang_value || song.lang === lang_value) && song.name)
-				{
-					names.add(song.name)
-				}
-			})
+				names.add(song.name)
+			}
 		})
 
 		name_select.innerHTML = ""
@@ -394,17 +391,14 @@ function make_long()
 
 		const titles = new Set()
 
-		valid_list.forEach(video =>
+		valid_list.forEach(song =>
 		{
-			;(video.song ?? []).forEach(song =>
-			{
 				const lang_match = !lang_value || song.lang === lang_value
 				const name_match = song.name === name_value
 				if (lang_match && name_match && song.title)
 				{
 					titles.add(song.title)
 				}
-			})
 		})
 
 		;[...titles].forEach(title => make_option(title_select, title, title))
