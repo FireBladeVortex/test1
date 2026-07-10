@@ -256,7 +256,7 @@ body
 .long_row1
 {
 	display: flex;
-	width: 100%;
+	width: 80%;
 	gap: 5px;
 }
 
@@ -274,12 +274,13 @@ body
 
 .long_row1 .long_empty
 {
+	width: 100%;
 	flex: 1;
 }
 
 .long_row2
 {
-	width: 100%;
+	width: 80%;
 	flex: 1;
 }
 
