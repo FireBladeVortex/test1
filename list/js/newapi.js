@@ -97,6 +97,8 @@ function make_list()
 
 	video_type.forEach(type =>
 	{
+		if (!type.data) return
+
 		const section = document.createElement("div")
 		section.className = "section"
 		section.dataset.type = type.name
@@ -106,11 +108,12 @@ function make_list()
 		h1.textContent = type.tag + " 재생 목록"
 		section.appendChild(h1)
 
+		if (type.name === "long") return
+
 		const list = document.createElement("div")
 		list.className = `list ${type.name}`
 		section.appendChild(list)
 
-		if (!type.data) return
 
 		for (let num = 0; num < type.data.length; num++)
 		{
@@ -277,6 +280,175 @@ function ctrl_view()
 }
 
 
+// long 섹션 필터 드롭다운 생성 (수정/추가)
+function make_long()
+{
+	if (!list_data.long) return // long 파일 없으면 작동 안함
+
+	const section = document.querySelector('.section[data-type="long"]')
+	if (!section) return
+
+	// 1행 (3칸, 1:3:1)
+	const row1 = document.createElement("div")
+	row1.className = "long_row1"
+	section.appendChild(row1)
+
+	const lang_select = document.createElement("select")
+	lang_select.className = "long_lang"
+	row1.appendChild(lang_select)
+
+	const name_select = document.createElement("select")
+	name_select.className = "long_name"
+	row1.appendChild(name_select)
+
+	const empty_col = document.createElement("div")
+	empty_col.className = "long_empty"
+	row1.appendChild(empty_col)
+		
+	const ready_btn = document.createElement("button") // (추가)
+	ready_btn.className = "long_ready" // (추가)
+	ready_btn.textContent = "재생 준비" // (추가)
+	ready_btn.style.display = "none" // (추가) 제목 선택 전엔 숨김
+	empty_col.appendChild(ready_btn) // (추가)
+
+	// 2행 (1칸, 100%)
+	const row2 = document.createElement("div")
+	row2.className = "long_row2"
+	section.appendChild(row2)
+
+	const title_select = document.createElement("select")
+	title_select.className = "long_title"
+	row2.appendChild(title_select)
+
+	// option 생성 도우미
+	function make_option(select, value, text, selected = false)
+	{
+		const option = document.createElement("option")
+		option.value = value
+		option.textContent = text
+		if (selected)
+			{
+				option.selected = true
+
+		option.disabled = true // (추가) 선택 불가 처리
+		option.hidden = true // (추가) 목록 펼쳤을때 숨김 처리
+			}
+		select.appendChild(option)
+	}
+
+	make_option(lang_select, "", "언어", true)
+	;["한국어", "외국어"].forEach(lang => make_option(lang_select, lang, lang))
+
+	make_option(name_select, "", "부른 이", true)
+	make_option(title_select, "", "제목", true)
+
+	// lang 값에 맞는 name 목록 갱신
+	function update_name()
+	{
+		const lang_value = lang_select.value
+		const names = new Set()
+
+		list_data.long.forEach(video =>
+		{
+			;(video.song ?? []).forEach(song =>
+			{
+				if ((!lang_value || song.lang === lang_value) && song.name)
+				{
+					names.add(song.name)
+				}
+			})
+		})
+
+		name_select.innerHTML = ""
+		make_option(name_select, "", "부른 이", true)
+		;[...names].forEach(name => make_option(name_select, name, name))
+	}
+
+	// lang, name 값에 맞는 title 목록 갱신 (name 선택 시에만 등장)
+	function update_title()
+	{
+		const lang_value = lang_select.value
+		const name_value = name_select.value
+
+		title_select.innerHTML = ""
+		make_option(title_select, "", "제목", true)
+
+		if (!name_value) return // name 기본값이면 목록 비움
+
+		const titles = new Set()
+
+		list_data.long.forEach(video =>
+		{
+			;(video.song ?? []).forEach(song =>
+			{
+				const lang_match = !lang_value || song.lang === lang_value
+				const name_match = song.name === name_value
+				if (lang_match && name_match && song.title)
+				{
+					titles.add(song.title)
+				}
+			})
+		})
+
+		;[...titles].forEach(title => make_option(title_select, title, title))
+
+		ready_btn.style.display = "none" // (추가) 목록 갱신 시 버튼 초기화
+	}
+
+	lang_select.addEventListener("change", () =>
+	{
+		update_name()
+		update_title()
+	})
+	name_select.addEventListener("change", update_title)
+title_select.addEventListener("change", () => // (추가)
+{
+	ready_btn.style.display = title_select.value ? "block" : "none" // (추가) 제목 선택 시에만 버튼 표시
+})
+
+ready_btn.addEventListener("click", () => // (추가)
+{
+	const target = "long_ready" // (추가)
+	if (img_click === target) // (추가)
+	{
+		if (play()) // (추가)
+		{
+			player.pauseVideo() // (추가)
+		}
+		else if (pause()) // (추가)
+		{
+			player.playVideo() // (추가)
+		}
+		else // (추가)
+			return // (추가)
+	}
+	else // (추가)
+	{
+		click_img(target) // (추가)
+
+		const lang_value = lang_select.value // (추가)
+		const name_value = name_select.value // (추가)
+		const title_value = title_select.value // (추가)
+
+		for (const video of list_data.long) // (추가)
+		{
+			const song = (video.song ?? []).find(s => // (추가)
+				(!lang_value || s.lang === lang_value) && // (추가)
+				s.name === name_value && // (추가)
+				s.title === title_value // (추가)
+			) // (추가)
+
+			if (song) // (추가)
+			{
+				ready_data(video.id, song.start, song.end) // (추가)
+				break // (추가)
+			}
+		}
+	}
+})
+
+	update_name()
+}
 
 // 이름 제목
 async function fetch_oembed(id)

@@ -251,3 +251,40 @@ body
 	cursor: grabbing;
 	accent-color: var(--emp);
 }
+
+/* long 필터 드롭다운 레이아웃 (추가) */
+.long_row1
+{
+	display: flex;
+	width: 100%;
+	gap: 5px;
+}
+
+.long_row1 .long_lang
+{
+	flex: 1;
+	text-align: left;
+}
+
+.long_row1 .long_name
+{
+	flex: 3;
+	text-align: left;
+}
+
+.long_row1 .long_empty
+{
+	flex: 1;
+}
+
+.long_row2
+{
+	width: 100%;
+	flex: 1;
+}
+
+.long_row2 .long_title
+{
+	width: 100%;
+	text-align: left;
+}

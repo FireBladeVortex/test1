@@ -9,8 +9,8 @@ list_data.long = [
 	{
 		id: "https://youtu.be/h3l1SyPMpoE?si=bnxdJ7LTCtVB4bnG", /* 아쿠루 - 죽음의 게임 */
 		song: [
-			{ start: "1:50", end: "2:43", },
-			{ start: "1:50", end: "2:43", },
+			{ lang: "한국어", name: "아쿠루", title: "죽음의 게임", start: "1:50", end: "2:43", },
+			{ lang: "한국어", name: "아쿠루", title: "죽음의 게임", },
 		]
 	},
 	{
