@@ -325,8 +325,9 @@ function make_long()
 	const ready_btn = document.createElement("button") // (추가)
 	ready_btn.className = "long_ready" // (추가)
 	ready_btn.textContent = "재생 준비" // (추가)
-	ready_btn.style.display = "none" // (추가) 제목 선택 전엔 숨김
+	ready_btn.style.opacity = "0.5" // (수정) display none 대신 반투명 처리
 	empty_col.appendChild(ready_btn) // (추가)
+
 
 	// 2행 (1칸, 100%)
 	const row2 = document.createElement("div")
@@ -403,7 +404,9 @@ function make_long()
 
 		;[...titles].forEach(title => make_option(title_select, title, title))
 
-		ready_btn.style.display = "none" // (추가) 목록 갱신 시 버튼 초기화
+				
+		ready_btn.style.opacity = "0.5" // (수정) 목록 갱신 시 버튼 초기화
+		ready_btn.style.pointerEvents = "none" // (추가) 목록 갱신 시 클릭 다시 막음
 	}
 
 	lang_select.addEventListener("change", () =>
@@ -414,7 +417,10 @@ function make_long()
 	name_select.addEventListener("change", update_title)
 	title_select.addEventListener("change", () => // (추가)
 	{
-		ready_btn.style.display = title_select.value ? "block" : "none" // (추가) 제목 선택 시에만 버튼 표시
+		const ready = !!title_select.value // (추가) 조건 만족 여부
+		ready_btn.style.opacity = ready ? "1" : "0.5" // (수정)
+		ready_btn.style.pointerEvents = ready ? "auto" : "none" //
+		ready_btn.style.opacity = title_select.value ? "1" : "0.5"
 	})
 
 	ready_btn.addEventListener("click", () => // (추가)
