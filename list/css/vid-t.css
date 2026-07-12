@@ -302,12 +302,22 @@ body
 	align-items: center; /* (추가) 세로 중앙 정렬 */
 	justify-content: center; /* (추가) 가로 중앙 정렬 */
 	cursor: pointer;
-	opacity: 0.5; /* (추가) 기본 반투명 */
-	pointer-events: none; /* (추가) 기본 상태에서는 클릭 막음 */
 }
 
 .long_row1 .long_empty
 {
 	display: flex;
 	height: 100%; /* (추가) 부모(row1) 높이만큼 채워서 버튼이 늘어날 공간 확보 */
+}
+
+.long_ready.active /* (추가) 조건 만족 시 활성 상태 */
+{
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.long_ready.blur /* (추가) 조건 만족 시 활성 상태 */
+{
+	opacity: 0.5; /* (추가) 기본 반투명 */
+	pointer-events: none; /* (추가) 기본 상태에서는 클릭 막음 */
 }
