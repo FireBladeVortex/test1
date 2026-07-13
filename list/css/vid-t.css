@@ -70,6 +70,7 @@ body
 	min-width: 0;
 	overflow: hidden;
 	width: 100%;
+	height: 100%;
 }
 
 .section[data-type="video"]
@@ -90,10 +91,12 @@ body
 .list
 {
 	margin-top: 9px;
-	max-width: round(down, 95%, var(--img-w));
+	max-width: round(down, 90%, var(--img-w));
+	max-height: round(down, 100%, var(--img-h));
 	justify-content: flex-start;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, var(--img-w));
+	grid-template-rows: repeat(auto-fill, var(--img-h));
 	justify-content: center;
 	overflow-y: hidden;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
@@ -104,8 +107,10 @@ body
 
 .list.short
 {
-	max-width: round(down, 95%, var(--img-h));
+	max-width: round(down, 90%, var(--img-h));
 	grid-template-columns: repeat(auto-fill, var(--img-h));
+	max-height: round(down, 100%, var(--img-w));
+	grid-template-rows: repeat(auto-fill, var(--img-w));
 }
 
 .btn
