@@ -88,6 +88,16 @@ let msg_end = null
 //
 
 
+function move_page(list, dir) // 추가
+{
+	const rect = list.getBoundingClientRect() // 추가
+	const x = rect.left + 10 // 추가
+	const y = dir > 0 ? rect.bottom - 5 : rect.top + 5 // 추가
+	const cur = document.elementFromPoint(x, y)?.closest(".page") // 추가
+	const target = dir > 0 ? cur?.nextElementSibling : cur?.previousElementSibling // 추가
+	target?.scrollIntoView({ block: "start", behavior: "smooth" }) // 추가
+} // 추가
+
 
 function make_list()
 {
@@ -111,6 +121,28 @@ function make_list()
 		h1.textContent = type.tag + " 재생 목록"
 		section.appendChild(h1)
 
+
+
+							const title = document.createElement("span") // 추가
+							title.textContent = `${label_map[type.name]} 재생 목록` // 수정 (h1.textContent → title.textContent)
+							h1.appendChild(title) // 추가
+
+							const nav_btns = document.createElement("div") // 추가
+							nav_btns.className = "nav_btns" // 추가
+							h1.appendChild(nav_btns) // 추가
+
+							const nav_top = document.createElement("button") // 추가
+							nav_top.className = "nav_btn nav_top" // 추가
+							nav_top.textContent = "▲" // 추가
+							nav_btns.appendChild(nav_top) // 추가
+
+							const nav_bottom = document.createElement("button") // 추가
+							nav_bottom.className = "nav_btn nav_bottom" // 추가
+							nav_bottom.textContent = "▼" // 추가
+							nav_btns.appendChild(nav_bottom) // 추가
+
+
+
 		if (type.name === "long")
 		{
 			make_long()
@@ -122,9 +154,25 @@ function make_list()
 		section.appendChild(list)
 
 
+							
+							nav_top.addEventListener("click", () => move_page(list, -1)) // 추가
+							nav_bottom.addEventListener("click", () => move_page(list, 1)) // 추가
+const img_w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--img-w")) // 수정 (--cols 대신 실제 렌더링된 list 폭을 읽어 칸 수 도출)
+const cols = Math.round(list.clientWidth / img_w) // 수정
+							let page = null // 추가
+
 		for (let num = 0; num < type.data.length; num++)
 		{
 			const ready = type.data[num]
+
+														if (num % (cols * 2) === 0) // 추가
+														{
+															page = document.createElement("div") // 추가
+															page.className = "page" // 추가
+															list.appendChild(page) // 추가
+														} // 추가
+
+
 			const btn = document.createElement("button")
 			btn.className = "btn"
 			btn.dataset.num = num
@@ -134,7 +182,7 @@ function make_list()
 			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
 
 			btn.appendChild(img)
-			list.appendChild(btn)
+			page.appendChild(btn)
 
 			btn.addEventListener("click", () =>
 			{
@@ -702,7 +750,7 @@ function onPlayerStateChange(event)
 		{
 			document.getElementById("play_msg").style.textAlign = "start" 
 			document.getElementById("play_msg").textContent = title
-			fetch_oembed(set_id, 0)
+			fetch_oembed(set_id, title)
 		}
 		else
 		{
