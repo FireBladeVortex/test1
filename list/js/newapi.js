@@ -335,6 +335,7 @@ function make_long()
 	ready_btn.className = "long_ready" // (추가)
 	ready_btn.textContent = "재생 준비" // (추가)
 	empty_col.appendChild(ready_btn) // (추가)
+	ready_btn.classList.add("blur") // (추가) 제목 선택 전 기본 흐림 상태
 
 
 	// 2행 (1칸, 100%)
@@ -433,6 +434,7 @@ function make_long()
 	title_select.addEventListener("change", () => // (추가)
 	{
 		ready_btn.classList.toggle("active", title_select.value)
+		ready_btn.classList.toggle("blur", !title_select.value) // (추가)
 	})
 
 	ready_btn.addEventListener("click", () => // (추가)

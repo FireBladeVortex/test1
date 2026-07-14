@@ -11,7 +11,6 @@ http://developer.mozilla.org/
 	margin: 0;
 	padding: 0;
 	border: 0;
-	box-sizing: content-box;
 }
 
 /* 변수 선언 */
@@ -46,7 +45,6 @@ body
 {
 	display: grid;
 	grid-template-rows: 2fr 2fr 1fr; /* (추가) video:short:long 비율 고정 */
-	align-items: center; /* 중앙 정렬 */
 	flex: 0 0 50%; /* 화면 절반으로 고정 */
 	min-width: 0; /* 50% 이상 늘어나는 것 방지 */
 	background: var(--box);
@@ -89,7 +87,6 @@ body
 	display: grid;
 	max-width: round(down, 95%, var(--img-w));
 	max-height: round(down, 100%, var(--img-h));
-	justify-content: flex-start;
 	grid-template-columns: repeat(auto-fill, var(--img-w));
 	overflow-y: hidden;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
@@ -171,7 +168,6 @@ body
 	position: relative;
 	width: clamp(480px, 100%, 640px); /* 최소 480px 최대 640px, 공간 부족하면 축소 */
 	height: clamp(270px, 100%, 360px);
-	aspect-ratio: 16 / 9; /* 비율 고정 */
 	margin-bottom: 10px;
 	z-index: 3;
 }
@@ -232,7 +228,6 @@ body
 	flex: 1;
 	accent-color: var(--emp);
 	height: 6px;
-	writing-mode: horizontal-tb;
 }
 
 #volume_bar:hover
