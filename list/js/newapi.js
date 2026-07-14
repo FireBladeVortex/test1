@@ -87,7 +87,9 @@ let msg_start = null
 let msg_end = null
 //
 
-
+function calc_size()
+{
+}
 
 function make_list()
 {
