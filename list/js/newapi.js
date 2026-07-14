@@ -205,7 +205,7 @@ function ready_data(id, start = 0, end = 0)
 	player.cueVideoById(
 	{
 		videoId : get_id,
-		startSeconds : 0, // 광고 때문에 sec_start 대신 임시로 0
+		startSeconds : sec_start, // 광고 때문에 sec_start 대신 임시로 0
 		...(sec_end > 0 && {endSeconds : sec_end})
 	})
 
