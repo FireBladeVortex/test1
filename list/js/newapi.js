@@ -157,7 +157,8 @@ function make_list()
 				else
 				{
 					click_img(target)
-					ready_data(ready.id, ready.start, ready.end)
+					const short = type.name === "short"
+					ready_data(ready.id, short ? 0 : ready.start, short ? 0 : ready.end)
 				}
 			})
 		}
