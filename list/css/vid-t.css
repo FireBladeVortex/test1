@@ -78,6 +78,8 @@ body
 {
 	display: grid;
 	justify-items: center;
+	align-items: start;
+	align-content: start;
 }
 
 
@@ -98,8 +100,8 @@ body
 .list.short
 {
 	max-width: round(down, 90%, var(--img-h));
-	grid-template-columns: repeat(auto-fill, var(--img-h));
 	max-height: round(down, 100%, var(--img-w));
+	grid-template-columns: repeat(auto-fill, var(--img-h));
 }
 
 .btn
@@ -265,6 +267,7 @@ body
 
 .long_row1 .long_empty
 {
+	display: flex;
 	width: 100%;
 	height: 100%;
 	flex: 1;
@@ -292,12 +295,6 @@ body
 	align-items: center; /* (추가) 세로 중앙 정렬 */
 	justify-content: center; /* (추가) 가로 중앙 정렬 */
 	cursor: pointer;
-}
-
-.long_row1 .long_empty
-{
-	display: flex;
-	height: 100%; /* (추가) 부모(row1) 높이만큼 채워서 버튼이 늘어날 공간 확보 */
 }
 
 .long_ready.active /* (추가) 조건 만족 시 활성 상태 */
