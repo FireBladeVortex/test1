@@ -56,10 +56,23 @@ body
 	width: 95%;
 	font-size: 14px;
 	color: var(--highlight);
-	text-align: left;
 	border-bottom: 3px solid var(--emp);
 	padding-bottom: 3px;
+	display: flex; /* (수정) 좌우 2등분 배치 */
 }
+
+#left h1 .h1_left /* (추가) */
+{
+	flex: 1; /* (추가) */
+}
+
+#left h1 .h1_right
+{
+	flex: 1; /* (추가) */
+	display: flex;
+	justify-content: space-evenly;
+}
+
 
 .section
 {
@@ -87,9 +100,9 @@ body
 {
 	margin-top: 9px;
 	display: grid;
+	grid-template-columns: repeat(auto-fill, var(--img-w));
 	max-width: round(down, 95%, var(--img-w));
 	max-height: round(down, 100%, var(--img-h));
-	grid-template-columns: repeat(auto-fill, var(--img-w));
 	overflow-y: hidden;    /* 세로 스크롤 바 허용 */
 	overflow-x: hidden;  /* 가로 스크롤 바 차단 */
 
@@ -103,6 +116,22 @@ body
 	max-height: round(down, 100%, var(--img-w));
 	grid-template-columns: repeat(auto-fill, var(--img-h));
 }
+
+
+
+.page
+{
+	display: grid;
+	grid-template-columns: repeat(auto-fill, var(--img-w));
+}
+
+
+
+.page.short
+{
+	grid-template-columns: repeat(auto-fill, var(--img-h));
+}
+
 
 .btn
 {

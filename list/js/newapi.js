@@ -95,9 +95,9 @@ function make_list()
 {
 	const left = document.getElementById("left")
 	const video_type = [
-		{ name: "video", tag: "동영상", data: list_data.video ?? null },
-		{ name: "short", tag: "쇼츠", data: list_data.short ?? null },
-		{ name: "long", tag: "다시보기", data: list_data.long ?? null },
+		{ type: "video", tag: "동영상", data: list_data.video ?? null },
+		{ type: "short", tag: "쇼츠", data: list_data.short ?? null },
+		{ type: "long", tag: "다시보기", data: list_data.long ?? null },
 	]
 
 	video_type.forEach(type =>
@@ -106,21 +106,75 @@ function make_list()
 
 		const section = document.createElement("div")
 		section.className = "section"
-		section.dataset.type = type.name
+		section.dataset.type = type.type
 		left.appendChild(section)
 
 		const h1 = document.createElement("h1")
-		h1.textContent = type.tag + " 재생 목록"
 		section.appendChild(h1)
 
-		if (type.name === "long")
+		const h1_left = document.createElement("div")
+		h1_left.className = "h1_left"
+		h1_left.textContent = type.tag + " 재생 목록"
+		h1.appendChild(h1_left)
+
+
+		if (type.type === "long")
 		{
 			make_long()
 			return
 		}
+		else
+		{
+			const h1_right = document.createElement("div")
+			h1_right.className = "h1_right"
+			h1.appendChild(h1_right)
+
+			const h1_right_qweqwe = document.createElement("div")
+			h1_right_qweqwe.className = "h1_right"
+			h1_right.appendChild(h1_right_qweqwe)
+
+			if (type.type === "video")
+			{
+					const h1_right_all = document.createElement("div")
+					h1_right_all.className = "h1_right"
+					h1_right_all.textContent = "모두"
+					h1_right_qweqwe.appendChild(h1_right_all)
+
+					const h1_right_original = document.createElement("div")
+					h1_right_original.className = "h1_right"
+					h1_right_original.textContent = "원곡"
+					h1_right_qweqwe.appendChild(h1_right_original)
+
+					const h1_right_cover = document.createElement("div")
+					h1_right_cover.className = "h1_right"
+					h1_right_cover.textContent = "커버"
+					h1_right_qweqwe.appendChild(h1_right_cover)
+			}
+
+			const h1_right_etc = document.createElement("div")
+			h1_right_etc.className = "h1_right"
+			h1_right.appendChild(h1_right_etc)
+
+				const h1_right_etc_1 = document.createElement("div")
+				h1_right_etc_1.className = "h1_right"
+				h1_right_etc_1.textContent = "이전"
+				h1_right_etc.appendChild(h1_right_etc_1)
+
+				const h1_right_etc_2 = document.createElement("div")
+				h1_right_etc_2.className = "h1_right"
+				h1_right_etc_2.textContent = "1~9"
+				h1_right_etc.appendChild(h1_right_etc_2)
+
+				const h1_right_etc_3 = document.createElement("div")
+				h1_right_etc_3.className = "h1_right"
+				h1_right_etc_3.textContent = "다음"
+				h1_right_etc.appendChild(h1_right_etc_3)
+		}
+
+
 
 		const list = document.createElement("div")
-		list.className = `list ${type.name}`
+		list.className = `list ${type.type}`
 		section.appendChild(list)
 
 
@@ -130,7 +184,7 @@ function make_list()
 			const btn = document.createElement("button")
 			btn.className = "btn"
 			btn.dataset.num = num
-			btn.dataset.type = type.name
+			btn.dataset.type = type.type
 
 			const img = document.createElement("img")
 			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
@@ -140,7 +194,7 @@ function make_list()
 
 			btn.addEventListener("click", () =>
 			{
-				const target = (type.name + "_" + (num + "").padStart(3, "0"))
+				const target = (type.type + "_" + (num + "").padStart(3, "0"))
 				if (img_click === target)
 				{
 					if (play())
@@ -157,7 +211,7 @@ function make_list()
 				else
 				{
 					click_img(target)
-					const short = type.name === "short"
+					const short = type.type === "short"
 					ready_data(ready.id, short ? 0 : ready.start, short ? 0 : ready.end)
 				}
 			})
@@ -332,11 +386,11 @@ function make_long()
 	empty_col.className = "long_empty"
 	row1.appendChild(empty_col)
 		
-	const ready_btn = document.createElement("button") // (추가)
-	ready_btn.className = "long_ready" // (추가)
-	ready_btn.textContent = "재생 준비" // (추가)
-	empty_col.appendChild(ready_btn) // (추가)
-	ready_btn.classList.add("blur") // (추가) 제목 선택 전 기본 흐림 상태
+	const ready_btn = document.createElement("button")
+	ready_btn.className = "long_ready"
+	ready_btn.textContent = "재생 준비"
+	empty_col.appendChild(ready_btn)
+	ready_btn.classList.add("blur")
 
 
 	// 2행 (1칸, 100%)
@@ -358,8 +412,8 @@ function make_long()
 			{
 				option.selected = true
 
-		option.disabled = true // (추가) 선택 불가 처리
-		option.hidden = true // (추가) 목록 펼쳤을때 숨김 처리
+		option.disabled = true
+		option.hidden = true
 			}
 		select.appendChild(option)
 	}
@@ -432,31 +486,31 @@ function make_long()
 	})
 	name_select.addEventListener("change", update_title)
 
-	title_select.addEventListener("change", () => // (추가)
+	title_select.addEventListener("change", () =>
 	{
 		ready_btn.classList.toggle("active", title_select.value)
-		ready_btn.classList.toggle("blur", !title_select.value) // (추가)
+		ready_btn.classList.toggle("blur", !title_select.value)
 	})
 
-	ready_btn.addEventListener("click", () => // (추가)
+	ready_btn.addEventListener("click", () =>
 	{
-		const target = "long_ready" // (추가)
-		if (img_click === target) // (추가)
+		const target = "long_ready"
+		if (img_click === target)
 		{
-			if (play()) // (추가)
+			if (play())
 			{
-				player.pauseVideo() // (추가)
+				player.pauseVideo()
 			}
-			else if (pause()) // (추가)
+			else if (pause())
 			{
-				player.playVideo() // (추가)
+				player.playVideo()
 			}
-			else // (추가)
-				return // (추가)
+			else
+				return
 		}
-		else // (추가)
+		else
 		{
-			click_img(target) // (추가)
+			click_img(target)
 			const lang_value = lang_select.value
 			const name_value = name_select.value
 			const title_value = title_select.value
