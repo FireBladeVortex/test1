@@ -133,7 +133,7 @@ function make_list()
 			h1_right_qweqwe.className = "h1_right"
 			h1_right.appendChild(h1_right_qweqwe)
 
-			if (type.type === "video")
+			if (type.type === "video")  // 모두 커버곡이거나 분류가 아예 없다면 생성하지않도록 조건 추가 필요
 			{
 					const h1_right_all = document.createElement("div")
 					h1_right_all.className = "h1_right"
@@ -155,6 +155,7 @@ function make_list()
 			h1_right_etc.className = "h1_right"
 			h1_right.appendChild(h1_right_etc)
 
+			// if 썸네일 수가 허용하는 grid 칸 갯수 이상이라 여러개의 page 있는 조건일때 추가 필요 
 				const h1_right_etc_1 = document.createElement("div")
 				h1_right_etc_1.className = "h1_right"
 				h1_right_etc_1.textContent = "이전"
@@ -178,6 +179,14 @@ function make_list()
 		section.appendChild(list)
 
 
+		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
+		const page = document.createElement("div")
+		page.className = `page ${type.type}`
+		list.appendChild(page)
+
+
+
+
 		for (let num = 0; num < type.data.length; num++)
 		{
 			const ready = type.data[num]
@@ -190,7 +199,7 @@ function make_list()
 			img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
 
 			btn.appendChild(img)
-			list.appendChild(btn)
+			page.appendChild(btn)
 
 			btn.addEventListener("click", () =>
 			{
