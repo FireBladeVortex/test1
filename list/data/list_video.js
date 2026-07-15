@@ -13,6 +13,7 @@ list_data.video = [
 	},
 	{
 		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
+		original: 1,
 	},
 	{
 		id: "https://youtu.be/mW0jfEH6HW0?si=qnWfX0KNB0DIBsrL", /* 감규리 - 내꺼 하는 법 */

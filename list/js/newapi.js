@@ -133,8 +133,11 @@ function make_list()
 			h1_right_qweqwe.className = "h1_right"
 			h1_right.appendChild(h1_right_qweqwe)
 
-			if (type.type === "video")  // 모두 커버곡이거나 분류가 아예 없다면 생성하지않도록 조건 추가 필요
+			if (type.type === "video")
 			{
+				const ori = o=> !o.original
+				if (type.data.some(ori) && !type.data.every(ori)) // 전체가 아닌 일부만 오리지날일때
+				{
 					const h1_right_all = document.createElement("div")
 					h1_right_all.className = "h1_right"
 					h1_right_all.textContent = "모두"
@@ -149,6 +152,7 @@ function make_list()
 					h1_right_cover.className = "h1_right"
 					h1_right_cover.textContent = "커버"
 					h1_right_qweqwe.appendChild(h1_right_cover)
+				}
 			}
 
 			const h1_right_etc = document.createElement("div")
