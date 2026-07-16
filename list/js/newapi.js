@@ -182,7 +182,7 @@ function make_list()
 		list.appendChild(page)
 
 
-
+		/*
 		for (let num = 0; num < total_cell[type.type]; num++)
 		{
 			const ready = type.data[num]
@@ -220,7 +220,8 @@ function make_list()
 					ready_data(ready.id, short ? 0 : ready.start, short ? 0 : ready.end)
 				}
 			})
-		}
+		}*/
+		fill_page(type.type)
 	})
 }
 
@@ -232,7 +233,7 @@ function calc_size(list)
 	const img_w = parseInt(root.getPropertyValue("--img-w"))
 	const img_h = parseInt(root.getPropertyValue("--img-h"))
 
-	const short = list.classList.contains("short")
+	const short = list.target.classList.contains("short")
 
 	const cell_w = short ? img_h : img_w
 	const cell_h = short ? img_w : img_h
@@ -248,7 +249,61 @@ function calc_size(list)
 }
 
 
+// (추가) total_cell 값에 맞춰 썸네일 버튼을 (재)생성하는 함수
+function fill_page(type_str)
+{
+	const page = document.querySelector(`.page.${type_str}`)
+	if (!page) return
 
+	const data = list_data[type_str]
+	if (!data) return
+
+	const prev_count = page.children.length // (추가) 현재 이미 그려진 썸네일 개수
+	const next_count = total_cell[type_str] // (추가) 새로 계산된 필요 개수
+
+	if (next_count <= prev_count) return // (추가) 줄어들었거나 그대로면 아무것도 안함
+
+	for (let num = prev_count; num < next_count; num++)
+	{
+		const ready = data[num]
+		if (!ready) break
+
+		const btn = document.createElement("button")
+		btn.className = "btn"
+		btn.dataset.num = num
+		btn.dataset.type = type_str
+
+		const img = document.createElement("img")
+		img.src = `https://img.youtube.com/vi/${ready_data(ready.id)}/mqdefault.jpg`
+
+		btn.appendChild(img)
+		page.appendChild(btn)
+
+		btn.addEventListener("click", () =>
+		{
+			const target = (type_str + "_" + (num + "").padStart(3, "0"))
+			if (img_click === target)
+			{
+				if (play())
+				{
+					player.pauseVideo()
+				}
+				else if (pause())
+				{
+					player.playVideo()
+				}
+				else
+					return
+			}
+			else
+			{
+				click_img(target)
+				const short = type_str === "short"
+				ready_data(ready.id, short ? 0 : ready.start, short ? 0 : ready.end)
+			}
+		})
+	}
+}
 
 
 
@@ -831,11 +886,11 @@ function onPlayerStateChange(event)
 }
 
 // 싲가
-make_list()
-
-
-//
+// 
+// 싲가
 const total_cell = { video: 0, short: 0 }
+
+make_list() // (수정) 다시 즉시 호출 — 뼈대(.list, .page)만 생성, 썸네일은 아직 0개
 
 const size = new ResizeObserver(entry =>
 {
@@ -843,6 +898,7 @@ const size = new ResizeObserver(entry =>
 	{
 		const type = list.target.classList.contains("short") ? "short" : "video"
 		total_cell[type] = calc_size(list)
+		fill_page(type) // (추가) 측정된 크기에 맞춰 해당 type 썸네일만 다시 채움
 	})
 })
 
