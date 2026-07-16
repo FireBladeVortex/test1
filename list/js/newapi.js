@@ -87,9 +87,7 @@ let msg_start = null
 let msg_end = null
 //
 
-function calc_size()
-{
-}
+
 
 function make_list()
 {
@@ -117,7 +115,6 @@ function make_list()
 		h1_left.textContent = type.tag + " 재생 목록"
 		h1.appendChild(h1_left)
 
-
 		if (type.type === "long")
 		{
 			make_long()
@@ -135,7 +132,7 @@ function make_list()
 
 			if (type.type === "video")
 			{
-				const ori = o=> !o.original
+				const ori = ori=> !ori.original
 				if (type.data.some(ori) && !type.data.every(ori)) // 전체가 아닌 일부만 오리지날일때
 				{
 					const h1_right_all = document.createElement("div")
@@ -183,6 +180,13 @@ function make_list()
 		section.appendChild(list)
 
 
+		const total_cell = null
+		if (type.type === "video" || type.type === "short") // (추가)
+		{
+			total_cell = calc_size(list) // (추가)
+		}
+
+
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const page = document.createElement("div")
 		page.className = `page ${type.type}`
@@ -190,8 +194,7 @@ function make_list()
 
 
 
-
-		for (let num = 0; num < type.data.length; num++)
+		for (let num = 0; num < total_cell; num++)
 		{
 			const ready = type.data[num]
 			const btn = document.createElement("button")
@@ -232,6 +235,28 @@ function make_list()
 	})
 }
 
+
+//
+function calc_size(list)
+{
+	const root = getComputedStyle(document.documentElement) // (추가)
+	const img_w = parseInt(root.getPropertyValue("--img-w")) // (추가)
+	const img_h = parseInt(root.getPropertyValue("--img-h")) // (추가)
+
+	const short = list.target.classList.contains("short")
+
+	const cell_w = short ? img_h : img_w
+	const cell_h = short ? img_w : img_h
+
+	const width = list.contentBoxSize.inlineSize
+	const height = list.contentBoxSize.blockSize
+
+	const col = Math.floor(width / cell_w)
+	const row = Math.floor(height / cell_h)
+	const cell = col * row
+
+	return cell
+}
 
 
 function click_img(target)
