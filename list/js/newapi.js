@@ -176,13 +176,6 @@ function make_list()
 		list.className = `list ${type.type}`
 		section.appendChild(list)
 
-
-		if (type.type === "video" || type.type === "short") // (추가)
-		{
-			total_cell = calc_size(list) // (추가)
-		}
-
-
 		// list 크기를 가로 세로 썸네일 크기 배수 구해서 총 몇칸인지 구하고 page로 넘겨
 		const page = document.createElement("div")
 		page.className = `page ${type.type}`
@@ -190,7 +183,7 @@ function make_list()
 
 
 
-		for (let num = 0; num < total_cell; num++)
+		for (let num = 0; num < total_cell[type.type]; num++)
 		{
 			const ready = type.data[num]
 			const btn = document.createElement("button")
@@ -235,9 +228,9 @@ function make_list()
 //
 function calc_size(list)
 {
-	const root = getComputedStyle(document.documentElement) // (추가)
-	const img_w = parseInt(root.getPropertyValue("--img-w")) // (추가)
-	const img_h = parseInt(root.getPropertyValue("--img-h")) // (추가)
+	const root = getComputedStyle(document.documentElement)
+	const img_w = parseInt(root.getPropertyValue("--img-w"))
+	const img_h = parseInt(root.getPropertyValue("--img-h"))
 
 	const short = list.classList.contains("short")
 
@@ -253,21 +246,6 @@ function calc_size(list)
 
 	return cell
 }
-
-
-//
-const total_cell = { video: 0, short: 0 }
-
-const size = new ResizeObserver(entry =>
-{
-	entry.forEach(list =>
-	{
-		const type = list.target.classList.contains("short") ? "short" : "video" // (추가)
-		total_cell[type] = calc_size(list) // (수정) entry.target이 아닌 entry 전체를 넘김
-	})
-})
-
-document.querySelectorAll(".list").forEach(list => size.observe(list))
 
 
 
@@ -854,3 +832,19 @@ function onPlayerStateChange(event)
 
 // 싲가
 make_list()
+
+
+//
+const total_cell = { video: 0, short: 0 }
+
+const size = new ResizeObserver(entry =>
+{
+	entry.forEach(list =>
+	{
+		const type = list.target.classList.contains("short") ? "short" : "video"
+		total_cell[type] = calc_size(list)
+	})
+})
+
+
+document.querySelectorAll(".list").forEach(list => size.observe(list))
