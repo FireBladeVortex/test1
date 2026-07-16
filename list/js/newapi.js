@@ -85,9 +85,6 @@ let sec_end = null
 // 시간 메세지
 let msg_start = null
 let msg_end = null
-//
-
-
 
 function make_list()
 {
@@ -180,7 +177,6 @@ function make_list()
 		section.appendChild(list)
 
 
-		const total_cell = null
 		if (type.type === "video" || type.type === "short") // (추가)
 		{
 			total_cell = calc_size(list) // (추가)
@@ -243,13 +239,13 @@ function calc_size(list)
 	const img_w = parseInt(root.getPropertyValue("--img-w")) // (추가)
 	const img_h = parseInt(root.getPropertyValue("--img-h")) // (추가)
 
-	const short = list.target.classList.contains("short")
+	const short = list.classList.contains("short")
 
 	const cell_w = short ? img_h : img_w
 	const cell_h = short ? img_w : img_h
 
-	const width = list.contentBoxSize.inlineSize
-	const height = list.contentBoxSize.blockSize
+	const width = list.contentBoxSize[0].inlineSize
+	const height = list.contentBoxSize[0].blockSize
 
 	const col = Math.floor(width / cell_w)
 	const row = Math.floor(height / cell_h)
@@ -257,6 +253,26 @@ function calc_size(list)
 
 	return cell
 }
+
+
+//
+const total_cell = { video: 0, short: 0 }
+
+const size = new ResizeObserver(entry =>
+{
+	entry.forEach(list =>
+	{
+		const type = list.target.classList.contains("short") ? "short" : "video" // (추가)
+		total_cell[type] = calc_size(list) // (수정) entry.target이 아닌 entry 전체를 넘김
+	})
+})
+
+document.querySelectorAll(".list").forEach(list => size.observe(list))
+
+
+
+
+
 
 
 function click_img(target)
