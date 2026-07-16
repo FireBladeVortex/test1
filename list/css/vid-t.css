@@ -90,6 +90,7 @@ body
 .section[data-type="short"]
 {
 	display: grid;
+	grid-template-rows: auto 1fr; /* (추가) h1은 내용 크기, .list는 남은 공간 전부 */
 	justify-items: center;
 	align-items: start;
 	align-content: start;
