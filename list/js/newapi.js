@@ -165,7 +165,9 @@ function make_list()
 				btn_prev.addEventListener("click", () =>
 				{
 					page_multiple = Math.max(1, page_multiple - 1)
+					num_prev.textContent = page_multiple === 1 ? "" : page_multiple - 1
 					num_curr.textContent = page_multiple
+					num_next.textContent = page_multiple + 1
 				})
 
 				const btn_center = document.createElement("div")
@@ -175,7 +177,7 @@ function make_list()
 
 					const num_prev = document.createElement("div")
 					num_prev.className = "h1_right"
-					num_prev.textContent = ""
+					num_prev.textContent = 0
 					btn_center.appendChild(num_prev)
 
 					const num_curr = document.createElement("div")
@@ -200,7 +202,9 @@ function make_list()
 				btn_next.addEventListener("click", () =>
 				{
 					page_multiple = page_multiple + 1
+					num_prev.textContent = page_multiple === 1 ? "" : page_multiple - 1
 					num_curr.textContent = page_multiple
+					num_next.textContent = page_multiple + 1
 				})
 		}
 
