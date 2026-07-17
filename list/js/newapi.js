@@ -86,9 +86,8 @@ let sec_end = null
 let msg_start = null
 let msg_end = null
 
-let page_multiple_prev = null
-let page_multiple = 1
-let page_multiple_next = null
+let video_multiple = 1
+let short_multiple = 1
 
 function make_list()
 {
@@ -157,6 +156,7 @@ function make_list()
 			h1_right_btn.className = "h1_right"
 			h1_right.appendChild(h1_right_btn)
 
+
 			// if 썸네일 수가 허용하는 grid 칸 갯수 이상이라 여러개의 page 있는 조건일때 추가 필요 
 				const btn_prev = document.createElement("div")
 				btn_prev.className = "h1_right"
@@ -164,36 +164,40 @@ function make_list()
 				h1_right_btn.appendChild(btn_prev)
 				btn_prev.addEventListener("click", () =>
 				{
-					page_multiple = Math.max(1, page_multiple - 1)
-					num_prev.textContent = page_multiple === 1 ? "" : page_multiple - 1
-					num_curr.textContent = page_multiple
-					num_next.textContent = page_multiple + 1
+					if (type.type === "short")
+					{
+						short_multiple = Math.max(1, short_multiple - 1)
+						num_prev.textContent = short_multiple === 1 ? "" : short_multiple - 1
+						num_curr.textContent = short_multiple
+						num_next.textContent = short_multiple + 1
+					}
+					else
+					{
+						video_multiple = Math.max(1, video_multiple - 1)
+						num_prev.textContent = video_multiple === 1 ? "" : video_multiple - 1
+						num_curr.textContent = video_multiple
+						num_next.textContent = video_multiple + 1
+					}
 				})
 
 				const btn_center = document.createElement("div")
 				btn_center.className = "h1_right"
 				h1_right_btn.appendChild(btn_center)
 
-
 					const num_prev = document.createElement("div")
 					num_prev.className = "h1_right"
-					num_prev.textContent = 0
+					num_prev.textContent = ""
 					btn_center.appendChild(num_prev)
 
 					const num_curr = document.createElement("div")
 					num_curr.className = "h1_right"
-					num_curr.textContent = page_multiple
+					num_curr.textContent = type.type === "short" ? short_multiple : video_multiple
 					btn_center.appendChild(num_curr)
 
 					const num_next = document.createElement("div")
 					num_next.className = "h1_right"
-					num_next.textContent = page_multiple + 1
+					num_next.textContent = type.type === "short" ? short_multiple + 1 : video_multiple + 1
 					btn_center.appendChild(num_next)
-
-
-
-
-
 
 				const btn_next = document.createElement("div")
 				btn_next.className = "h1_right"
@@ -201,10 +205,20 @@ function make_list()
 				h1_right_btn.appendChild(btn_next)
 				btn_next.addEventListener("click", () =>
 				{
-					page_multiple = page_multiple + 1
-					num_prev.textContent = page_multiple === 1 ? "" : page_multiple - 1
-					num_curr.textContent = page_multiple
-					num_next.textContent = page_multiple + 1
+					if (type.type === "short")
+					{
+						short_multiple = short_multiple + 1
+						num_prev.textContent = short_multiple === 1 ? "" : short_multiple - 1
+						num_curr.textContent = short_multiple
+						num_next.textContent = short_multiple + 1
+					}
+					else
+					{
+						video_multiple = video_multiple + 1
+						num_prev.textContent = video_multiple === 1 ? "" : video_multiple - 1
+						num_curr.textContent = video_multiple
+						num_next.textContent = video_multiple + 1
+					}
 				})
 		}
 
