@@ -156,7 +156,7 @@ function make_list()
 			h1_right_btn.className = "h1_right"
 			h1_right.appendChild(h1_right_btn)
 
-
+/*
 			// if 썸네일 수가 허용하는 grid 칸 갯수 이상이라 여러개의 page 있는 조건일때 추가 필요 
 				const btn_prev = document.createElement("div")
 				btn_prev.className = "h1_right"
@@ -178,25 +178,32 @@ function make_list()
 						num_curr.textContent = video_multiple
 						num_next.textContent = video_multiple + 1
 					}
+					update_page(type.type)
 				})
 
 				const btn_center = document.createElement("div")
 				btn_center.className = "h1_right"
 				h1_right_btn.appendChild(btn_center)
 
-				const num_prev = document.createElement("div")
-				num_prev.className = "h1_right"
-				num_prev.textContent = ""
-				btn_center.appendChild(num_prev)
+					const num_prev = document.createElement("div")
+					num_prev.className = "h1_right num_prev"
+					num_prev.dataset.type = type.type
+					num_prev.textContent = ""
+					btn_center.appendChild(num_prev)
 
 					const num_curr = document.createElement("div")
-					num_curr.className = "h1_right"
+					num_curr.className = "h1_right num_curr"
+					num_curr.dataset.type = type.type
 					num_curr.textContent = type.type === "short" ? short_multiple : video_multiple
 					btn_center.appendChild(num_curr)
 
 					const num_next = document.createElement("div")
-					num_next.className = "h1_right"
-					num_next.textContent = type.type === "short" ? short_multiple + 1 : video_multiple + 1
+					num_next.className = "h1_right num_next"
+					num_next.dataset.type = type.type
+					const num = type.type === "short" ? total_cell.short : total_cell.video
+					const mul = type.type === "short" ? short_multiple : video_multiple
+					const last = get_last(type.type) // (수정)
+					num_next.textContent = mul + 1 >= last ? "" : mul + 1
 					btn_center.appendChild(num_next)
 
 				const btn_next = document.createElement("div")
@@ -207,19 +214,62 @@ function make_list()
 				{
 					if (type.type === "short")
 					{
+						const last = get_last(type.type)
+						if (short_multiple >= last) return
 						short_multiple = short_multiple + 1
 						num_prev.textContent = short_multiple === 1 ? "" : short_multiple - 1
 						num_curr.textContent = short_multiple
-						num_next.textContent = short_multiple + 1
+						num_next.textContent = short_multiple + 1 > last ? "" : short_multiple + 1
 					}
 					else
 					{
+						const last = get_last(type.type)
+						if (video_multiple >= last) return
 						video_multiple = video_multiple + 1
 						num_prev.textContent = video_multiple === 1 ? "" : video_multiple - 1
 						num_curr.textContent = video_multiple
-						num_next.textContent = video_multiple + 1
+						num_next.textContent = video_multiple + 1 > last ? "" : video_multiple + 1
 					}
+			update_page(type.type)
 				})
+			*/
+				const btn_prev = document.createElement("div") // (추가)
+				btn_prev.className = "h1_right btn_prev" // (추가)
+				btn_prev.dataset.type = type.type // (추가)
+				h1_right_btn.appendChild(btn_prev) // (추가)
+				btn_prev.addEventListener("click", () => // (추가)
+				{
+					if (type.type === "short")
+						short_multiple = Math.max(1, short_multiple - 1)
+					else
+						video_multiple = Math.max(1, video_multiple - 1)
+					render_nav(type.type)
+					update_page(type.type)
+				})
+
+				const btn_center = document.createElement("div") // (추가)
+				btn_center.className = "h1_right btn_center" // (추가)
+				btn_center.dataset.type = type.type // (추가)
+				h1_right_btn.appendChild(btn_center)
+
+				const btn_next = document.createElement("div") // (추가)
+				btn_next.className = "h1_right btn_next" // (추가)
+				btn_next.dataset.type = type.type // (추가)
+				h1_right_btn.appendChild(btn_next) // (추가)
+				btn_next.addEventListener("click", () => // (추가)
+				{
+					const last = get_last(type.type)
+					const multiple = type.type === "short" ? short_multiple : video_multiple
+					if (multiple >= last) return
+					if (type.type === "short")
+						short_multiple = short_multiple + 1
+					else
+						video_multiple = video_multiple + 1
+					render_nav(type.type)
+					update_page(type.type)
+				})
+
+				render_nav(type.type) // (추가) 최초 nav 상태 그리기
 		}
 
 
@@ -309,10 +359,10 @@ function fill_page(type_str)
 	const data = list_data[type_str]
 	if (!data) return
 
-	const crrt_data_count = page.children.length // (추가) 현재 이미 그려진 썸네일 개수
-	const nxxt_data_count = data.length // (수정) 화면에 맞는 개수 대신 전체 데이터 개수로 변경 → 처음부터 모두 로드
+	const crrt_data_count = page.children.length
+	const nxxt_data_count = data.length
 
-	// const next_count = total_cell[type_str] // (추가) 새로 계산된 필요 개수
+	// const next_count = total_cell[type_str] 새로 계산된 필요 개수
 
 	for (let num = 0; data.length; num++)
 	{
@@ -356,6 +406,87 @@ function fill_page(type_str)
 	}
 }
 
+
+// (추가) multiple 값에 맞는 범위만 썸네일 표시/숨김
+function update_page(type_str)
+{
+	const num = total_cell[type_str]
+	if (!num) return
+
+	const multiple = type_str === "short" ? short_multiple : video_multiple
+	const min_num = (multiple - 1) * num
+	const max_num = (multiple * num) - 1
+
+	document.querySelectorAll(`.btn[data-type="${type_str}"]`).forEach(btn =>
+	{
+		const idx = +btn.dataset.num
+		const show = idx >= min_num && idx <= max_num
+		btn.style.display = show ? "" : "none"
+	})
+}
+
+// (추가) 크기 변경 시 multiple, 표시값 초기화
+function reset_page(type_str)
+{
+	if (type_str === "short")
+		short_multiple = 1
+	else
+		video_multiple = 1
+
+
+	render_nav(type_str) // (추가)
+}
+
+// (추가) 마지막 페이지 번호 계산 공통 함수
+function get_last(type_str)
+{
+	const num = total_cell[type_str]
+	const data = list_data[type_str]
+	return Math.ceil(data.length / num)
+}
+
+// (추가) 이전/중앙/다음 버튼 영역을 상태에 맞게 다시 그리는 공통 함수
+function render_nav(type_str)
+{
+	const btn_prev = document.querySelector(`.btn_prev[data-type="${type_str}"]`)
+	const btn_center = document.querySelector(`.btn_center[data-type="${type_str}"]`)
+	const btn_next = document.querySelector(`.btn_next[data-type="${type_str}"]`)
+	if (!btn_prev || !btn_center || !btn_next) return
+
+	const last = get_last(type_str)
+
+	if (last <= 1)
+	{
+		btn_prev.textContent = ""
+		btn_center.textContent = ""
+		btn_next.textContent = ""
+		return
+	}
+
+	const multiple = type_str === "short" ? short_multiple : video_multiple
+
+	btn_prev.textContent = multiple === 1 ? "" : "이전"
+	btn_next.textContent = multiple >= last ? "" : "다음"
+	btn_center.textContent = ""
+
+	const num_prev = document.createElement("div")
+	num_prev.className = "h1_right num_prev"
+	num_prev.dataset.type = type_str
+	num_prev.textContent = multiple === 1 ? "" : multiple - 1
+	btn_center.appendChild(num_prev)
+
+	const num_curr = document.createElement("div")
+	num_curr.className = "h1_right num_curr"
+	num_curr.dataset.type = type_str
+	num_curr.textContent = multiple
+	btn_center.appendChild(num_curr)
+
+	const num_next = document.createElement("div")
+	num_next.className = "h1_right num_next"
+	num_next.dataset.type = type_str
+	num_next.textContent = multiple + 1 > last ? "" : multiple + 1
+	btn_center.appendChild(num_next)
+}
 
 
 
@@ -486,7 +617,7 @@ function ctrl_view()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-function get_songs(video) // (수정) valid_list 생성 대신 video 하나당 유효한 song 목록을 즉석에서 반환
+function get_songs(video) // valid_list 생성 대신 video 하나당 유효한 song 목록을 즉석에서 반환
 {
 	const song_list = video.song ?? []
 
@@ -568,9 +699,9 @@ function make_long()
 		const lang_value = lang_select.value
 		const names = new Set()
 
-		list_data.long.forEach(video => // (수정) valid_list 대신 list_data.long 직접 순회
+		list_data.long.forEach(video => // valid_list 대신 list_data.long 직접 순회
 		{
-			get_songs(video).forEach(song => // (수정)
+			get_songs(video).forEach(song =>
 			{
 				if (!song.lang) return // id만 가진 항목은 lang이 없으므로 제외
 				if (!lang_value || song.lang === lang_value)
@@ -598,9 +729,9 @@ function make_long()
 
 		const titles = new Set()
 
-		list_data.long.forEach(video => // (수정) valid_list 대신 list_data.long 직접 순회
+		list_data.long.forEach(video => // valid_list 대신 list_data.long 직접 순회
 		{
-			get_songs(video).forEach(song => // (수정)
+			get_songs(video).forEach(song =>
 			{
 				if (!song.lang) return // id만 가진 항목은 제외
 				const lang_match = !lang_value || song.lang === lang_value
@@ -653,8 +784,8 @@ function make_long()
 			const name_value = name_select.value
 			const title_value = title_select.value
 
-			let song = null // (수정)
-			for (const video of list_data.long) // (수정) valid_list 대신 list_data.long 직접 순회
+			let song = null
+			for (const video of list_data.long) // valid_list 대신 list_data.long 직접 순회
 			{
 				const found = get_songs(video).find(s =>
 					s.lang && // id만 가진 항목은 제외
@@ -671,7 +802,7 @@ function make_long()
 
 			if (song)
 			{
-				ready_data(song.id, song.start, song.end) // (수정) video.id 대신 song.id (valid_list에 이미 포함됨)
+				ready_data(song.id, song.start, song.end) // video.id 대신 song.id (valid_list에 이미 포함됨)
 			}
 		}
 	})
@@ -941,7 +1072,7 @@ function onPlayerStateChange(event)
 // 싲가
 const total_cell = { video: 0, short: 0 }
 
-make_list() // (수정) 다시 즉시 호출 — 뼈대(.list, .page)만 생성, 썸네일은 아직 0개
+make_list() // 다시 즉시 호출 — 뼈대(.list, .page)만 생성, 썸네일은 아직 0개
 
 const resize = new ResizeObserver(entry =>
 {
@@ -949,6 +1080,9 @@ const resize = new ResizeObserver(entry =>
 	{
 		const type = list.target.classList.contains("short") ? "short" : "video"
 		total_cell[type] = calc_size(list)
+
+		reset_page(type)
+		update_page(type)
 	})
 })
 
