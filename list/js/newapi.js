@@ -184,10 +184,10 @@ function make_list()
 				btn_center.className = "h1_right"
 				h1_right_btn.appendChild(btn_center)
 
-					const num_prev = document.createElement("div")
-					num_prev.className = "h1_right"
-					num_prev.textContent = ""
-					btn_center.appendChild(num_prev)
+				const num_prev = document.createElement("div")
+				num_prev.className = "h1_right"
+				num_prev.textContent = ""
+				btn_center.appendChild(num_prev)
 
 					const num_curr = document.createElement("div")
 					num_curr.className = "h1_right"
@@ -943,15 +943,13 @@ const total_cell = { video: 0, short: 0 }
 
 make_list() // (수정) 다시 즉시 호출 — 뼈대(.list, .page)만 생성, 썸네일은 아직 0개
 
-const size = new ResizeObserver(entry =>
+const resize = new ResizeObserver(entry =>
 {
 	entry.forEach(list =>
 	{
 		const type = list.target.classList.contains("short") ? "short" : "video"
 		total_cell[type] = calc_size(list)
-		fill_page(type) // (추가) 측정된 크기에 맞춰 해당 type 썸네일만 다시 채움
 	})
 })
 
-
-document.querySelectorAll(".list").forEach(list => size.observe(list))
+document.querySelectorAll(".list").forEach(list => resize.observe(list))
