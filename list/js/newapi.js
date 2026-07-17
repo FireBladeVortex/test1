@@ -86,6 +86,10 @@ let sec_end = null
 let msg_start = null
 let msg_end = null
 
+let page_multiple_prev = null
+let page_multiple = 1
+let page_multiple_next = null
+
 function make_list()
 {
 	const left = document.getElementById("left")
@@ -149,27 +153,56 @@ function make_list()
 				}
 			}
 
-			const h1_right_etc = document.createElement("div")
-			h1_right_etc.className = "h1_right"
-			h1_right.appendChild(h1_right_etc)
+			const h1_right_btn = document.createElement("div")
+			h1_right_btn.className = "h1_right"
+			h1_right.appendChild(h1_right_btn)
 
 			// if 썸네일 수가 허용하는 grid 칸 갯수 이상이라 여러개의 page 있는 조건일때 추가 필요 
-				const h1_right_etc_1 = document.createElement("div")
-				h1_right_etc_1.className = "h1_right"
-				h1_right_etc_1.textContent = "이전"
-				h1_right_etc.appendChild(h1_right_etc_1)
+				const btn_prev = document.createElement("div")
+				btn_prev.className = "h1_right"
+				btn_prev.textContent = "이전"
+				h1_right_btn.appendChild(btn_prev)
+				btn_prev.addEventListener("click", () =>
+				{
+					page_multiple = Math.max(1, page_multiple - 1)
+					num_curr.textContent = page_multiple
+				})
 
-				const h1_right_etc_2 = document.createElement("div")
-				h1_right_etc_2.className = "h1_right"
-				h1_right_etc_2.textContent = "1~9"
-				h1_right_etc.appendChild(h1_right_etc_2)
+				const btn_center = document.createElement("div")
+				btn_center.className = "h1_right"
+				h1_right_btn.appendChild(btn_center)
 
-				const h1_right_etc_3 = document.createElement("div")
-				h1_right_etc_3.className = "h1_right"
-				h1_right_etc_3.textContent = "다음"
-				h1_right_etc.appendChild(h1_right_etc_3)
+
+					const num_prev = document.createElement("div")
+					num_prev.className = "h1_right"
+					num_prev.textContent = ""
+					btn_center.appendChild(num_prev)
+
+					const num_curr = document.createElement("div")
+					num_curr.className = "h1_right"
+					num_curr.textContent = page_multiple
+					btn_center.appendChild(num_curr)
+
+					const num_next = document.createElement("div")
+					num_next.className = "h1_right"
+					num_next.textContent = page_multiple + 1
+					btn_center.appendChild(num_next)
+
+
+
+
+
+
+				const btn_next = document.createElement("div")
+				btn_next.className = "h1_right"
+				btn_next.textContent = "다음"
+				h1_right_btn.appendChild(btn_next)
+				btn_next.addEventListener("click", () =>
+				{
+					page_multiple = page_multiple + 1
+					num_curr.textContent = page_multiple
+				})
 		}
-
 
 
 		const list = document.createElement("div")
@@ -258,12 +291,12 @@ function fill_page(type_str)
 	const data = list_data[type_str]
 	if (!data) return
 
-	const prev_count = page.children.length // (추가) 현재 이미 그려진 썸네일 개수
-	const next_count = total_cell[type_str] // (추가) 새로 계산된 필요 개수
+	const crrt_data_count = page.children.length // (추가) 현재 이미 그려진 썸네일 개수
+	const nxxt_data_count = data.length // (수정) 화면에 맞는 개수 대신 전체 데이터 개수로 변경 → 처음부터 모두 로드
 
-	if (next_count <= prev_count) return // (추가) 줄어들었거나 그대로면 아무것도 안함
+	// const next_count = total_cell[type_str] // (추가) 새로 계산된 필요 개수
 
-	for (let num = prev_count; num < next_count; num++)
+	for (let num = 0; data.length; num++)
 	{
 		const ready = data[num]
 		if (!ready) break
