@@ -507,17 +507,17 @@ function render_nav(type_str)
 
 	if (last <= 1)
 	{
-		btn_prev.textContent = ""
+		btn_prev_txt.textContent = ""
 		btn_center.textContent = ""
-		btn_next.textContent = ""
+		btn_next_txt.textContent = ""
 		return
 	}
 
 	const multiple = type_str === "short" ? short_multiple : video_multiple
 
 	btn_prev_txt.textContent = multiple === 1 ? "" : "이전"
-	btn_next_txt.textContent = multiple >= last ? "" : "다음"
 	btn_center.textContent = ""
+	btn_next_txt.textContent = multiple >= last ? "" : "다음"
 
 	const num_prev = document.createElement("div")
 	num_prev.className = "h1_right num_prev"
