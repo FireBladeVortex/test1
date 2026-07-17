@@ -89,6 +89,10 @@ let msg_end = null
 let video_multiple = 1
 let short_multiple = 1
 
+let active_data = { video: null, short: null } // (추가) 현재 표시중인 목록 데이터
+let list_ori = [] // (추가) original 값을 가진 데이터만 모음
+let list_non = [] // (추가) original 값이 없는 데이터만 모음
+
 function make_list()
 {
 	const left = document.getElementById("left")
@@ -122,6 +126,8 @@ function make_list()
 		}
 		else
 		{
+			active_data[type.type] = type.data // (추가) video/short 현재 표시 데이터 초기화
+
 			const h1_right = document.createElement("div")
 			h1_right.className = "h1_right"
 			h1.appendChild(h1_right)
@@ -132,6 +138,9 @@ function make_list()
 
 			if (type.type === "video")
 			{
+				list_ori = type.data.filter(video => "original" in video) // (추가) original 값 있는 데이터 분리
+				list_non = type.data.filter(video => !("original" in video)) // (추가) original 값 없는 데이터 분리
+
 				const ori = ori=> !ori.original
 				if (type.data.some(ori) && !type.data.every(ori)) // 전체가 아닌 일부만 오리지날일때
 				{
@@ -139,16 +148,19 @@ function make_list()
 					h1_right_all.className = "h1_right"
 					h1_right_all.textContent = "모두"
 					h1_right_qweqwe.appendChild(h1_right_all)
+					h1_right_all.addEventListener("click", () => switch_video_data(list_data.video)) // (추가)
 
 					const h1_right_original = document.createElement("div")
 					h1_right_original.className = "h1_right"
 					h1_right_original.textContent = "원곡"
 					h1_right_qweqwe.appendChild(h1_right_original)
+					h1_right_original.addEventListener("click", () => switch_video_data(list_ori)) // (추가)
 
 					const h1_right_cover = document.createElement("div")
 					h1_right_cover.className = "h1_right"
 					h1_right_cover.textContent = "커버"
 					h1_right_qweqwe.appendChild(h1_right_cover)
+					h1_right_cover.addEventListener("click", () => switch_video_data(list_non)) // (추가)
 				}
 			}
 
@@ -356,7 +368,7 @@ function fill_page(type_str)
 	const page = document.querySelector(`.page.${type_str}`)
 	if (!page) return
 
-	const data = list_data[type_str]
+	const data = active_data[type_str] ?? list_data[type_str] // (수정)
 	if (!data) return
 
 	const crrt_data_count = page.children.length
@@ -405,7 +417,20 @@ function fill_page(type_str)
 		})
 	}
 }
+// (추가) 모두/원곡/커버 클릭 시 표시할 video 데이터 교체
+function switch_video_data(next_data)
+{
+	active_data.video = next_data // (추가) 현재 데이터 갱신
 
+	const page = document.querySelector(`.page.video`)
+	if (page) page.innerHTML = "" // (추가) 기존 썸네일 제거 후 재생성
+
+	fill_page("video") // (추가) 새 데이터로 다시 채움
+
+	video_multiple = 1 // (추가) 페이지 번호 초기화
+	render_nav("video") // (추가)
+	update_page("video") // (추가)
+}
 
 // (추가) multiple 값에 맞는 범위만 썸네일 표시/숨김
 function update_page(type_str)
@@ -441,7 +466,7 @@ function reset_page(type_str)
 function get_last(type_str)
 {
 	const num = total_cell[type_str]
-	const data = list_data[type_str]
+	const data = active_data[type_str] ?? list_data[type_str] // (수정)
 	return Math.ceil(data.length / num)
 }
 
