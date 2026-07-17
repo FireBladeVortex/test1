@@ -146,21 +146,33 @@ function make_list()
 				{
 					const h1_right_all = document.createElement("div")
 					h1_right_all.className = "h1_right"
-					h1_right_all.textContent = "모두"
 					h1_right_qweqwe.appendChild(h1_right_all)
-					h1_right_all.addEventListener("click", () => switch_video_data(list_data.video)) // (추가)
+
+						const all_txt = document.createElement("span")
+						all_txt.className = "txt_click"
+						all_txt.textContent = "모두"
+						h1_right_all.appendChild(all_txt)
+						all_txt.addEventListener("click", () => switch_video_data(list_data.video))
 
 					const h1_right_original = document.createElement("div")
 					h1_right_original.className = "h1_right"
-					h1_right_original.textContent = "원곡"
 					h1_right_qweqwe.appendChild(h1_right_original)
-					h1_right_original.addEventListener("click", () => switch_video_data(list_ori)) // (추가)
+
+						const original_txt = document.createElement("span")
+						original_txt.className = "txt_click"
+						original_txt.textContent = "원곡"
+						h1_right_original.appendChild(original_txt)
+						original_txt.addEventListener("click", () => switch_video_data(list_ori))
 
 					const h1_right_cover = document.createElement("div")
 					h1_right_cover.className = "h1_right"
-					h1_right_cover.textContent = "커버"
 					h1_right_qweqwe.appendChild(h1_right_cover)
-					h1_right_cover.addEventListener("click", () => switch_video_data(list_non)) // (추가)
+
+						const cover_txt = document.createElement("span")
+						cover_txt.className = "txt_click"
+						cover_txt.textContent = "커버"
+						h1_right_cover.appendChild(cover_txt)
+						cover_txt.addEventListener("click", () => switch_video_data(list_non)) 
 				}
 			}
 
@@ -214,7 +226,7 @@ function make_list()
 					num_next.dataset.type = type.type
 					const num = type.type === "short" ? total_cell.short : total_cell.video
 					const mul = type.type === "short" ? short_multiple : video_multiple
-					const last = get_last(type.type) // (수정)
+					const last = get_last(type.type)
 					num_next.textContent = mul + 1 >= last ? "" : mul + 1
 					btn_center.appendChild(num_next)
 
@@ -245,43 +257,50 @@ function make_list()
 			update_page(type.type)
 				})
 			*/
-				const btn_prev = document.createElement("div") // (추가)
-				btn_prev.className = "h1_right btn_prev" // (추가)
-				btn_prev.dataset.type = type.type // (추가)
-				h1_right_btn.appendChild(btn_prev) // (추가)
-				btn_prev.addEventListener("click", () => // (추가)
-				{
-					if (type.type === "short")
-						short_multiple = Math.max(1, short_multiple - 1)
-					else
-						video_multiple = Math.max(1, video_multiple - 1)
-					render_nav(type.type)
-					update_page(type.type)
-				})
+				const btn_prev = document.createElement("div")
+				btn_prev.className = "h1_right btn_prev"
+				btn_prev.dataset.type = type.type
+				h1_right_btn.appendChild(btn_prev)
 
-				const btn_center = document.createElement("div") // (추가)
-				btn_center.className = "h1_right btn_center" // (추가)
-				btn_center.dataset.type = type.type // (추가)
+					const btn_prev_txt = document.createElement("span")
+					btn_prev_txt.className = "txt_click"
+					btn_prev.appendChild(btn_prev_txt)
+					btn_prev_txt.addEventListener("click", () =>
+					{
+						if (type.type === "short")
+							short_multiple = Math.max(1, short_multiple - 1)
+						else
+							video_multiple = Math.max(1, video_multiple - 1)
+						render_nav(type.type)
+						update_page(type.type)
+					})
+
+				const btn_center = document.createElement("div")
+				btn_center.className = "h1_right btn_center"
+				btn_center.dataset.type = type.type
 				h1_right_btn.appendChild(btn_center)
 
-				const btn_next = document.createElement("div") // (추가)
-				btn_next.className = "h1_right btn_next" // (추가)
-				btn_next.dataset.type = type.type // (추가)
-				h1_right_btn.appendChild(btn_next) // (추가)
-				btn_next.addEventListener("click", () => // (추가)
-				{
-					const last = get_last(type.type)
-					const multiple = type.type === "short" ? short_multiple : video_multiple
-					if (multiple >= last) return
-					if (type.type === "short")
-						short_multiple = short_multiple + 1
-					else
-						video_multiple = video_multiple + 1
-					render_nav(type.type)
-					update_page(type.type)
-				})
+				const btn_next = document.createElement("div")
+				btn_next.className = "h1_right btn_next"
+				btn_next.dataset.type = type.type
+				h1_right_btn.appendChild(btn_next)
 
-				render_nav(type.type) // (추가) 최초 nav 상태 그리기
+					const btn_next_txt = document.createElement("span")
+					btn_next_txt.className = "txt_click"
+					btn_next.appendChild(btn_next_txt)
+					btn_next_txt.addEventListener("click", () =>
+					{
+						const last = get_last(type.type)
+						const multiple = type.type === "short" ? short_multiple : video_multiple
+						if (multiple >= last) return
+						if (type.type === "short")
+							short_multiple = short_multiple + 1
+						else
+							video_multiple = video_multiple + 1
+						render_nav(type.type)
+						update_page(type.type)
+					})
+			render_nav(type.type) // (추가) 최초 nav 상태 그리기
 		}
 
 
@@ -368,7 +387,7 @@ function fill_page(type_str)
 	const page = document.querySelector(`.page.${type_str}`)
 	if (!page) return
 
-	const data = active_data[type_str] ?? list_data[type_str] // (수정)
+	const data = active_data[type_str] ?? list_data[type_str]
 	if (!data) return
 
 	const crrt_data_count = page.children.length
@@ -428,8 +447,8 @@ function switch_video_data(next_data)
 	fill_page("video") // (추가) 새 데이터로 다시 채움
 
 	video_multiple = 1 // (추가) 페이지 번호 초기화
-	render_nav("video") // (추가)
-	update_page("video") // (추가)
+	render_nav("video")
+	update_page("video")
 }
 
 // (추가) multiple 값에 맞는 범위만 썸네일 표시/숨김
@@ -459,14 +478,14 @@ function reset_page(type_str)
 		video_multiple = 1
 
 
-	render_nav(type_str) // (추가)
+	render_nav(type_str)
 }
 
 // (추가) 마지막 페이지 번호 계산 공통 함수
 function get_last(type_str)
 {
 	const num = total_cell[type_str]
-	const data = active_data[type_str] ?? list_data[type_str] // (수정)
+	const data = active_data[type_str] ?? list_data[type_str]
 	return Math.ceil(data.length / num)
 }
 
@@ -477,6 +496,12 @@ function render_nav(type_str)
 	const btn_center = document.querySelector(`.btn_center[data-type="${type_str}"]`)
 	const btn_next = document.querySelector(`.btn_next[data-type="${type_str}"]`)
 	if (!btn_prev || !btn_center || !btn_next) return
+
+
+
+	const btn_prev_txt = btn_prev.querySelector(".txt_click")
+	const btn_next_txt = btn_next.querySelector(".txt_click")
+
 
 	const last = get_last(type_str)
 
@@ -490,8 +515,8 @@ function render_nav(type_str)
 
 	const multiple = type_str === "short" ? short_multiple : video_multiple
 
-	btn_prev.textContent = multiple === 1 ? "" : "이전"
-	btn_next.textContent = multiple >= last ? "" : "다음"
+	btn_prev_txt.textContent = multiple === 1 ? "" : "이전"
+	btn_next_txt.textContent = multiple >= last ? "" : "다음"
 	btn_center.textContent = ""
 
 	const num_prev = document.createElement("div")
@@ -1112,3 +1137,4 @@ const resize = new ResizeObserver(entry =>
 })
 
 document.querySelectorAll(".list").forEach(list => resize.observe(list))
+

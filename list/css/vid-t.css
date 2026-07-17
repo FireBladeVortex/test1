@@ -336,3 +336,17 @@ body
 	opacity: 0.5; /* (추가) 기본 반투명 */
 	pointer-events: none; /* (추가) 기본 상태에서는 클릭 막음 */
 }
+
+
+.txt_click /* (추가) 텍스트 영역만 클릭 가능하도록 커서 표시 */
+{
+	cursor: pointer;
+}
+
+
+.h1_left,
+.btn_center
+{
+	cursor: default;
+}
+
