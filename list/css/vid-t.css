@@ -400,7 +400,10 @@ body
 {
 	display: flex;
 }
-
+#popup_txt /* 추가 */
+{
+	white-space: pre-wrap; /* 추가 */
+}
 #popup_close /* 추가 */
 {
 	position: absolute;
