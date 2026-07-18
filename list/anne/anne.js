@@ -4,7 +4,7 @@ const popup_txt = document.getElementById("popup_txt")
 const popup_close = document.getElementById("popup_close")
 
 // ! 클릭 시 팝업 표시 (추가)
-document.getElementById("alert_btn").addEventListener("click", () =>
+document.getElementById("alert_btn").addEventListener("click", async () =>
 {
 	popup.style.background = "#ffffff"
 	popup.style.color = "#000000"
@@ -13,7 +13,7 @@ document.getElementById("alert_btn").addEventListener("click", () =>
 })
 
 // ? 클릭 시 팝업 표시 (추가)
-document.getElementById("help_btn").addEventListener("click", () =>
+document.getElementById("help_btn").addEventListener("click", async () =>
 {
 	popup.style.background = "#000000"
 	popup.style.color = "var(--highlight)"
