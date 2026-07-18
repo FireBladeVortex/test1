@@ -76,10 +76,10 @@ const play_now = () => play() || pause() // !play_now === !play && !pause
 // 최초 재생 시작하기 전 상태
 let img_click = null
 // 정보 관리
-let set_ch = null
 let set_id = null
 let set_name = null
 let set_title = null
+let set_ch = null
 // 시간 관리
 let sec_start = null
 let sec_end = null
@@ -142,7 +142,7 @@ function make_list()
 				list_ori = type.data.filter(video => "original" in video) // (추가) original 값 있는 데이터 분리
 				list_non = type.data.filter(video => !("original" in video)) // (추가) original 값 없는 데이터 분리
 
-				const ori = ori=> !ori.original
+				const ori = ori => !ori.original
 				if (type.data.some(ori) && !type.data.every(ori)) // 전체가 아닌 일부만 오리지날일때
 				{
 					const h1_right_all = document.createElement("div")
@@ -888,7 +888,7 @@ async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으�
 		if (arguments.length !== 1) return
 
 		document.getElementById("play_msg").style.textAlign = "start"
-		document.getElementById("play_msg").textContent = set_ch
+		document.getElementById("play_msg").textContent = set_title
 	}
 	catch
 	{
@@ -1051,14 +1051,14 @@ function play_or_pause()
 
 
 
-/*
-영상 상태 확인
-YT.PlayerState.ENDED = 0
-YT.PlayerState.PLAYING = 1
-YT.PlayerState.PAUSED = 2
-YT.PlayerState.BUFFERING = 3
-YT.PlayerState.CUED = 5
-*/
+
+// 영상 상태 확인
+// YT.PlayerState.ENDED = 0
+// YT.PlayerState.PLAYING = 1
+// YT.PlayerState.PAUSED = 2
+// YT.PlayerState.BUFFERING = 3
+// YT.PlayerState.CUED = 5
+
 // 동영상 상태가 변화하면 즉시 작동
 function onPlayerStateChange(event)
 {
@@ -1080,7 +1080,9 @@ function onPlayerStateChange(event)
 		}
 		if (title)
 		{
-			fetch_oembed(set_id)
+			document.getElementById("play_msg").style.textAlign = "start" 
+			document.getElementById("play_msg").textContent = title
+			fetch_oembed(set_id, title)
 		}
 		else
 		{
