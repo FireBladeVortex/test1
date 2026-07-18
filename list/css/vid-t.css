@@ -350,3 +350,34 @@ body
 	cursor: default;
 }
 
+#right h1 
+{
+	position: absolute;
+	top: 0;
+	left: 3%;
+	display: flex; 
+	gap: 30px; 
+	font-size: 60px;
+}
+
+#help_btn 
+{
+	color: var(--text);
+	cursor: help;
+}
+
+#help_btn:hover 
+{
+	color: #ff0000;
+}
+
+#alert_btn 
+{
+	color: var(--text);
+	cursor: progress;
+}
+
+#alert_btn:hover 
+{
+	color: var(--highlight);
+}
