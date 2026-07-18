@@ -76,6 +76,7 @@ const play_now = () => play() || pause() // !play_now === !play && !pause
 // 최초 재생 시작하기 전 상태
 let img_click = null
 // 정보 관리
+let set_ch = null
 let set_id = null
 let set_name = null
 let set_title = null
@@ -887,7 +888,7 @@ async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으�
 		if (arguments.length !== 1) return
 
 		document.getElementById("play_msg").style.textAlign = "start"
-		document.getElementById("play_msg").textContent = set_ch + "  " + set_title
+		document.getElementById("play_msg").textContent = set_ch
 	}
 	catch
 	{
