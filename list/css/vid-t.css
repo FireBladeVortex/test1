@@ -381,3 +381,31 @@ body
 {
 	color: var(--highlight);
 }
+
+#popup /* 추가 */
+{
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 500px;
+	height: 500px;
+	align-items: center;
+	justify-content: center;
+	z-index: 100;
+}
+
+#popup.active /* 추가 */
+{
+	display: flex;
+}
+
+#popup_close /* 추가 */
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 60px;
+	cursor: pointer;
+}
