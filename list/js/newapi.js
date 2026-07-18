@@ -880,13 +880,14 @@ async function fetch_oembed(id) // 값 실적용 대신 뱉어내는 방식으�
 		const data = await input.json()
 		
 		set_name = data.author_name
+		set_ch = data.author_url
 		set_title = data.title
 		document.title = set_name
 
 		if (arguments.length !== 1) return
 
 		document.getElementById("play_msg").style.textAlign = "start"
-		document.getElementById("play_msg").textContent = set_title
+		document.getElementById("play_msg").textContent = set_ch + "  " + set_title
 	}
 	catch
 	{
