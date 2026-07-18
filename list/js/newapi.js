@@ -1080,9 +1080,7 @@ function onPlayerStateChange(event)
 		}
 		if (title)
 		{
-			document.getElementById("play_msg").style.textAlign = "start" 
-			document.getElementById("play_msg").textContent = title
-			fetch_oembed(set_id, title)
+			fetch_oembed(set_id)
 		}
 		else
 		{
