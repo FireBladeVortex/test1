@@ -13,6 +13,12 @@ list_data.long = [
 		]
 	},
 	{
+		id: "https://youtu.be/Gre8r41eWYw?si=vBGq6Exoi1aY7IB5",
+		song: [
+			{ lang: "한국어", name: "아쿠루", title: "한숨", start: "1:22:45", end: "1:27:33", },
+		]
+	},
+	{
 		id: "https://youtu.be/z1yKzg-bjeA?si=3ikiOfNyQIf4Q5mP", /* 미녕이 - 사랑해줘 */
 	},
 	{
